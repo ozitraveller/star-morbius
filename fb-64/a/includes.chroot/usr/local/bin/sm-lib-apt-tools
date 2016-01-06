@@ -1,0 +1,2407 @@
+#!/bin/bash
+########################################################################
+####  Script Name: sm-lib-apt-tools
+####  version: 1.23.38
+####  Date: 2014-10-09
+
+####  Copyright (C) Harald Hope 2005-2014
+####  This program is free software; you can redistribute it and/or modify it under
+####  the terms of the GNU General Public License as published by the Free Software
+####  Foundation; either version 2 of the License, or (at your option) any later version.
+
+####  This program is distributed in the hope that it will be useful, but WITHOUT
+####  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+####  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+####  Get the full text of the GPL here:
+####  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
+####  Script Author: Harald Hope
+####  This is a library file for smxi and cannot be run independently
+
+####  Script URL: http://smxi.org/sm/sm-lib-apt-tools
+####  Script SVN: http://code.google.com/p/smxi
+####  Script Home page: http://techpatterns.com/forums/about736.html
+########################################################################
+
+# one global here just for convenience
+# temp for sid volatile period:
+TEMP_HOLDS='p7zip-rar:p7zip-full' # ready in amd64, but not i386
+CHECK_HOLD_PACKAGES="amule:amule-common audacity:audacity-data elinks:elinks-data gimp-help-common:gimp-helpbrowser gnucash:gnucash-common hugin:hugin-data kdenlive:kdenlive-data k3b:k3b-data ktorrent:ktorrent-data pidgin:pidgin-data rosegarden:rosegarden-data thunar:thunar-data xchat:xchat-common xmoto:xmoto-data xsane:xsane-common $TEMP_HOLDS"
+
+###---------------------------------------------------------------------
+### core apt utilities, test / install / remove / error handler
+###---------------------------------------------------------------------
+
+# args: $1 - package to be tested, this simply will echo a value for the test
+# $2 - optional - options: ii; hi; wild; wild-full; ii-wild; rc; rc-wild; rc-all
+# default hi-ii; no wild search
+# this replaces all the locally run if present type tests
+package_tester()
+{
+	eval $LOGUS
+	local item=$1 doWild='+' installType='(hi|ii)' wildFull='' packageStatus=''
+	local runDefault='true'
+
+	case "$2" in
+		wild)
+			doWild='*'
+			;;
+		wild-full)
+			wildFull='.*'
+			doWild='*'
+			;;
+		ii)
+			installType='(ii)'
+			;;
+		ii-wild)
+			installType='(ii)'
+			doWild='*'
+			;;
+		hi)
+			installType='(hi)'
+			;;
+		rc)
+			installType='(rc)'
+			;;
+		rc-all)
+			installType='(rc)'
+			doWild='*'
+			item=''
+			;;
+		rc-wild)
+			installType='(rc)'
+			doWild='*'
+			;;
+		"")
+			: # note, this allows error handling AND null $2, which is an optional arg
+			;;
+		*)
+			error_handler 'value-bad' $FUNCNAME "$2"
+			;;
+	esac
+
+	if [ "$APT_TYPE" == 'aptitude' ];then
+		if [ "$2" == 'hi' -o "$2" == 'ii' ];then
+			packageStatus=$( package_tester_aptitude "$1" "$2" )
+		fi
+		# we're going to cascade down here, if it's never been set
+		# in aptitude, we'll check dpkg, this is a hack, but it's better
+		# than using aptitude search features
+		if [ -n "$packageStatus" ];then
+			runDefault='false'
+		fi
+	fi
+	# basically, only run this is if not aptitude or if aptitude tests are null
+	if [ "$runDefault" == 'true' ];then
+		# note that we need [ \t]+ so that only cases of whitespace after are counted
+		packageStatus=$( dpkg -l | awk '
+		/^'$installType'[ \t]*'$wildFull$item'[ \t]'$doWild'/ {
+			print $2
+		}' )
+	fi
+
+	echo $packageStatus
+	log_function_data "Package $installType status: $packageStatus"
+	eval $LOGUE
+}
+
+# sadly, because of how poorly done the aptitude search method is,
+# it's unusable for these scripts, far too slow and awkward, and its
+# handling of hold/installs is totally different, so I'm creating this
+# small feature to handle that condition. Groan...
+# args: $1 - package name; $2 - hi/ii - same as above, but will do differen things
+package_tester_aptitude()
+{
+	eval $LOGUS
+	local aptitudeStates='/var/lib/aptitude/pkgstates' packageState=''
+	local packageName=$1 packageStatus=$2 packageHoldInstall=''
+
+	case $packageStatus in
+		ii)
+			packageHoldInstall=1
+			;;
+		hi)
+			packageHoldInstall=2
+			;;
+	esac
+
+	#note: only if aptitude has been used to set hold or unhold on a package will it have a
+	# state of 1 or 2
+	packageState=$( grep ": $packageName$" -A 2 $aptitudeStates | grep -i '^State:' | grep -Eo "$packageHoldInstall" )
+
+	if [ -n "$packageState" ];then
+		echo $packageState
+	fi
+
+	log_function_data "Package $packageName state: $packageState"
+	eval $LOGUE
+}
+
+# Returns null if package is not available in user system apt.
+# args: $1 - package to test; $2 [optional] - candidate/installed
+check_package_status()
+{
+	eval $LOGUS
+	local packageVersion='' statusType='Candidate:' cacheData=''
+	local poolPackageCount=0
+
+	case $2 in
+		c|candidate)	
+			statusType='Candidate:'
+			;;
+		i|installed)	
+			statusType='Installed:'
+			;;
+	esac
+
+	LC_ALL= LC_CTYPE= LC_MESSAGES= LANG= cacheData="$( apt-cache policy $1 2>/dev/null )"
+# 	
+	# we need to filter out all cases were the only instance in apt is the locally installed
+	# version, ie:  *** 2.13 0 \ 100 /var/lib/dpkg/status is the only value returned
+	poolPackageCount=$( grep -Es "^[[:space:]]*[0-9]{3}"  <<< "$cacheData" | grep -vcE "^[[:space:]]*100[[:space:]]" )
+	# note: must use awk here because gawk may not have been installed yet
+	packageVersion=$( awk '
+	/'$statusType'/ && !/(\(None\)|\(none\))/ {print $2}' <<< "$cacheData" )
+	
+	# if either none found, or only a local apt version available, return null
+	if [ "$statusType" == 'Candidate:' -a "$poolPackageCount" -eq 0 ];then
+		packageVersion=''
+	fi
+
+	echo $packageVersion
+	log_function_data "Package Version: $packageVersion"
+	eval $LOGUE
+}
+
+# args: $1 package to install; $2 install/install-optional/force-always/force-present
+# $3 - optional installer args, like: --reinstall, etc...
+# force-always will force the install no matter what, with install -f
+# force-present will just do it if package is present, with install -f
+# install-always/install-user installs always. Also use this for multiple packages
+# where one might be installed and the other not.
+# install-user is user initiated action, only if package is not already installed
+# install-missing installs only if present in user system
+# install-user-ok does not force install, but lets user accept or reject.
+package_installer()
+{
+	eval $LOGUS
+	#local prefId=$3
+	# we can't ever send a null value to sm_pref_tester or it hangs the script
+	#[ -z "$prefId" ] && prefId='no-set'
+	#local smPref=$( sm_pref_tester $prefId )
+	local packageExists='' package='' packageTemp='' dumpSpace=''
+	local installType=$2 doYes=' -y' forceIt='' extraInstallArgs=$3
+	local installAlways='' installAbsent='' installPresent=''
+	local installError=0 forceError=0 installIt='' install='install'
+	local altText1='Installing' altText2=' to update your system'
+	local testOption='ii' packagePlural1='' packagePlural2='is'
+
+	# set the plural text
+	if [ "$( wc -w <<< $1 )" -gt 1 ];then
+		packagePlural1='s'
+		packagePlural2='are'
+	fi
+
+	case $installType in
+		force-always)
+			forceIt='true'
+			altText1='Forcing install of'
+			installAlways='true'
+			;;
+		force-present)
+			forceIt='true'
+			altText1='Forcing install of'
+			testOption='' # do wildcard search, not just ii
+			installPresent='true'
+			;;
+		install-always)
+			installAlways='true'
+			;;
+		install-missing)
+			altText1="Installing missing package$packagePlural1"
+			ltText2=''
+			installAbsent='true'
+			;;
+		install-user)
+			altText2=' by user request'
+			testOption='' # do wildcard search, not just ii
+			installAbsent='true'
+			;;
+		install-user-ok)
+			altText2=' by user request'
+			installAlways='true'
+			doYes=''
+			;;
+		*)
+			error_handler 'value-bad' $FUNCNAME "$installType"
+			;;
+	esac
+
+	if [ "$APT_TYPE" == 'aptitude' ];then
+		if [ "$SYSTEM_BASE" == 'etch' ];then
+			# I can't find the etch aptitude command for this, so removing it for now
+			extraInstallArgs=$( sed -e 's/--allow-unauthenticated//' <<< $extraInstallArgs )
+		else
+			extraInstallArgs=$( sed -e 's/--allow-unauthenticated/--allow-untrusted/' <<< $extraInstallArgs )
+		fi
+		if [ -n "$( grep '\--reinstall' <<< $extraInstallArgs )" ];then
+			extraInstallArgs=$( sed 's/--reinstall//' <<< $extraInstallArgs )
+			install='reinstall'
+		fi
+		doYes='' # because of how aptitude handles this stuff, no auto yes yet
+	fi
+	#  no point running these tests if they are not needed
+	if [ "$installAlways" != 'true' ];then
+		for package in $1
+		do
+			packageTemp=$( package_tester $package $testOption )
+			# here we handle cases where one of several is null, so we want to install all
+			if [ -z "$packageTemp" ];then
+				installIt='true'
+			fi
+			# don't add a space or the -n test will be true
+			packageExists="$packageExists$packageTemp"
+		done
+		# just want to make sure here that's it's going to be truly null
+		packageExists=$( echo $packageExists | sed 's/\s//g' )
+	fi
+	# nullify the entire set if one member is null
+	if [ "$installIt" == 'true' ];then
+		packageExists=''
+	fi
+	if [ -n "$( grep '\--no' <<< $extraInstallArgs )" ];then
+		extraInstallArgs=$( sed 's/--no//' <<< $extraInstallArgs )
+		doYes=''
+	fi
+
+	#  -o -n "$packageExists"
+	# cases: 1-always do it; 2-do if absent and to install misssing;
+	# 3-do if present required update
+	if [ "$installAlways" == 'true' ] || [ "$installAbsent" == 'true' -a -z "$packageExists" ] || [ "$installPresent" == 'true' -a -n "$packageExists" ];then
+		echo # just for cosmetics here, for multiple packages separates
+		echo "${SPACER}${S}$altText1 ${C}$1${S}$altText2...${N}"
+
+		if [ "$forceIt" == 'true' ];then
+			log_function_data "install -f pre: $APT_TYPE install $WITHOUT_RECOMMENDS -f $doYes"
+			$APT_TYPE install $WITHOUT_RECOMMENDS -f $doYes 2>>$LOG_FILE 2>&1
+		fi
+		log_function_data "install main: $APT_TYPE $install $WITHOUT_RECOMMENDS $doYes $extraInstallArgs $1"
+		$APT_TYPE $install $WITHOUT_RECOMMENDS $doYes $extraInstallArgs $1 2>>$LOG_FILE 2>&1 || installError=$?
+		if [ "$forceIt" == 'true' ];then
+			log_function_data "install -f post: $APT_TYPE install $WITHOUT_RECOMMENDS -f $doYes"
+			$APT_TYPE install $WITHOUT_RECOMMENDS -f $doYes 2>>$LOG_FILE 2>&1 || forceError=$?
+		fi
+	# if user install and already installed...
+	elif [ "$installAbsent" == 'true' -a -n "$packageExists"  ];then
+		echo "${SPACER}${M}The package$packagePlural1: ${C}$1"
+		echo "${SPACER}${M}$packagePlural2 already installed on your system. Continuing...${N}"
+		echo
+	fi
+	# only do error handling if either install only, or force/install cases went bad
+	if [ "$forceError" -gt 0 ] || [ "$forceIt" != 'true' -a "$installError" -gt 1 ];then
+		echo "${SPACER}${E}There was a problem with install of: ${C}$1${N}"
+		echo
+		log_function_data "Error: $installError with install of $1"
+		eval $LOGUE
+		return 1
+	else
+		eval $LOGUE
+		return 0
+	fi
+}
+
+# args: $1 - package; $2 - extra args: purge etc; $3 - group - remove entire group
+package_remover()
+{
+	eval $LOGUS
+	local packageExists='' item='' removeError=0 extraArgs=$2
+	local removeErrorPackage='' packageIsWild='' removePurge='remove'
+	local isPurge=$( grep 'purge' <<< $extraArgs )
+
+	if [ -n "$isPurge" ];then
+		extraArgs=$( sed 's/purge//g' <<< $extraArgs  )
+		removePurge='purge'
+		# etch apt-get doesn't support apt-get purge, just apt-get remove --purge
+		if [ "$APT_TYPE" == 'apt-get' -a "$SYSTEM_BASE" == 'etch' ];then
+			removePurge='remove --purge'
+		fi
+	fi
+	if [ "$APT_TYPE" == 'aptitude' ];then
+		extraArgs=$( sed 's/-y//' <<< $extraArgs ) # turn off auto yes until tested more
+	fi
+
+	# note: group is only used when the calling function has already gotten the
+	# installed packages using tests. Removing an entire group is easier in some
+	# cases where packages are dependent, like with kernels/modules and so on
+	if [ "$3" != 'group' ];then
+		for item in $1
+		do
+			packageExists=$( package_tester $item )
+			# this is for a single case: eg: some-module*, only wild card ending
+			# we're only using this case when packages are already tested for by caller function
+			packageIsWild=$( grep -E ".*\*" <<< $item )
+			if [ -n "$packageExists" -o -n "$packageIsWild" ];then
+				removeError=0 # reset to no error
+				echo
+				echo "${SPACER}${S}Removing package ${C}$item${S}...${N}"
+				$APT_TYPE $removePurge $extraArgs $item 2>>$LOG_FILE 2>&1 || removeError=$?
+				if [ "$removeError" -gt 0 ];then
+					echo "${SPACER}${E}Error ${C}$removeError${E} removing package: ${C}$item${N}"
+					removeErrorPackage="$removeErrorPackage $item"
+					echo
+					log_function_data "Error $removeError removing package: $item"
+				fi
+			else
+				echo "${SPACER}${M}Cannot remove package ${C}$item${M} because it is not installed.${N}"
+				echo
+			fi
+		done
+	else
+		echo
+		echo "${SPACER}${S}Removing packages ${C}$1${S}...${N}"
+		$APT_TYPE $removePurge $extraArgs $1 2>>$LOG_FILE 2>&1 || removeError=$?
+		if [ "$removeError" -gt 0 ];then
+			echo "${SPACER}${E}Error ${C}$removeError${E} removing packages: ${C}$1${N}"
+			echo
+			log_function_data "Package group removal error: $removeError"
+			removeErrorPackage="$1"
+		fi
+	fi
+
+	eval $LOGUE
+	if [ -n "$removeErrorPackage" ];then
+		return 1
+	else
+		return 0
+	fi
+}
+
+# returns error message if required for apt functions
+# arg: $1 du type; $2 return code
+apt_error_handling()
+{
+	eval $LOGUS
+	local options='' opt='' repeat=''
+	local fixText='' pText='' response='' aptUpdate='' distUpgrade=''
+
+	case $1 in
+		du-1|du-2|du-temp)
+			fixText="$DU_UPGRADE/install -f"
+			pText="$DU_UPGRADE"
+			distUpgrade='true'
+			;;
+		du-f)
+			fixText="$DU_UPGRADE/install -f"
+			pText='install -f'
+			distUpgrade='true'
+			;;
+		up-du-1|up-du-key1|up-du-key2|up-err-1|up-mirror-1|up-kernel-1|up-package-1|up-app|up-kern-tools|distro-conversion)
+			pText="$APT_TYPE update"
+			aptUpdate='true'
+			;;
+		*)
+			error_handler 'value-bad' $FUNCNAME "$installType"
+			;;
+	esac
+
+	# mirror update happens pre keys so just ignore errors
+	# don't do for step 1 of keyrings too
+	if [ "$2" -gt 0 -a "$1" != 'up-du-key1' -a "$1" != 'up-mirror-1' ];then
+		echo $ELINE
+		echo "${E}An error occured in ${C}$pText${E}. The Error number is: ${C}$2"
+		echo $ELINE
+		if  [ "$distUpgrade" == 'true' ];then
+			echo "${S}Please run ${C}$fixText${S} again to try to resolve the problem."
+			print_hec
+		elif [ "$aptUpdate" == 'true' ];then
+			echo "${S}You have 4 options to resolve this issues. If you select 1 or 2, the information will"
+			echo "be logged to ${C}$LOG_FILE${S}"
+			echo "${C}1 - $APT_TYPE update-no-pdiffs${S} ${M}Recommended${S} Runs update again without pdiffs."
+			echo "    This will fix most update errors except for apt repository offline stuff."
+			echo "${C}2 - $APT_TYPE update${S} Runs update again using your current choices."
+			echo "${C}3 - change-debian-mirror${S} If the mirror that is failing is a Debian mirror,"
+			echo "    change to another debian mirror."
+# 			echo "${C}4 - change-aptosid-mirror${S} If the mirror that is failing is a ${C}aptosid${S} mirror,"
+# 			echo "    change to another aptosid mirror."
+			echo
+			echo "${C}4 - continue${S} Continue without fixing the error, trust that it will be ok."
+			echo "${C}5 - quit${S} Exit the script now, try to figure it out yourself."
+			echo $LINE
+			echo $SLE
+			echo $LINE
+
+			options='update-no-pdiffs update change-debian-mirror continue quit'
+			select opt in $options
+			do
+				eval $LOGUE
+				case $opt in
+					update-no-pdiffs)
+						echo $LINE
+						echo "${S}Running ${C}$APT_TYPE update no pdiffs${S} to solve broken bzip pdiff errors.${N}"
+						NO_PDIFFS=$NO_PDIFF_ARGS
+						apt_update_handler 'up-error-1'
+						;;
+					update)
+						apt_update_handler 'up-error-1'
+						;;
+					change-debian-mirror)
+						change_debian_mirrors
+						;;
+					change-aptosid-mirror)
+						change_distro_mirrors
+						;;
+					continue)
+						echo $LINE
+						echo "${S}Continuing without resolving the ${C}update${S} error.${N}"
+						;;
+					quit)
+						print_quit
+						;;
+					*)
+						print_error opt
+						repeat='true'
+						;;
+				esac
+				break
+			done
+
+			if [ "$repeat" == 'true' ];then
+				apt_error_handling $1 $2
+			fi
+		fi
+	else
+		eval $LOGUE
+	fi
+}
+
+###---------------------------------------------------------------------
+### package hold / dependency test stuff
+###---------------------------------------------------------------------
+# this puts things on hold before du and takes them off after it
+# args: $1 hold/install/hold-utility - utility is for other uses of this function
+set_hold_install()
+{
+	eval $LOGPS
+	local packageName='' userPackages='' packageInstalled='' hoIn='ii'
+	local dhiTemp='' holdType='' statusA='' statusD='' status=$1
+	local ua="-U s-tools/warning-alerts.$HOLD_INSTALL"
+
+	case $APT_TYPE in
+		apt-get)
+			holdType='dpkg'
+			;;
+		aptitude)
+			holdType='aptitude'
+			;;
+	esac
+
+	# get the data, insert to global for rest of script run through
+	if [ "$status" == 'hold' ];then
+		# get user set hold/install packages first, slice change separator to space
+		userPackages="$( sm_pref_tester hold-install equal | tr '^' ' ' )"
+		log_function_data "User held packages: $userPackages"
+		wget $ua -T$TIME_OUT -t2 -Ncq $SCRIPT_DOWNLOAD$UPGRADE_DATA$HOLD_INSTALL
+		HOLD_INSTALL_ITEMS="$( cat $HOLD_INSTALL ) $userPackages"
+# 		HOLD_INSTALL_ITEMS="$userPackages"
+		log_function_data "Backend hold packages: $( cat $HOLD_INSTALL )"
+		if [ -f "$HOLD_INSTALL" ];then
+			rm -f $HOLD_INSTALL
+		fi
+		# in theory, only sid fails like this, we'll see how reality compares to theory now
+		if [ "$SYSTEM_BASE" == 'sid' ];then
+			# now let's fire the auto hold/install function to protect against those
+			# pesky gimp/pidgin breaks. That function updates the global HOLD_INSTALL_ITEMS
+			broken_dependency_handler
+			# and handle package groups as well
+			advanced_broken_dependency_handler 'amarok'
+			advanced_broken_dependency_handler 'evolution'
+			advanced_broken_dependency_handler 'gimp'
+			advanced_broken_dependency_handler 'gnokii'
+			advanced_broken_dependency_handler 'gnome-1'
+			advanced_broken_dependency_handler 'gnome-2'
+			advanced_broken_dependency_handler 'gnome-3'
+			# advanced_broken_dependency_handler 'gnome-ruby'
+			advanced_broken_dependency_handler 'gnome-vfs'
+			advanced_broken_dependency_handler 'hplip'
+			advanced_broken_dependency_handler 'kde-workspace'
+			advanced_broken_dependency_handler 'libreoffice'
+			advanced_broken_dependency_handler 'samba'
+			advanced_broken_dependency_handler 'sun-java'
+			advanced_broken_dependency_handler 'transmission'
+			advanced_broken_dependency_handler 'vegastrike'
+			advanced_broken_dependency_handler 'virtualbox'
+			advanced_broken_dependency_handler 'wesnoth'
+			advanced_broken_dependency_handler 'xfce4'
+			advanced_broken_dependency_handler 'xpdf'
+		fi
+	fi
+	log_function_data "Post test hold packages: $HOLD_INSTALL_ITEMS"
+	if [ -n "$HOLD_INSTALL_ITEMS" ];then
+		echo $LINE
+		if [ "$status" == 'hold-utility' ];then
+			status='hold'
+		fi
+		# set search for either ii or hi
+		if [ "$status" == 'install' ];then
+			hoIn='hi'
+			statusA='unhold'
+			statusD='install'
+		fi
+		if [ "$status" == 'hold' ];then
+			statusA='hold'
+			statusD='hold'
+			echo "${S}${SPACER}Testing hold/install list package status...${N}"
+		fi
+		for packageName in $HOLD_INSTALL_ITEMS
+		do
+			# only holding installed stuff, have to now handle cases where it's been held
+			# I am making this very specific to support users who want to manually set
+			# hold install, otherwise using ii|hi would remove holds from user set hold.
+			# this now tests for aptitude holds/unholds too, hopefully this will work.. grr
+			packageInstalled=$( package_tester $packageName $hoIn )
+
+			#packageInstalled=$( package_tester $packageName )
+			if [ -n "$packageInstalled" ];then
+				# append to list holder temp file
+				if [ "$1" == 'hold' ];then
+					dhiTemp="$dhiTemp $packageName"
+				fi
+				echo "${S}${SPACER}Changing ${C}$packageName${S} package status in ${C}$holdType${S} to: ${C}$statusD${N}"
+				case $APT_TYPE in
+					apt-get)
+						echo $packageName $statusD | dpkg --set-selections
+						;;
+					aptitude)
+						aptitude $statusA $packageName 2>> $LOG_FILE 1>/dev/null
+						;;
+				esac
+				# going to try holding/unholding with dpgk as well
+# 				echo $packageName $statusD | dpkg --set-selections
+				log_function_data "Package $packageName set to: $statusD"
+			fi
+		done
+		# this step is key, it will avoid trying to put on install packages that are
+		# on hold in user system. Only use the packages that are a: not on hold already
+		# and b: are installed on user system
+		if [ "$1" == 'hold' ];then
+			HOLD_INSTALL_ITEMS="$dhiTemp"
+		fi
+	fi
+	eval $LOGPE
+}
+
+## DEBUGGER
+#script_debugger 'set_hold_install hold'
+
+# the logic is pretty simple, for faulty packages, with mismatched main and main-data numbers,
+# this will get added to the hold stuff.
+broken_dependency_handler()
+{
+	eval $LOGUS
+	local versionNumbers='' packageGroup='' subPackage=''
+	local package1='' package2='' tempHolder1='' tempHolder2=''
+	local packageInstalled1='' packageInstalled2='' useFull=''
+
+	echo $LINE
+	echo -n "${S}${SPACER}Checking package groups for version mismatches."
+	for packageGroup in $CHECK_HOLD_PACKAGES
+	do
+		echo -n '.'
+		# note, we're ignoring debian subversion data for  now, like 2.8.2-2
+		package1=$( echo $packageGroup | cut -d ':' -f1 )
+		package2=$( echo $packageGroup | cut -d ':' -f2 )
+		# I'm not using (ii|hi) test anymore, to avoid breaking user set holds
+		packageInstalled1=$( package_tester $package1 ii )
+		packageInstalled2=$( package_tester $package2 ii )
+
+		# check if it's installed, no point putting non installed stuff on hold/install
+		if [ -n "$packageInstalled1" -a  -n "$packageInstalled2" ];then
+			# determine whether to do full or partial version number tests
+			# using cut -f 2-4 to handle cases of numbering like 1:2.5.6-3
+			case $package1 in
+				amule|gnucash|rosegarden)
+					# this is to deal with package subversion mismatch breaks: 1.0.4-6 1.0.4-5
+					tempHolder1=$( check_package_status "$package1" )
+					tempHolder2=$( check_package_status "$package2" )
+					;;
+				# special case to avoid 0.11.3-7+b1 / 0.11.3-7 type cases
+				audacity|elinks|k3b|thunar|xchat|xsane)
+					# this is to deal with package subversion mismatch breaks: 1.0.4-6 1.0.4-5
+					tempHolder1=$( check_package_status "$package1" | cut -d '+' -f 1 | cut -d '~' -f 1 )
+					tempHolder2=$( check_package_status "$package2" | cut -d '+' -f 1 | cut -d '~' -f 1 )
+					;;
+				*)
+					# adding in filter for + numbers: 2.8.4+2.8.4-1, returns: 2.8.4
+					tempHolder1=$( check_package_status "$package1" | cut -d '-' -f 1 | cut -d '+' -f 1 | cut -d '~' -f 1 )
+					tempHolder2=$( check_package_status "$package2" | cut -d '-' -f 1 | cut -d '+' -f 1 | cut -d '~' -f 1 )
+					;;
+			esac
+
+			# the package gets held automatically if it and its -data version numbers do not match
+			if [ "$tempHolder1" != "$tempHolder2" ];then
+				echo # needed to handle the -n of the dots....
+ 				echo "${M}${SPACER}Adding ${C}$package1${M} and ${C}$package2${M} to hold/install."
+ 				echo "${SPACER}Mismatched version numbers: ${C}$tempHolder1 $tempHolder2${N}"
+				HOLD_INSTALL_ITEMS="$HOLD_INSTALL_ITEMS $package1 $package2"
+				echo -n "${S}${SPACER}Continuing.."
+			fi
+		fi
+	done
+	echo
+	echo "${S}${SPACER}Check of package group version mismatch completed.${N}"
+	eval $LOGUE
+}
+#broken_dependency_handler; exit
+
+# NOTE: this only handles cases where version numbers are always the same
+# args: $1 - which package group to test
+advanced_broken_dependency_handler()
+{
+	eval $LOGUS
+	local tempOne='' tempTwo='' package='' packages='' packageInstalled1=''
+	local holdList='' packageVersionMismatch='' groupMembers=''
+	local versionGroup=$1
+
+	# note: can't use wildcard searches because they might allow in packages with
+	# different group numbers, ie: libreoffice-thesaurus etc
+	case $versionGroup in
+		amarok)
+			# note: removed these from sid:
+			#  |amarok-engine-xine|amarok-engine-yauap|amarok-engines|amarok-konqsidebar
+			packages="
+			$( package_tester '(amarok|amarok-common)' )
+			"
+			packageGroup='Amarok'
+			;;
+		# evolution works better with wildcards: evolution-data-server libebook1.2-9
+		# libecal1.2-7 libedata-cal1
+		evolution)
+			packages="
+			$( package_tester '(evolution|evolution-data-server|evolution-data-server-common|evolution-exchange)' )
+			"
+			packageGroup='Evolution'
+			;;
+		gimp)
+			packages="
+			$( package_tester '(gimp|gimp-data|gimp-libcurl|libgimp2.0|gimp-python)' )
+			"
+			packageGroup='Gimp'
+			;;
+		gnokii)
+			packages="
+			$( package_tester '(libgnokii5|gnokii-common)' )
+			"
+			packageGroup='Gnokii'
+			;;
+			# libgksu2-0
+		gnome-1) # 2.22.0-1
+			packages="
+			$( package_tester '(gconf2|libgconf2-[0-9])' 'wild' )
+			"
+			packageGroup='Gnome Group 1'
+			;;
+		gnome-2) # 2.20.1.1-2
+		# note: libgnomeui32 does NOT have the same versioning numbers
+		# so we need to test for libgnomeui- instead
+			packages="
+			$( package_tester '(libgnome2|libgnome2-common|libgnomeui-*)'  )
+			"
+			packageGroup='Gnome Group 2'
+			;;
+		gnome-3)
+			packages="
+			$( package_tester '(libbonoboui2)' 'wild' )
+			"
+			packageGroup='Gnome Group 3'
+			;;
+		# unused for now
+		gnome-ruby)
+			packages="
+			$( package_tester '(libgconf2-ruby|libgnome2-ruby)' 'wild' )
+			"
+			packageGroup='Gnome Ruby'
+			;;
+		gnome-vfs) # 1:2.22.0-5
+			packages="
+			$( package_tester '(libgnomevfs2)' 'wild' )
+			"
+			packageGroup='Gnome VFS'
+			;;
+		hplip)
+			# removed dummy packages hpijs
+			packages="
+			$( package_tester '(hpijs-ppds|hplip|hplip-data|hplip-gui)' )
+			"
+			packageGroup='hplip'
+			;;
+		kde-workspace)
+			packages="
+			$( package_tester '(kdebase-workspace|kdebase-workspace-data|kdebase-workspace-bin)' )
+			"
+			packageGroup='kde-workspace'
+			;;
+		# note: can't use full wildcard because of thesaurus using different numbering
+		# python-uno is the only shared package name, so removing it for now
+		# (libreoffice-base|libreoffice-base-core|libreoffice-common|libreoffice-java-common|libreoffice-core|python-uno)
+		libreoffice)
+			packages="
+			$( package_tester '(libreoffice-base|libreoffice-base-core|libreoffice-common|libreoffice-java-common|libreoffice-core)' )
+			$(package_tester '(libreoffice-calc|libreoffice-impress|libreoffice-gnome|libreoffice-writer|libreoffice-math)' )
+			$(package_tester '(libreoffice-help-|libreoffice-style-|libreoffice-filter-)' 'wild-full')
+			"
+			packageGroup='LibreOffice'
+			;;
+		samba)
+			# |smbfs non-critical but chronic version mismatch, removed from list
+			packages="
+			$( package_tester '(samba|samba-common|samba-common-bin|libsmbclient|smbclient)' )
+			"
+			packageGroup='samba'
+			;;
+		sun-java)
+			packages="
+			$( package_tester '(sun-java6-bin|sun-java6-jre|sun-java6-plugin)' )
+			"
+			packageGroup='Sun Java'
+			;;
+		transmission)
+			packages="
+			$( package_tester '(transmission|transmission-common|transmission-cli|transmission-daemon|transmission-gtk)' )
+			"
+			packageGroup='Transmission'
+			;;
+		vegastrike)
+			packages="
+			$( package_tester 'vegastrike' 'wild-full' )
+			"
+			packageGroup='Vegastrike'
+			;;
+		virtualbox)
+			packages="
+			$( package_tester '(virtualbox|virtualbox-qt|virtualbox-source|virtualbox-guest-source)')
+			"
+			packageGroup='VirtualBox'
+			;;
+		wesnoth)
+			packages="
+			$( package_tester 'wesnoth' 'wild-full' )
+			"
+			packageGroup='Wesnoth'
+			;;
+		xfce4)
+			# note: xfce4-settings|xfce4-panel are chronically version mismatched now, sigh...
+			# actually... xfdesktop4|xfdesktop4-data|xfce4-utils|xfce4-session|xfwm4|xfconf
+			# cannot be used because xfce4-session xfconf xfwm4 don't relate at all
+			packages="
+			$( package_tester '(xfdesktop4|xfdesktop4-data|xfce4-utils)' )
+			"
+			packageGroup='Xfce4'
+			;;
+		xpdf)
+			packages="
+			$( package_tester '(xpdf|xpdf-common|xpdf-reader|xpdf-utils)' )
+			"
+			packageGroup='Xpdf'
+			;;
+		*)
+			error_handler 'value-bad' $FUNCNAME "$1"
+			;;
+	esac
+	echo $LINE
+	echo "${SPACER}${S}Running ${C}$packageGroup${S} package version mismatch tests now...${N}"
+	for package in $packages
+	do
+		# test for only installed, ii, to avoid adding user set holds here
+		packageInstalled1=$( package_tester "$package" 'ii' )
+		if [ -n "$packageInstalled1" ];then
+			# append to list to add to holds
+			holdList="$holdList $package"
+			# use the previous value, the first item in loop will be null
+			tempTwo=$tempOne
+			case $versionGroup in
+				# full version strings for picky package groups
+				transmission|virtualbox|wesnoth)
+					tempOne=$( check_package_status "$package" )
+					;;
+				# shorter version number strings for less picky package groups
+				# I'm adding in the + test to handle those beta versions and some other odd
+				# syntaxes: 2.8.4+2.8.4-1;
+				evolution|gimp|gnome-1|gnome-2|gnome-3|gnome-ruby|gnome-vfs|hplip|vegastrike|xfce4|xpdf)
+					tempOne=$( check_package_status "$package" | cut -d '-' -f 1 | cut -d '+' -f 1 | cut -d '~' -f 1 )
+					;;
+				# special case to avoid 0.11.3-7+b1 / 0.11.3-7 type cases. sun java: 6-14-1
+				amarok|gnokii|kde-workspace|libreoffice|samba|sun-java)
+					# this is to deal with package subversion mismatch breaks: 1.0.4-6 1.0.4-5
+					tempOne=$( check_package_status "$package" | cut -d '+' -f 1 | cut -d '~' -f 1 )
+					;;
+			esac
+
+			# ignore first iteration of loop
+			if [ -n "$tempOne" -a -n "$tempTwo" ] && [ "$tempOne" != "$tempTwo" ];then
+				packageVersionMismatch='true'
+				echo "${SPACER}${M}The package ${C}$package${M} has a mismatched version number from ${C}$previousPackage${M}"
+				echo "${SPACER}${M}Version numbers: ${C}$tempOne $tempTwo${N}"
+			fi
+			previousPackage=$package
+		fi
+	done
+	# get rid of line breaks and spaces the tests above add in so we can do true null test
+	groupMembers="$( sed 's/[[:space:]]//g' <<< $packages )"
+
+	if [ "$packageVersionMismatch" == 'true' ];then
+		echo
+		echo "${SPACER}${M}Package version mismatches were detected in ${C}$packageGroup"
+		echo "${SPACER}${S}Adding ${C}$packageGroup${S} package group to hold/install list...${N}"
+		HOLD_INSTALL_ITEMS="$HOLD_INSTALL_ITEMS $holdList"
+	elif [ -n "$holdList" ];then
+		echo "${SPACER}${M}No version mismatches detected in ${C}$packageGroup${M}. Continuing...${N}"
+	elif [ -z "$groupMembers" ];then
+		echo "${SPACER}${M}You do not appear to have ${C}$packageGroup${M} installed. Continuing...${N}"
+	elif [ -z "$holdList" ];then
+		echo "${SPACER}${M}It appears that you have ${C}$packageGroup${M} on hold. Continuing...${N}"
+	fi
+	eval $LOGUE
+}
+# package_tester '(gconf2|libgconf2|libbonoboui2)' 'wild'
+# package_tester '(libgnome2|libgnomeui)' 'wild'
+# package_tester '(libgnomevfs2)' 'wild'
+# exit
+###---------------------------------------------------------------------
+### apt update tools - update / keyrings / gpg / debian mirrors / non-free
+###---------------------------------------------------------------------
+
+# this can be run by either post kernel install or pre dist-upgrade
+# but it should only run once in the install
+# args: $1 - where from;
+apt_update_handler()
+{
+	eval $LOGUS
+	local exitStatus='' aehv='up-du-1' forceUpdate=''
+	# this is for -! 50 dev option
+	if [ "$B_SKIP_UPDATE" == 'true' ];then
+		return 0
+	fi
+
+	# the forceUpdate flag is for cases where the update must always be
+	# performed to fix or resync system
+	case $1 in
+		kernel-tools)
+			aehv='up-kern-tools'
+			;;
+		package-install)
+			aehv='up-package-1'
+			;;
+		kernel)
+			aehv='up-kernel-1'
+			;;
+		post-mirror)
+			aehv='up-mirror-1'
+			forceUpdate='true'
+			;;
+		pre-du)
+			aehv='up-du-1'
+			;;
+		up-error-1)
+			aehv='up-err-1'
+			forceUpdate='true'
+			;;
+		distro-conversion)
+			aehv='distro-conversion'
+			forceUpdate='true'
+			;;
+		temp-repo)
+			forceUpdate='true'
+			;;
+		update-apps)
+			aehv='up-app'
+			;;
+		*)
+			error_handler 'value-bad' $FUNCNAME "$1"
+			;;
+	esac
+
+	if [ "$B_REPOS_UPDATED" != 'true' -o "$forceUpdate" == 'true' ];then
+		# give users the option to add non free sources to debian / other distros
+		fix_bad_repos
+		update_to_nonfree_sources
+
+		# then start the update for real
+		echo $LINE
+		echo "${S}Starting ${C}$APT_TYPE update${S} now to bring your system into sync with apt...${N}"
+
+		$APT_TYPE update $NO_PDIFFS 2>>$LOG_FILE 2>&1
+		# get the success/fail exit code of update
+		exitStatus=${PIPESTATUS[0]}
+		apt_error_handling $aehv $exitStatus
+
+		# this has to run after update of course
+		install_keyrings
+		# add any gpg stuff that might be needed
+		update_gpg  # fixed it, now using debian-archive-keyring
+		# set this to determine if update should be run again
+		B_REPOS_UPDATED='true'
+	fi
+	eval $LOGUE
+}
+
+fix_bad_repos()
+{
+	eval $LOGUS
+	
+	local repo='' repoData='debian-multimedia.org:deb-multimedia.org '
+	local badRepoFileList='' repoBad='' repoGood=''
+	local prefId='bad-repo-fix-1'
+	local smPref=$( sm_pref_tester $prefId )
+	
+	if [ "$smPref" -eq 0 ];then
+		for repo in $repoData
+		do 
+			repoBad=$( cut -d ':' -f 1 <<< $repo )
+			repoGood=$( cut -d ':' -f 2 <<< $repo )
+			badRepoFileList=$( grep -lsR  "$repoBad" /etc/apt/ )
+			log_function_data "repo Data: $repo\nbad Repo Files: $badRepoFileList"
+			if [ -n "$badRepoFileList" ];then
+				echo "${S}Updating changed repo domain ${C}$repoBad${S} to ${C}$repoGood${S} in the following files:"
+				echo "${C}$badRepoFileList${N}"
+				sed -i "s/$repoBad/$repoGood/g" $badRepoFileList
+				echo "${S}Apt source files updated to use ${C}$repoGood${S} domain. Continuing."
+			fi
+		done
+		set_sticky_prefs $prefId
+	fi
+	
+	eval $LOGUE
+}
+
+install_keyrings()
+{
+	eval $LOGUS
+	local prefId='keyrings-aptosid-1'
+	local smPref=$( sm_pref_tester $prefId )
+
+	# this handles case where sources have now been updated to aptosid only
+	if [ "$smPref" -eq 0 -a "$B_APTOSID_SOURCES" == 'true' ];then
+		echo $LINE
+		# this handles first load cases, and also errors on first du
+		#update_gpg ## add gpg first to stop some errors.
+# 		package_installer 'aptosid-keyrings' 'install-always' '--allow-unauthenticated'
+		package_installer 'aptosid-archive-keyring' 'install-always' '--allow-unauthenticated'
+		# and no need to run this more than once, so we won't
+		set_sticky_prefs $prefId
+	fi
+	eval $LOGUE
+}
+
+update_gpg()
+{
+	eval $LOGUS
+	local prefId='keyrings-update-4'
+	local smPref=$( sm_pref_tester $prefId )
+
+	if [ "$smPref" -eq 0 ];then
+		echo $LINE
+		echo "${S}Installing Debian archive keys for gpg...${N}"
+		# debian keyrings &> /dev/null
+		# this server is just useless, keeps jamming up
+		# gpg --keyserver wwwkeys.eu.pgp.net --recv-keys 6070D3A1 &> /dev/null && apt-key add /root/.gnupg/pubring.gpg 1> /dev/null
+		# sidux keyrings - old sidux: 71409CDF
+		#gpg --keyserver wwwkeys.eu.pgp.net --recv-keys F80994F6 &> /dev/null && apt-key add /root/.gnupg/pubring.gpg 1> /dev/null
+		package_installer 'debian-archive-keyring' 'install-always' '--allow-unauthenticated'
+
+		echo "${S}Keys updated${N}"
+		# or
+		# gpg --keyserver wwwkeys.eu.pgp.net --recv-keys 3C9C56BDF781E713
+		# gpg --keyserver wwwkeys.eu.pgp.net --recv-keys F781E713 # last 8 only
+		# apt-key add /root/.gnupg/pubring.gpg
+
+		set_sticky_prefs $prefId
+	fi
+	eval $LOGUE
+}
+#update_gpg
+
+## Debian mirror switching routines, -m option
+change_debian_mirrors()
+{
+	eval $LOGPS
+	local countryId='' CountryName='' mirror='' opt='' options='' found='' skip='' prefMess=''
+	local debianMirrors='
+	at:Austria
+	au:Australia
+	bg:Bulgaria
+	br:Brazil
+	ca:Canada
+	ch:Switzerland
+	cl:Chile
+	cz:Czech-Republic
+	de:Germany
+	ee:Estonia
+	es:Spain
+	fi:Finland
+	fr:France
+	gr:Greece
+	hk:Hong-Kong
+	hr:Croatia
+	hu:Hungary
+	ie:Ireland
+	is:Iceland
+	it:Italy
+	jp:Japan
+	kr:Korea
+	nl:Netherlands
+	no:Norway
+	nz:New-Zealand
+	pl:Poland
+	pt:Portugal
+	ro:Romania
+	ru:Russia
+	se:Sweden
+	si:Slovenia
+	sk:Slovakia
+	tr:Turkey
+	tw:Taiwan
+	uk:Great-Britain
+	us:United-States
+	no-change
+	'
+	local updateSuccess='' exitStatus='' sourcesLocation=$EAS
+	local currentMirror=$( grep -o -m 1 'ftp[.a-z]*\.debian\.org' $EAS )
+	# test for new format
+	if [ -f "$EASDL" ];then
+		currentMirror=$( grep -o -m 1 'ftp[.a-z]*\.debian\.org' $EASDL )
+		sourcesLocation=$EASDL
+	fi
+
+	if [ "$1" == 'prefs' ];then
+		prefMess='echo -e "\nYou will only see this Mirror Selection option the first time you run\nthe script. To reset your source mirrors in the future, use the ${C}-m${S} option.\n"'
+	fi
+
+	echo $MBAR
+	echo "${M} APT SOURCES DEBIAN MIRROR SELECTION"
+	echo $MLINE
+
+	if [ "$B_APT_PROX" == 'true' ];then
+		echo $MLINE
+		echo "${M}I'm sorry, but appear to be using an apt caching proxy for your Debian "
+		echo "mirrors in ${C}$EAS${M} that this script cannot work with. You will"
+		echo "have to update your ${C}$EAS${M} sources manually.${N}"
+		log_function_data "Apt proxy :9999 format/syntax for Debian apt mirror sources"
+		print_hec
+		eval $LOGPE
+	elif [ "$currentMirror" != '' ];then
+		echo "${S}You can select a different mirror to use in ${C}apt sources${S}."
+		echo "Your current Debian mirror is ${C}$currentMirror${S}."
+		echo
+		echo "When you select one of these your ${C}$sourcesLocation${S}"
+		echo "file will simply now use the mirrors located in that country."
+		echo "You can start this script like this: ${C}$SCRIPT_NAME -m${S}"
+		echo "to reset your prefered mirror any time you like."
+		eval $prefMess
+		echo "Select the number for ${C}no-change${S} if you want to return to main script."
+
+		echo $LINE
+		echo -e $SLE
+		echo $LINE
+
+		options=$debianMirrors
+
+		select opt in $options
+		do
+			for mirror in $debianMirrors
+			do
+				if [ "$opt" == "$mirror" ];then
+					found='true'
+					if [ "$mirror" == 'no-change' ];then
+						skip='true'
+					else
+						countryId=$( echo $mirror | cut -d ':' -f 1 )
+						CountryName=$( echo $mirror | cut -d ':' -f 2 )
+					fi
+					break
+				else
+					found='false'
+				fi
+			done
+			break
+		done
+
+		if [ "$found" == 'true' ];then
+			echo $LINE
+			if [ "$skip" != 'true' ];then
+				for i in $EAS $EASDL
+				do
+					if [ -e "$i" ];then
+						sed -i "s%ftp[.a-z]*\.debian\.org%ftp\.$countryId\.debian\.org%g" $i && updateSuccess='true'
+					fi
+				done
+				if [ "$updateSuccess" == 'true' ];then
+					echo "${S}Your ${C}apt sources${S} will now use mirrors from: ${C}$CountryName${N}"
+					apt_update_handler 'post-mirror'
+				else
+					echo "${E}An unknown error has occured.${N}"
+				fi
+			else
+				echo "${S}Continuing on to main script without making any changes to ${C}$EAS${E}.${N}"
+			fi
+			eval $LOGPE
+		else
+			print_error opt
+			eval $LOGPE
+			change_debian_mirrors
+		fi
+	else
+		echo $LINE
+		echo "${E}I'm sorry, but you are not using a format for your Debian mirrors"
+		echo "in ${C}$EAS${E} that this script can recognize. You will"
+		echo "have to update your ${C}$EAS${E} sources manually.${N}"
+		log_function_data "Unrecognized format/syntax for Debian apt mirror sources"
+		eval $LOGPE
+	fi
+}
+## DEBUGGER
+#script_debugger  'change_debian_mirrors prefs'
+
+update_to_nonfree_sources()
+{
+	eval $LOGUS
+	local prefId='update-nonfree-1'
+	local smPref=$( sm_pref_tester $prefId )
+	local response='' i='' counter=''
+	local isFree=0 repeat='false'
+	local opt='' options='yes-add-non-free do-not-add-non-free'
+
+	# loop through possible files to update
+	for i in $EAS $EASDL
+	do
+		if [ -f "$i" ];then
+			counter=$( grep -Ec '^[[:space:]]*deb.*(mirrors\.kernel\.org|debian\.org|deb-main|debian-main|:9999).*(contrib|non-free)' $i )
+			isFree=$(( $counter + $isFree ))
+		fi
+	done
+
+	#echo counter: $counter
+	if [ "$isFree" -eq 0 -a "$smPref" -eq 0 ];then
+		if [ "$B_APT_PROX" == 'true' ];then
+			echo $MLINE
+			echo "${M}I'm sorry, but appear to be using an apt caching proxy for your Debian "
+			echo "mirrors in ${C}$EAS${M} that this script cannot work with. You will"
+			echo "have to update your ${C}$EAS${M} sources to use non-free manually.${N}"
+			log_function_data "Apt proxy :9999 format/syntax for non-free Debian apt mirror sources"
+			set_sticky_prefs $prefId
+			print_hec
+			eval $LOGUE
+		else
+			echo $LINE
+			echo "${S}It does not appear that you have the non-free/contrib options set up in your ${C}apt sources${S}"
+			echo "non-free / contrib let you install things like flash player, msttcorefonts, firmware, etc."
+			echo
+			echo "If you answer ${C}yes-add-non-free${S} a copy of your ${C}apt sources${S} will be made"
+			echo
+			echo $LINE
+			echo -e "${Q}Do you want to update your ${C}apt sources${Q} to add nonfree / contrib now?"
+			echo $LINE
+			echo $SLE
+			echo $LINE
+			select opt in $options
+			do
+				case $opt in
+					yes-add-non-free)
+						for i in $EAS $EASDL
+						do
+							if [ -f "$i" ];then
+								echo "${S}Updating your ${C}$i${S} now...${N}"
+								# these are both updated to handle aptosid mirrors as well
+								sed -i -r 's%(#?deb.*(debian\.org|mirrors\.kernel\.org).*\s(main))(\s*)(non-free.*|contrib.*)*%\1 contrib non-free%' $i
+							fi
+						done
+						echo "${C}apt sources${S} have been updated, please check them to make sure they are right.${N}"
+						set_sticky_prefs $prefId
+						print_hec
+						;;
+					do-not-add-non-free)	
+						echo "${S}Ok, continuing without updating them, you'll have to do that manually"
+						echo "if you change your mind later and decide you want to use non-free or contrib.${N}"
+						echo
+						set_sticky_prefs $prefId
+						;;
+					*)	
+						print_error opt
+						repeat='true'
+						;;
+				esac
+				break
+			done
+			eval $LOGUE
+			if [ "$repeat" == 'true' ];then
+				update_to_nonfree_sources
+			fi
+		fi
+	fi
+}
+## DEBUGGER
+#script_debugger  update_to_nonfree_sources
+#update_to_nonfree_sources
+
+# the main updater function is going to handle most of the checking here, but
+# if the sources are updated, this will force the update
+update_sources()
+{
+	eval $LOGUS
+	local op='' dmz='' multi='' doUpdate='' plain='' skyp='' swift='' bForceSub='false'
+	local aptosidSources='deb http://aptosid.com/debian/ sid main fix.main'
+	local aptosidApt="$EAS.d/aptosid.list"
+	local googleChromeSources='deb http://dl.google.com/linux/chrome/deb/ stable main'
+	local googleChromeApt="$EAS.d/google-chrome.list"
+	local liquorixSources='deb http://liquorix.net/debian/ sid main'
+	local liquorixApt="$EAS.d/liquorix.list"
+	local operaSources='deb http://deb.opera.com/opera sid non-free'
+	local operaApt="$EAS.d/opera.list"
+	local siductionSources='deb http://packages.siduction.org/base unstable main contrib non-free'
+	local siductionApt="$EAS.d/siduction.list"
+	local skypeSources='deb http://download.skype.com/linux/repos/debian/ stable non-free'
+	local skypeApt="$EAS.d/skype.list"
+	local swiftSources='deb http://getswiftfox.com/builds/debian unstable non-free'
+	local swiftApt="$EAS.d/swiftfox.list"
+	local extraFunctions='' grepSearch='' sourceFile='' sourcesData='' searchIdentifier=''
+	local updateReturn=1 extraFunctions2=''
+	
+	# google chrome fails to actually check to see if a google source file exists, and will create
+	# this file even if google chrome already has apt sources. Have to check on default file name for stable.
+	if [ "$SYSTEM_BASE" == 'sid' -o "$SYSTEM_BASE" == 'testing' ];then
+		 googleChromeApt="$EAS.d/google-chrome-unstable.list"
+	fi
+
+	case $1 in
+		aptosid)
+			grepSearch='(aptosid|deb-ats)'
+			searchIdentifier='Aptosid'
+			sourceFile=$aptosidApt
+			sourcesData=$aptosidSources
+			extraFunctions2='package_installer aptosid-archive-keyring install-always --allow-unauthenticated'
+			;;
+		liquorix)
+			grepSearch='(liquorix|deb-lqx)'
+			searchIdentifier='Liquorix'
+			sourceFile=$liquorixApt
+			sourcesData=$liquorixSources
+			extraFunctions2='package_installer liquorix-archive-keyring install-always --allow-unauthenticated'
+			;;
+		google-chrome)
+			# wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+			extraFunctions='wget -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - '
+			grepSearch='(google.com/linux/chrome/deb|deb-google-chrome)'
+			searchIdentifier='Google Chrome'
+			sourceFile=$googleChromeApt
+			sourcesData=$googleChromeSources
+			bForceSub='true'
+			# extraFunctions2='package_installer liquorix-archive-keyring install-always --allow-unauthenticated'
+			;;
+		opera)
+			# opera keyrings
+			# extraFunctions='gpg --keyserver wwwkeys.eu.pgp.net --recv-keys 6A423791 &> /dev/null && apt-key add /root/.gnupg/pubring.gpg 1> /dev/null'
+			extraFunctions='wget -O - http://deb.opera.com/archive.key | apt-key add - '
+			grepSearch='(opera|deb-op)'
+			searchIdentifier='Opera'
+			sourceFile=$operaApt
+			sourcesData=$operaSources
+			;;
+		siduction)
+			grepSearch='(siduction|deb-sid)'
+			searchIdentifier='Siduction'
+			sourceFile=$siductionApt
+			sourcesData=$siductionSources
+			extraFunctions2='package_installer siduction-archive-keyring install-always --allow-unauthenticated'
+			;;
+		skype)
+			grepSearch='(skype|deb-skp)'
+			searchIdentifier='Skype'
+			sourceFile=$skypeApt
+			sourcesData=$skypeSources
+			;;
+		swiftfox)
+			grepSearch='(swiftfox|deb-swift)'
+			searchIdentifier='Swiftfox'
+			sourceFile=$swiftApt
+			sourcesData=$swiftSources
+			;;
+		plain)
+			if [ "$B_REPOS_UPDATED" != 'true' ];then
+				doUpdate='true'
+			fi
+			;;
+	esac
+	if [ "$1" != 'plain' ];then
+		create_apt_source_item "$grepSearch" "$sourceFile" "$sourcesData" "$searchIdentifier" "$bForceSub"
+		updateReturn="$?"
+	fi
+	# if we have to add in any sources to sources.list, we'll need to do a new update
+	# we have to set the update flag to null here or the main updater
+	# won't update the stuff
+	if [ "$updateReturn" -eq 0 ];then
+		eval $extraFunctions
+		doUpdate='true'
+		B_REPOS_UPDATED=''
+	fi
+	if [ "$doUpdate" == 'true' ];then
+		apt_update_handler 'package-install'
+	fi
+	# these will install keyrings if required after the update happens
+	if [ -n "$extraFunctions2" ];then
+		eval $extraFunctions2
+		B_REPOS_UPDATED=''
+		apt_update_handler 'package-install'
+	fi
+	
+	eval $LOGUE
+}
+
+# will test for and create either new sub apt source list or add to sources.list as needed
+# args: $1 - grepSearch; $2 - sourceFile; $3 - sourcesData; $4 - searchIdentifier $5 - force using sub list file
+create_apt_source_item()
+{
+	eval $LOGUS
+	local grepSearch=$1 sourceFile=$2 sourcesData=$3 sourcePresent=''
+	local searchIdentifier=$4 bForceSub=$5
+
+	sourcePresent=$( grep -Eils "^[[:space:]]*deb[[:space:]].*$grepSearch" $EAS $EAS.d/*.list )
+	log_function_data "sourcePresent: $sourcePresent"
+	echo $LINE
+	echo "${S}Checking if source file for ${C}$searchIdentifier${S} is present...${N}"
+	if [ -z "$sourcePresent" ];then
+		# handle cases where users prefer single sources.list
+		if [ -z "$( ls $EAS.d/*.list 2>/dev/null )" -a -f $EAS -a "$bForceSub" != 'true' ];then
+			sourceFile=$EAS
+		fi
+		log_function_data "sourceFile: $sourceFile"
+		echo $LINE
+		echo "${S}Adding ${C}$searchIdentifier${S} to sourcefile: ${C}$sourceFile${N}"
+		if [ ! -f "$sourceFile" ];then
+			echo "# $searchIdentifier sources added by $SCRIPT_NAME" > $sourceFile
+			echo -e "$sourcesData" >> $sourceFile
+			echo >> $sourceFile
+		else
+			echo >> $sourceFile
+			echo "# $searchIdentifier sources added by $SCRIPT_NAME" >> $sourceFile
+			echo -e "$sourcesData" >> $sourceFile
+			echo >> $sourceFile
+		fi
+		echo "${S}Source file: ${C}$sourceFile${S} updated.${N}"
+		eval $LOGUE
+		return 0
+	else
+		echo "${M}Source file present for ${C}$searchIdentifier${M}. Continuing...${N}"
+		eval $LOGUE
+		return 1
+	fi
+}
+
+# args $1 - repo/search string; $2 - add/remove
+check_add_remove_sources()
+{
+	eval $LOGUS
+	local grepSearch=$1
+	local sourceFile="$EAS.d/$1.khsdgkd.list"
+	local sourceData=''
+	local sourcePresent=$( grep -Eils "^[[:space:]]*deb[[:space:]].*$grepSearch" $EAS $EAS.d/*.list )
+
+	case $1 in
+		aptosid)
+			sourceData='deb http://aptosid.com/debian/ sid main fix.main'
+			;;
+		cathbard)
+			sourceData=''
+			;;
+	esac
+
+	case "$2" in
+		add)
+			if [ -z "$sourcePresent" ];then
+				echo "${S}Updating apt to use temporary ${C}$1${S} sources....${N}"
+				echo "$sourceData" > $sourceFile
+				# then update apt
+				apt_update_handler 'temp-repo'
+			fi
+			;;
+		remove)
+			# then remove, update apt to cleanup
+			echo "${S}Removing temporary ${C}$1${S} sources...${N}"
+			rm -f $sourceFile
+			apt_update_handler 'temp-repo'
+			;;
+	esac
+
+	eval $LOGUE
+}
+
+# args: $1 - conversion, first-run, tweaks
+set_apt_type()
+{
+	eval $LOGPS
+	local smPref='apt-type'
+	local aptType=$( sm_pref_tester $smPref 'equal' )
+	local aptTypeSetting=''
+	local repeat='' opt='' options=''
+	local exitOpt='4' contOpt='continue'
+	
+	# case 1, first run and already set, do nothing
+	if [ -n "$aptType" -a "$1" == 'first-run' ];then
+		:
+	else
+		# no point in showing this option if aptitude isn't even installed
+		if [ -n "$( which aptitude )" ];then
+			if [ -n "$aptType"  ];then
+				aptTypeSetting=$aptType
+			else
+				aptTypeSetting='unset'
+			fi
+			if [ "$1" == 'first-run' ];then
+				exitOpt='3'
+				contOpt=''
+			fi
+			
+			echo $LINE
+			echo "${S}Set ${C}$SCRIPT_NAME${S} to use package manager ${C}apt-get${S} or ${C}aptitude${S}."
+			echo $MLINE
+			echo "${M}Only use ${C}aptitude${M} if you have not already used ${C}apt-get${M}, or if you have set up your"
+			echo "system to use ${C}aptitude${M}. If you have used ${C}apt-get${M}, ${C}aptitude${M} may want to remove some" 
+			echo "${C}apt-get${M} installed packages unless you manually take care of that before running ${C}$SCRIPT_NAME${M}."
+			echo $MLINE
+			echo "${S}If you already know which you want to use, just select it and ${C}$SCRIPT_NAME${S} will use that"
+			echo "for all its operations. If you are in doubt, maybe exit here to learn more"
+			echo "about the pros and cons of each method."
+			echo
+			echo "After ${C}aptitude${S} showed great early promise, I now ${M}STRONGLY recommend AGAINST${S} using aptitude. "
+			echo "Sadly, it has grown to be almost totally useless, and unable to handle even the "
+			echo "most simple upgrade situations."
+			echo
+			echo "Changing ${C}apt-type${S} will also change your ${C}upgrade-type${S} automatically if you have that set."
+			echo
+			echo "Your current setting is: ${C}$aptTypeSetting"
+			echo $LINE
+			echo "${C}1 - apt-get${S} Solid, reliable, good for all things Debian."
+			echo "${C}2 - aptitude${S} Only use if you absolutely must, this has grown into a total mess!"
+			echo
+			if [ "$1" != 'first-run' ];then
+				echo "${C}3 - continue${S} Don't change or set."
+			fi
+			echo "${C}$exitOpt - exit${S} Don't want to decide now, I'll study up on this and try later."
+			echo $LINE
+			echo $SLE
+			echo $LINE
+			
+			options="apt-get aptitude $contOpt exit"
+			select opt in $options
+			do
+				case $opt in
+					apt-get|aptitude)
+						echo $LINE
+						echo "${S}Setting ${C}$SCRIPT_NAME${S} to use default apt type: ${C}$opt${N}"
+						set_sm_pref_values "$smPref" "$opt"
+						reset_upgrade_type "$opt"
+						set_distro_data 'force' # have to reset globals now
+						echo "${C}$SCRIPT_NAME${S} will now use apt type: ${C}$APT_TYPE${N}"
+						if [ -n $( sm_pref_tester 'du-upgrade' 'equal' ) ];then
+							echo "${S}Your current upgrade type is now: ${C}$( sm_pref_tester 'du-upgrade' 'equal' )${N}"
+						fi
+						echo "${S}To change your preference, go to Miscellaneous Tweaks, Advanced Options${N}"
+						print_hec
+						;;
+					continue)
+						echo "${S}Ok, not changing anything.${N}"
+						;;
+					exit)
+						print_quit
+						;;
+					*)
+						print_error opt
+						repeat='true'
+						;;
+				esac
+				break
+			done
+		else
+			set_sm_pref_values "$smPref" "apt-get"
+			if [ "$1" == 'tweaks' ];then
+				echo "${C}aptitude${M} is not installed on your system, so there is nothing to set.${N}"
+				print_hec
+			fi
+			log_function_data "aptitude is not installed"
+		fi
+	fi
+
+	eval $LOGPE
+	if [ "$repeat" == 'true' ];then
+		set_apt_type
+	fi
+}
+
+# args: $1 - apt type
+reset_upgrade_type()
+{
+	eval $LOGUS
+	local smPref='du-upgrade' upgrade='' du='' oldUpgrade='' oldDu=''
+
+	case $1 in
+		apt-get)
+			upgrade='upgrade'
+			du='dist-upgrade'
+			oldUpgrade='safe-upgrade'
+			oldDu='full-upgrade'
+			;;
+		aptitude)
+			upgrade='safe-upgrade'
+			du='full-upgrade'
+			oldUpgrade='upgrade'
+			oldDu='dist-upgrade'
+			;;
+	esac
+	check_sm_pref_file
+	if [ -n "$( sm_pref_tester $smPref 'equal' )" ];then
+		echo "${S}Changing upgrade type ${C}$( sm_pref_tester $smPref 'equal' )${S} now...${N}"
+		sed -i "s/du-upgrade=$oldUpgrade/du-upgrade=$upgrade/" $SM_CONFIG_FILE
+		sed -i "s/du-upgrade=$oldDu/du-upgrade=$du/" $SM_CONFIG_FILE
+	fi
+
+	eval $LOGUE
+}
+
+###---------------------------------------------------------------------
+### kernel mirror selector
+###---------------------------------------------------------------------
+
+# while not needed now, this is a useful tool for when a mirror site fails,
+# screws up, or whatever else might happen, and has.
+force_kernel_mirror_change()
+{
+	eval $LOGUS
+	# core-eu-4:http://ftp.spline.de/pub/sidux/debian/
+	local prefId='smxi-kernel-borked-2'
+	local smPref=$( sm_pref_tester $prefId )
+	#local isBorked=$( echo $( get_set_mirror 'get' 'mirrors' ) | grep -E '(http://ftp.spline.de/pub/sidux/debian/)' http://ftp.spline.de/pub/sidux/debian/ )
+	local borkedMirror='ftp://ftp.sunsite.utk.edu/pub/linux/Sidux/debian/'
+	# this method is tighter, and will let me also just replace the stuff if required
+	# at some other point. This gets all relevant files to update for sed
+	local isBorked=$( grep -ls "$borkedMirror" $EAS $EAS.d/*.list )
+	local repeat='' opt='' options=''
+
+	if [ -n "$isBorked" -a "$smPref" -eq 0 ];then
+		echo $MLINE
+		echo "${M}SMXI aptosid-apt Kernel / Sources Mirror Update"
+		echo $MLINE
+		echo "${S}Your current aptosid-apt/kernel mirror: ${C}$borkedMirror${S}"
+		echo "has been changed. You will need to update your aptosid mirrors to use the new (kernel)"
+		echo "mirror location. Please continue in order to change that bad mirror to a good one."
+		if [ "$B_APT_PROX" == 'true' ];then
+			echo $MLINE
+			echo "${M}I'm sorry, but appear to be using an apt caching proxy for your apt "
+			echo "mirrors in ${C}$EAS${M} that this script cannot work with. You will"
+			echo "have to update your ${C}$EAS${M} apt proxy config data manually.${N}"
+			log_function_data "Apt proxy :9999 format/syntax for kernel mirror forced Debian apt mirror sources"
+			print_hec
+		else
+			if [ -n "$( grep 'ftp.spline.de' <<< $borkedMirror )" ];then
+				echo "${M}NOTE: http://ftp.spline.de is a ${C}CORE${M} mirror, so make sure to pick another ${C}core${M} when you replace it."
+			fi
+			echo
+			echo -e "${Q}Would you like to reset your mirror now?$YNE"
+			echo $LINE
+			echo "${C}1 - yes-reset-mirror${S} - Launch aptosid mirror selector."
+			echo "${C}2 - no-change-to-mirror${S} - Leave current setup as is for now."
+			echo $LINE
+			echo -e $SLE
+			echo $LINE
+			options="yes-reset-mirror no-change-to-mirror"
+			select opt in $options
+			do
+				log_function_data "opt selected: $opt"
+				case $opt in
+					yes-reset-mirror)
+						echo "${S}Ok, you can now select a new kernel mirror...${N}"
+						#set_sticky_prefs $prefId
+						B_CHANGE_DISTRO_MIRROR='true'
+						;;
+					no-change-to-mirror)
+						echo "${S}Ok, but remember, to change your mirror, just start ${C}$SCRIPT_NAME${S} with ${C}-M${S} option.${N}"
+						#set_sticky_prefs $prefId
+						;;
+					*)
+						print_error opt
+						repeat='true'
+						;;
+				esac
+				break
+			done
+		
+			if [ "$repeat" == 'true' ];then
+				eval $LOGUE
+				force_kernel_mirror_change
+			fi
+		fi
+	fi
+	eval $LOGUE
+}
+
+# update kernel mirrors, -M option
+change_distro_mirrors()
+{
+	eval $LOGPS
+	if [ "$B_APTOSID_SOURCES" == 'true' ];then
+		echo $MBAR
+		echo "${M} SMXI DISTRO MIRROR SELECTION"
+		echo $MLINE
+		if [ "$B_APT_PROX" == 'true' ];then
+			echo "${M}I'm sorry, but appear to be using an apt caching proxy for your apt "
+			echo "mirrors in ${C}$EAS${M} that this script cannot work with. You will"
+			echo "have to update your ${C}$EAS${M} sources manually.${N}"
+			log_function_data "Apt proxy :9999 format/syntax for kernel mirror Debian apt mirror sources"
+			print_hec
+			eval $LOGPE
+		else
+			local countryId='' mirrorUrl='' mirror='' opt='' options='' found='' skip='' prefMess=''
+			#local currentMirror=$( sm_pref_tester $prefId 'equal' )
+			local updateSuccess='' exitStatus='' noChange=' continue' currentMirrorText=''
+			local currentMirror="$( get_aptosid_mirrors 'all' )"
+			local plural1='' plural2='is'
+			local noMirrorString='No mirrors were detected that fit the search pattern.'
+			local aptosidMirrors="$( list_aptosid_mirrors ) $noChange"
+			local cont=$( wc -w <<< $aptosidMirrors )
+			local mirrorCount=$(( $cont - 1 ))
+
+			currentMirrorText="$currentMirror"
+
+			# we'll set some singular/plural stuff, and some logic using count
+			local countMirrors=$( wc -w <<< $currentMirror )
+
+			if [ "$countMirrors" -gt 1 ];then
+				plural1='s'
+				plural2='are'
+			fi
+
+			if [ "$1" == 'prefs' ];then
+				prefMess='echo -e "\n${M}You will only see this Kernel Mirror Selection option the first time you run\nthe script. To reset your kernel mirrors in the future, use the ${C}-M${M} option.${S}"'
+			fi
+			echo "${S}Welcome to the aptosid apt/kernel mirror selector. Please take a moment to read this"
+			echo "before proceeding. Your current aptosid-apt/kernel mirror$plural1 $plural2:"
+			echo "${SPACER}${C}$currentMirrorText${S}"
+			echo
+			echo "There are two types of mirrors: ${C}core${S} (required), and ${C}alternate${S} (optional)."
+			echo "The following are the ${C}core${S} aptosid mirrors: ${C}aptosid.com/net debian.tu-bs.de ftp.spline.de"
+			echo "${S}You will always use one of these. Picking a core will modify the core mirror always."
+			echo
+			echo "Alternate mirrors are localized, and often provide much faster downloads, but do not sync"
+			echo "as frequently as the core ones. If you pick an alternate, it will be prepended"
+			echo "to your current core mirror, or, if already with alternate, will modify the alternate."
+			echo "${M}Please install at least one alternate mirror, it will really help the aptosid server load.${S}"
+			echo
+			echo "${S}When you select your mirror(s), aptosid will use it/them as source for latest"
+			echo "kernels and aptosid hot-fixes. You can start this script like this: ${C}$SCRIPT_NAME -M${S}"
+			echo "to reset your prefered mirror(s) any time you like."
+			eval $prefMess
+			echo $LINE
+			echo "${C}1-$mirrorCount - Mirror List${S} Select which core/alternate mirror to add or update."
+			if [ -n "$currentMirror" ];then
+				echo
+				echo "${C}$cont - continue${S} If you want to leave your aptosid mirror$plural1 alone, or if you are done."
+			fi
+
+			echo $LINE
+			echo -e $SLE
+			echo $LINE
+
+			options=$aptosidMirrors
+
+			select opt in $options
+			do
+				for mirror in $aptosidMirrors
+				do
+					if [ "$opt" == "$mirror" ];then
+						found='true'
+						if [ "$mirror" == 'continue' ];then
+							skip='true'
+						else
+							countryId=$( echo $mirror | cut -d ':' -f 1 )
+							mirrorUrl=$( echo $mirror | cut -d ':' -f 2-3 ) # handles : in urls
+						fi
+						break
+					else
+						found='false'
+					fi
+				done
+				break
+			done
+
+			if [ "$found" == 'true' ];then
+				echo $LINE
+				if [ "$skip" != 'true' ];then
+					if [ "$currentMirror" != "$noMirrorString" ];then
+						set_aptosid_mirror "$mirrorUrl"
+						change_distro_mirrors
+					else
+						echo "${M}$noMirrorString${N}"
+					fi
+				else
+						echo "${S}Continuing on to main script. Remember, you can change your ${C}aptosid apt mirrors${S}"
+						echo "anytime by starting the script like this: ${C}$SCRIPT_NAME -M${N}"
+						apt_update_handler 'post-mirror'
+				fi
+				eval $LOGPE
+			else
+				print_error opt
+				eval $LOGPE
+				change_distro_mirrors
+			fi
+		fi
+	else
+		echo $MLINE
+		echo "${M}This feature is only available for systems using ${C}aptosid${M} sources.${N}"
+		print_hec
+		eval $LOGPE
+	fi
+}
+## DEBUGGER
+#script_debugger 'change_distro_mirrors prefs'
+
+# args: $1 - all/get-them/non-core
+get_aptosid_mirrors()
+{
+	eval $LOGUS
+	local aptosidMirrors="$( list_aptosid_mirrors )"
+	local badSiduxMirrors="$( list_bad_aptosid_mirrors )"
+	local noMirrorString='No mirrors were detected that fit the search pattern.'
+	local mirrorTemp='' mirror='' mirrorsFound='' mirrorFiles='' singleTest=''
+	local currentMirrors=''
+
+	# needed to avoid infinite loop from function calling itself
+	if [ "$1" != 'get-them' ];then
+		currentMirrors="$( get_aptosid_mirrors 'get-them' )"
+	fi
+
+	local countMirrors=$( wc -w <<< $currentMirrors )
+
+	for mirror in $aptosidMirrors $badSiduxMirrors
+	do
+		mirrorTemp=$( echo $mirror | cut -d ':' -f 2-4 )
+		# it's very important here to search only for start deb, no # and also there are
+		# some cases where the bad repo name is contained in the good repo name so that
+		# requires a test for ending it with / or no / and space
+		# echo mirrorTemp: $mirrorTemp
+		mirrorFiles="$( grep -Els "^[[:space:]]*(deb|deb-src)[[:space:]]*$mirrorTemp[/]*[[:space:]]" $EAS $EAS.d/*.list )"
+
+		if [ -n "$mirrorFiles" ];then
+			# case one we return a list of all found mirrors
+			case $1 in
+				all|get-them)
+					mirrorsFound="$mirrorsFound $mirrorTemp"
+					;;
+				# here we return only current non aptosid mirror (hopefully anyway)
+				non-core)
+					singleTest=$( grep -Ev '(http://aptosid\.(com|net)|debian\.tu-bs\.de|ftp\.spline\.de)/' <<< $mirrorTemp )
+					# echo singleTest: $singleTest
+					# if a core mirror is not found, or if there is only one aptosid mirror
+					if [ -n "$singleTest" ] || [ "$countMirrors" -eq 1 ];then
+						mirrorsFound="$mirrorTemp"
+						# echo mirrorsFound: $mirrorsFound
+						break
+					fi
+					;;
+			esac
+			# set back to null
+			mirrorTemp=''
+			log_function_data "mirrorsFound: $mirrorsFound"
+		fi
+	done
+
+	# return the output
+	if [ -n "$mirrorsFound" ];then
+		echo "$mirrorsFound"
+	else
+		echo $noMirrorString
+	fi
+	eval $LOGUE
+}
+
+# args: $1 - which mirror to update
+set_aptosid_mirror()
+{
+	eval $LOGUS
+	local aptosidSources='' aptosidSource='' mirrorTemp='' nonCoreAptosidRepo=''
+	local isCoreAptosidRepo='' entryExists='' aptosidSpecs='' isAptosidMulti=''
+	local aptosidTempHolder='' aptosidTempRepo='' updateIt=''
+	local currentMirrors="$( get_aptosid_mirrors 'get-them' )"
+	local countMirrors=$( wc -w <<< $currentMirrors )
+
+	# get filtered, non aptosid mirror repo
+	nonCoreAptosidRepo=$( get_aptosid_mirrors 'non-core' )
+
+	# we only want to overwrite aptosid stuff it's not a dual apt sources...
+	isAptosidMulti=$( grep -Es "^[[:space:]]*(deb|deb-src)\s*.*(http://aptosid\.(com|net)|debian\.tu-bs\.de|ftp\.spline\.de)" $EAS $EAS.d/*.list | cut -d ':' -f 2-6 )
+	isCoreAptosidRepo="$( echo "$1" | grep -E  '(http://aptosid\.(com|net)|debian\.tu-bs\.de|ftp\.spline\.de)' )"
+
+	# handle multiple entries in sources
+	# make sure the current mirror only is selected
+	# this step is critical, it is required to correctly set entryExists
+	# for case of multiple mirror entries AND correctly setting mirror
+	if [ -n "$isCoreAptosidRepo" ];then
+		# this handles a really weird case where aptosid.list is commented out
+		# because we're checking multiple files, we need to slice out the file :
+		# separator before awk
+		entryExists=$( grep -s '^[^#]' $EAS $EAS.d/*.list | cut -d ':' -f 2-6 | awk '/^(deb)[ ]*(((http|ftp):\/\/)(aptosid\.(com|net)|debian\.tu-bs\.de|ftp\.spline\.de))/{print $2}' )
+	else
+		entryExists=$( grep -Eos -m1 "^[[:space:]]*(deb|deb-src)[[:space:]]*$nonCoreAptosidRepo" $EAS $EAS.d/*.list | grep -o "$nonCoreAptosidRepo" )
+	fi
+	log_function_data "mirror to install: $1"
+	log_function_data "nonCoreAptosidRepo: $nonCoreAptosidRepo"
+	log_function_data "entryExists: $entryExists"
+	log_function_data "writing to: $sourceFile"
+	log_function_data "countMirrors: $countMirrors"
+	log_function_data "isAptosidMulti: $isAptosidMulti"
+	log_function_data "isCoreAptosidRepo: $isCoreAptosidRepo"
+
+	# note: we don't need any special regex because we already know
+	# we're in the right place, with a matching syntax, so things should be good
+	if [ -n "$entryExists" ];then
+		if [ "$countMirrors" -gt 1 -a -n "$isAptosidMulti" ] || [ "$countMirrors" -eq 1 -a -n "$isCoreAptosidRepo" ];then
+			aptosidSources=$( grep -ls "$entryExists" $EAS $EAS.d/*.list )
+			echo "${SPACER}${S}Updating ${C}$aptosidSources${S} now...${N}"
+			sed -i -r "s%(#?[[:space:]]*(deb|deb-src)[[:space:]]*)$entryExists%\1$1%" $aptosidSources
+			echo
+			echo "${SPACER}${S}Your system will now use aptosid-apt/kernel mirror(s):"
+			echo "${SPACER}${C}$( get_aptosid_mirrors 'all' )${N}"
+			updateIt='true'
+		# only when not a core mirror and sources are not yet upgraded to multi
+		elif [ "$countMirrors" -eq 1 -a -z "$isCoreAptosidRepo" ];then
+			#note: we only want to prepend to sources NOT commented out
+			aptosidSources=$( grep -ls "^[[:space:]]*deb.*$entryExists" $EAS $EAS.d/*.list )
+			# we need to loop it here because of possible multi source files
+			for aptosidSource in $aptosidSources
+			do
+				aptosidTempHolder=$( grep -E -m1 "(deb|deb-src)\s*.*(http://aptosid\.(com|net)|debian\.tu-bs\.de|ftp\.spline\.de)" $aptosidSource )
+				# for presentation, just use the repo name
+				aptosidTempRepo=$( cut -d ' ' -f 2 <<< $aptosidTempHolder )
+				# we need to replace whitespace for sed here
+				aptosidTempMainHolder=$( echo "$aptosidTempHolder" | sed -r 's%(\s|\t)%\\s%g' )
+				# we want the same stuff after the mirror as the primary has
+				aptosidSpecs=$( echo $aptosidTempHolder | sed -r 's%.*((sid|unstable).*)%\1%' )
+
+				log_function_data "aptosidTempHolder: $aptosidTempHolder"
+				log_function_data "aptosidTempMainHolder: $aptosidTempMainHolder"
+				log_function_data "aptosidSpecs: $aptosidSpecs"
+
+				echo "${S}Prepending the mirror:${C} $1"
+				echo "${S}to current aptosid repo: ${C}$aptosidTempRepo${N}"
+				sed -i "s%$aptosidTempMainHolder%deb $1 $aptosidSpecs\n$aptosidTempHolder%" $aptosidSource
+			done
+			echo "${SPACER}${S}Your system will now use aptosid-apt/kernel mirror(s):"
+			echo "${SPACER}${C}$( get_aptosid_mirrors 'all' )${N}"
+			updateIt='true'
+		# this case should never happen any more with above modifications
+		elif [ "$countMirrors" -gt 1 -a -n "$isAptosidMulti" -a -n "$isCoreAptosidRepo" ];then
+			echo "${E}You cannot overwrite your primary ${C}aptosid.com${E} apt source:"
+			echo "${C}$isCoreAptosidRepo"
+			echo "${E}only your alternate mirror.${N}"
+		# and not this one either, but good to test for bugs
+		else
+			echo "${E}Unhandled case in $FUNCNAME...${N}"
+		fi
+	# either multi update or single core update
+	# only do this at the true end
+	elif [ -z "$entryExists" ];then
+		echo "${E}Unable to properly match your ${C}aptosid.com${E} repo, sorry.${N}"
+		print_hec
+		log_function_data "Unable to match aptosid repo"
+		eval $LOGUE
+		return 1
+	fi
+
+	if [ "$updateIt" == 'true' ];then
+		print_hec
+		eval $LOGUE
+		return 0
+	fi
+}
+
+# bad mirrors for updates:
+list_bad_aptosid_mirrors()
+{
+	eval $LOGUS
+	# these are currently either dead or defective:
+	# note that internap is just a temp offline thing, no need to do the
+	# bad mirror fix, just pull it for new users and include it for mirror
+	# switcher
+	local badMirrors='
+core-eu-4:http://ftp.spline.de/pub/sidux/debian/
+usa-2:http://lug01.eecs.wsu.edu/sidux/
+usa-1:ftp://ftp.sunsite.utk.edu/pub/linux/Sidux/
+alt-usa-1:http://ftp-mirror.internap.com/pub/sidux/debian/
+alt-usa-2:ftp://ftp-mirror.internap.com/pub/sidux/debian/
+alt-usa-3:ftp://ftp.sunsite.utk.edu/pub/linux/Sidux/debian/
+new-zealand-1:ftp://debian.co.nz/Sidux/debian/
+'
+	echo $badMirrors
+	eval $LOGUE
+}
+
+# I want to keep this out of globals, so we'll just echo it to functions
+list_aptosid_mirrors()
+{
+	eval $LOGUS
+
+	local aptosidMirrors="
+core-eu-1:http://debian.tu-bs.de/project/aptosid/debian/
+core-eu-2:ftp://debian.tu-bs.de/project/aptosid/debian/
+core-eu-3:ftp://ftp.spline.de/pub/aptosid/debian/
+core-eu-4:http://aptosid.com/debian/
+core-eu-5:http://aptosid.net/debian/
+core-eu-6:http://aptosid.office-vienna.at/aptosid/debian/
+core-eu-7:ftp://aptosid.office-vienna.at/aptosid/debian/
+alt-africa-1:http://ftp.leg.uct.ac.za/pub/linux/aptosid/debian/
+alt-asia-1:http://ftp.tw.debian.org/pub/Sidux/debian/
+alt-asia-2:ftp://ftp.tw.debian.org/pub/Sidux/debian/
+alt-brazil-1:http://aptosid.c3sl.ufpr.br/debian/
+alt-australia-1:http://mirror.aarnet.edu.au/pub/aptosid/debian/
+alt-australia-2:ftp://mirror.aarnet.edu.au/pub/aptosid/debian/
+alt-eu-1:http://www.mirrorservice.org/sites/aptosid.com/aptosid/debian/
+alt-eu-2:ftp://ftp.mirrorservice.org/sites/aptosid.com/aptosid/debian/
+alt-eu-3:http://ftp.heanet.ie/pub/aptosid/debian/
+alt-eu-4:ftp://ftp.heanet.ie/pub/aptosid/debian/
+alt-usa-3:http://mira.sunsite.utk.edu/aptosid/debian/
+"
+
+	echo "$aptosidMirrors"
+	eval $LOGUE
+}
+
+###---------------------------------------------------------------------
+### Kernel/package version handling stuff...
+###---------------------------------------------------------------------
+
+# returns true/false if pae, note, only pentium M in standard
+# systems will not support pae, so use pae if mem > 3gB, otherwise use regular
+# args: $1 - force [optional, may be used in future for other script functions]
+check_pae_support()
+{
+	eval $LOGUS
+
+	local bPaeExists=$( check_pae_exists )
+	local bUsePae='false'
+	local paePref=$( sm_pref_tester 'use-pae-kernel' 'equal')
+	
+	if [  "$paePref" != 'false' -o "$1" == 'force' ];then
+		# if [ "$BITS" == '32' -a -n "$bPaeExists" -a -n "$memInstalled" -a "$memInstalled" -gt 3000000 ];then
+		if [ "$BITS" == '32' -a "$bPaeExists" == 'true' ];then
+			bUsePae='true'
+		fi
+	fi
+	log_function_data "bUsePae: $bUsePae"
+	
+	echo $bUsePae
+	
+	eval $LOGUE
+}
+check_pae_memory_size()
+{
+	eval $LOGUS
+	local memInstalled=$( free 2>/dev/null | awk '/^Mem:/ { print $2 }' | grep -Es '(^[0-9]+$)' )
+	local bMemoryUsePae='false'
+	
+	if [ -n "$memInstalled" -a "$memInstalled" -gt 3000000 ];then
+		bMemoryUsePae='true'
+	fi
+	log_function_data "memInstalled: $memInstalled"
+	echo $bMemoryUsePae
+	eval $LOGUE
+}
+
+check_pae_exists()
+{
+	eval $LOGUS
+	local paeExists=$( grep -Eis 'flags.*pae' /proc/cpuinfo )
+	local bPae='false'
+	if [ -n "$paeExists" ];then
+		bPae='true'
+	fi
+	
+	echo $bPae
+	log_function_data "paeExists: $paeExists"
+	eval $LOGUE
+}
+
+# check apt for latest kernel version
+# args: $1 - debian/debian-486/liquorix/mepis (no metapackage)/aptosid - optional,
+# to get current sid kernel version if needed
+get_current_apt_kernel()
+{
+	eval $LOGUS
+	local tempKernels='' kernelMath=0 kernelBase='' baseWorking=''
+	local kernel1='' kernel2='' kernel1Greater='' kernelStringExtra=''
+	local defaultKernel=$1 kernelType='' currentKernel='' kernelPackageExists=''
+	# needed for alt platforms, no easy way to handle say move from 486 to 686, so
+	# we'll just respect the user initial preference and make them change manually if desired
+	local platform=$( grep -Eo -- '\-(486|686|686-bigmem|686-pae|rt-686-pae|rt-amd64|xen-686)$' <<< $CURRENT_KERNEL | cut -d '-' -f 2-4 )
+
+	if [ "$defaultKernel" != 'no-kernel' ];then
+		if [ "$BITS" == '64' ];then
+			platform='amd64'
+		# for odd 32 bit kernel names, yet known
+		elif [ "$BITS" == '32' -a -z "$platform" ];then
+			platform='686'
+		fi
+
+		case $defaultKernel in
+			aptosid)
+				kernelStringExtra='-aptosid'
+				kernelType='Aptosid'
+				if [ "$BITS" == '32' ];then
+					platform='686'
+				fi
+				;;
+			# note, debian removed their standard 686 in prepartion for wheezy stable. Why? Who knows.
+			debian)
+				kernelType='Debian'
+				if [ "$BITS" == '32' ];then
+					case $platform in
+						486)
+							kernelType='Debian-486'
+							platform='486'
+							;;
+						686|686-pae)
+							# first case, < 3gB ram and 686 is present
+							if [ -n "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686$' 'c' )" \
+							-a "$( check_pae_memory_size )" != 'true' ];then
+								platform='686'
+							# second case: standard, if supports pae
+							elif [ -n "$( check_package_status 'linux-image-686-pae' 'c' )" \
+							-a "$( check_pae_support )" == 'true' ];then
+								platform='686-pae'
+							elif [ -n "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686-bigmem$' 'c' )" \
+							-a "$( check_pae_support )" == 'true' ];then
+								platform='686-bigmem'
+							# for the single common case, pentium m, will install the 486 kernel if none of the above work
+							elif [ -z "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686$' 'c' )"  \
+							-a "$( check_pae_support )" != 'true' ];then
+								platform='486'
+							fi
+							kernelType="Debian-$platform"
+							;;
+						686-bigmem)
+							if [ -n "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686-bigmem$' 'c' )" ];then
+								platform='686-bigmem'
+							elif [ -n "$( check_package_status 'linux-image-686-pae' 'c' )" \
+							-a "$( check_pae_support )" == 'true' ];then
+								platform='686-pae'
+							fi
+							kernelType="Debian-$platform"
+							;;
+					esac
+				fi
+				;;
+			debian-486)
+				kernelType='Debian-486'
+				platform='486'
+				;;
+			debian-686)
+				kernelType='Debian-686'
+				# as of 2.6.39 debian added -pae to default, sigh...
+				case $platform in
+					686-pae|686)
+						# first case, < 3gB ram and 686 is present
+						if [ -n "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686$' 'c' )" \
+						-a "$( check_pae_memory_size )" != 'true' ];then
+							platform='686'
+						# second case: standard, if supports pae
+						elif [ -n "$( check_package_status 'linux-image-686-pae' 'c' )" \
+						-a "$( check_pae_support )" == 'true' ];then
+							platform='686-pae'
+						elif [ -n "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686-bigmem$' 'c' )" \
+						-a "$( check_pae_support )" == 'true' ];then
+							platform='686-bigmem'
+						# for the single common case, pentium m, will install the 486 kernel if none of the above work
+						elif [ -z "$( check_package_status 'linux-image-[2-9]\.[0-9][0-9\.-]+-686$' 'c' )"  \
+						-a "$( check_pae_support )" != 'true' ];then
+							platform='486'
+						fi
+						kernelType="Debian-$platform"
+						;;
+				esac
+				;;
+			liquorix)
+				kernelStringExtra='-liquorix'
+				kernelType='Liquorix'
+				# as of 3.7, liquorix ships with pae only
+				# as of 3.16-4 liquorix adds back in pae/no pae for 686. Thanks damentz!
+				if [ "$BITS" == '32' ];then
+					if [ "$( check_pae_support )" == 'true' ];then
+						platform='686-pae'
+					else
+						platform='686'
+					fi
+				fi
+				;;
+			mepis)
+				if [ "$BITS" == '32' ];then
+					kernelStringExtra='-mepis'
+				else
+					kernelStringExtra='-mepis64'
+				fi
+				kernelType='Mepis'
+				platform='smp'
+				;;
+			siduction)
+				kernelStringExtra='-siduction'
+				kernelType='Siduction'
+				if [ "$BITS" == '32' ];then
+					case $platform in
+						686-pae|686)
+							if [ -n "$( check_package_status 'linux-image-siduction-686-pae' 'c' )" \
+							-a "$( check_pae_support )" == 'true' -a "$B_FORCE_NON_PAE" == 'false' ];then
+								platform='686-pae'
+							else
+								platform='686'
+							fi
+							;;
+					esac
+				fi
+				;;
+		esac
+		
+		# little trick here to present just debian kernels if not kernelType
+		if [ "$B_APTOSID_SOURCES" != 'true' -a "$B_SIDUCTION_SOURCES" != 'true' -a "$B_LIQUORIX_SOURCES" != 'true' -a  "$B_MEPIS_SOURCES" != 'true' -a "$defaultKernel" != 'debian-486'  -a "$defaultKernel" != 'debian-686' ];then
+			kernelStringExtra=''
+			kernelType='Debian'
+			defaultKernel='debian'
+		fi
+
+		# first we run the update, if needed
+		apt_update_handler 'kernel'
+		# then we'll slice out the latest apt kernel
+		echo
+		echo "${S}Calculating latest ${C}$kernelType${S} kernel version...${N}"
+		# need to make sure it's not a bigmem kernel from debian too, ends in  $platform
+		# note: testing for kernel metapackages here, so only systems with metapackage kernels
+		# can be tested with this method. The last slice handles a case with metapackages
+		# note: new debian syntax for metapackages now: linux-image-686
+		LC_ALL= LC_CTYPE= LC_MESSAGES= LANG= tempKernels=$( apt-cache show linux-image$kernelStringExtra-$platform 2>/dev/null | grep -i '^Depends: ' | cut -d ' ' -f 2 | grep "$platform$" | cut -d '-' -f 3-7 | grep -Ev "^-(2\.6|[3-9])$kernelStringExtra-$platform" )
+		if [ -z "$tempKernels" ];then
+			LC_ALL= LC_CTYPE= LC_MESSAGES= LANG= tempKernels=$( apt-cache show linux-image-2.6$kernelStringExtra-$platform 2>/dev/null | grep -i '^Depends: ' | cut -d ' ' -f 2 | grep "$platform$" | cut -d '-' -f 3-7 | grep -Ev "^-(2\.6|[3-9])$kernelStringExtra-$platform" )
+		fi
+		
+		 # test for new syntax first, then the old 2.6
+		CURRENT_APT_KERN_BASE=$( check_package_status "linux-image$kernelStringExtra-$platform" 'c' | cut -d '+' -f 1 | cut -d '-' -f 1 | grep -os '^[3-9]' )
+		if [ -z "$CURRENT_APT_KERN_BASE" ];then
+			CURRENT_APT_KERN_BASE=$( check_package_status "linux-image-2.6$kernelStringExtra-$platform" 'c' | cut -d '+' -f 1 | cut -d '-' -f 1 | grep -os '^2\.6' )
+		fi
+		log_function_data "Platform: $platform\nkernelStringExtra: $kernelStringExtra\nCURRENT_APT_KERN_BASE: $CURRENT_APT_KERN_BASE\ntempKernels: $tempKernels"
+
+		for kernel1 in $tempKernels
+		do
+			dpkg --compare-versions "$kernel1" ge "$kernel2"
+			kernel1Greater=$?
+			#now, if 1 is greater than 2, use it, otherwise use 2
+			if [ "$kernel1Greater" -eq 0 ];then
+				kernel2=$kernel1
+			fi
+		done
+
+		currentKernel=$kernel2
+
+		# test that the kernel actually exists, metapackages can be wrong, out of date
+		kernelPackageExists=$( check_package_status "linux-image-$currentKernel" )
+		if [ -z "$kernelPackageExists" ];then
+			echo "${E}Error: the kernel package ${C}linux-image$kernelStringExtra-$platform${E} has no installation candidate."
+			echo "${M}Setting kernel version to null for the ${C}$defaultKernel${M} kernel type.${N}"
+			if [ "$BITS" == '32' -a "$( check_pae_support )" != true ];then
+				echo "${M}Since you are using a ${C}32 bit${M} system that does not support ${C}PAE${M} kernels, your default"
+				echo "kernel selection ${C}$defaultKernel${M} probably does not offer a non-pae kernel.${N}"
+			fi
+			log_function_data "Error: the kernel package: linux-image-$currentKernel has no installation candidate.\Setting kernel version to null for this kernel type."
+			currentKernel=''
+		else
+			log_function_data "currentKernel: linux-image-$currentKernel"
+		fi
+
+		case "$defaultKernel" in
+			debian|debian-486|debian-686)
+				CURRENT_DEBIAN_KERNEL=$currentKernel
+				log_function_data "CURRENT_DEBIAN_KERNEL: $CURRENT_DEBIAN_KERNEL"
+				;;
+			liquorix)
+				CURRENT_LIQUORIX_KERNEL=$currentKernel
+				log_function_data "CURRENT_LIQUORIX_KERNEL: $CURRENT_LIQUORIX_KERNEL"
+				;;
+			mepis)
+				CURRENT_MEPIS_KERNEL=$currentKernel
+				log_function_data "CURRENT_MEPIS_KERNEL: $CURRENT_MEPIS_KERNEL"
+				;;
+			aptosid)
+				CURRENT_APTOSID_KERNEL=$currentKernel
+				log_function_data "CURRENT_APTOSID_KERNEL: $CURRENT_APTOSID_KERNEL"
+				;;
+			siduction)
+				CURRENT_SIDUCTION_KERNEL=$currentKernel
+				log_function_data "CURRENT_SIDUCTION_KERNEL: $CURRENT_SIDUCTION_KERNEL"
+				;;
+		esac
+
+		# only set this for cases where it's user defaults being set, not for alt kernels
+		if [ "$defaultKernel" == "$DEFAULT_KERNEL" ];then
+			CURRENT_APT_KERNEL=$currentKernel
+			log_function_data "CURRENT_APT_KERNEL: $CURRENT_APT_KERNEL"
+			if [ -n "$( grep -Es '^[3-9]' <<< $CURRENT_APT_KERNEL  )" ];then
+				kernelMath=$( echo $CURRENT_APT_KERNEL | cut -d '-' -f 1 | grep -Eo '^[3-9]\.[0-9]{1,2}' | cut -d '.' -f 2 )
+			else
+				kernelMath=$( echo $CURRENT_APT_KERNEL | cut -d '-' -f 1 | grep -Eo '^2\.6\.[0-9]{1,2}' | cut -d '.' -f 3 )
+			fi
+			# now just slice out the major version, and add 1 so it's always 1 > than current
+			KERNEL_FORCE_DU=$(( $kernelMath + 1 ))
+			log_function_data "KERNEL_FORCE_DU: $KERNEL_FORCE_DU"
+			# global will handle alert to metapackage users to reboot post du
+			CURRENT_APT_KERNEL_GRUB=$( grep -is -o -m 1 "$CURRENT_APT_KERNEL" $GRUB_PATH )
+			log_function_data "CURRENT_APT_KERNEL_GRUB: $CURRENT_APT_KERNEL_GRUB"
+		fi
+	else
+		CURRENT_APT_KERNEL='no-apt-kernel-available'
+	fi
+	eval $LOGUE
+}
+
+# When OOo leaves apt pool it does not appear as a candidate, so after the first
+# update on the system, OOo can no longer be installed.
+set_office_data()
+{
+	# note, check libre first, this minimizes the tests required long term
+	if [ -n "$( check_package_status 'libreoffice-core' 'c' )" ];then
+		OFFICE_AVAILABLE='libre'
+	elif [ -n "$( check_package_status 'openoffice.org-core' 'c' )" ];then
+		OFFICE_AVAILABLE='ooo'
+	fi
+	if [ -n "$( check_package_status 'libreoffice-core' 'i' )" ];then
+		OFFICE_INSTALLED='libre'
+	elif [ -n "$( check_package_status 'openoffice.org-core' 'i' )" ];then
+		OFFICE_INSTALLED='ooo'
+	fi
+	log_function_data "OFFICE_INSTALLED: $OFFICE_INSTALLED -- OFFICE_AVAILABLE: $OFFICE_AVAILABLE"
+}
+
+###---------------------------------------------------------------------
+### Test required apps
+###---------------------------------------------------------------------
+
+# args: $1 can trigger 'post' test, for running this after initial tests
+test_required_startup_apps()
+{
+	eval $LOGUS
+	local p='' r='' missing='' installApps='' response='' updateError='' appPath=''
+	local requiredApps="awk bzip2 gawk logrotate make perl sed tar unzip wget"
+	# dctr is for grep-aptavail; findutils is for xargs and find
+	local dpkgCheck='dctrl-tools findutils initramfs-tools'
+
+	for r in $dpkgCheck
+	do
+		# see if it's in dpkg
+		if [ -z "$( package_tester $r )" ];then
+			installApps="$installApps $r"
+			missing='true'
+		fi
+	done
+
+	for p in $requiredApps
+	do
+		appPath=$( which $p )
+		if [ ! -e "$appPath" -o -z "$appPath" ];then
+			installApps="$installApps $p"
+			missing='true'
+		fi
+	done
+
+	if [ "$missing" == 'true' ];then
+		eval $LOGUE
+		install_missing_apps "$installApps" 'required'
+	else
+		log_function_data "No missing required script apps"
+		eval $LOGUE
+	fi
+}
+## DEBUGGER
+#script_debugger test_required_startup_apps
+
+# check if app is present in system, then if missing, ask if they want it installed
+# for required, will exit script, for feature will just return false, 1
+# args: $1 - apps to install; $2 - required/feature
+install_missing_apps()
+{
+	eval $LOGUS
+	local opt='' option='' repeat='' returnValue='' noOpt=''
+	local message1='' message2='' plural1=''
+	if [ "$( wc -w <<< $1 )" -gt 1 ];then
+		plural1='s'
+	fi
+
+	case $2 in
+		required)
+			noOpt='no-quit-now'
+			message1="${M}You must install the following application$plural1 to run ${C}$SCRIPT_NAME${M}:"
+			message2="Quit ${C}$SCRIPT_NAME${S} now, do not install required script applications."
+			;;
+		feature)
+			noOpt='no-skip-feature'
+			message1="${M}You must install the following package$plural1 to use this feature of ${C}$SCRIPT_NAME${M}:"
+			message2="Skip this feature of ${C}$SCRIPT_NAME${S}, do not install missing packages."
+			;;
+	esac
+
+	echo $MLINE
+	echo "$message1"
+	echo $MLINE
+	echo "$SPACER${C}$1"
+	echo $LINE
+
+	echo "${C}1 - yes-install${S} - Install the missing apps then continue with script."
+	echo "${C}2 - $noOpt${S} - $message2"
+	echo $LINE
+	echo -e $SLE
+	echo $LINE
+	options="yes-install $noOpt"
+	select opt in $options
+	do
+		log_function_data "opt selected: $opt"
+		case $opt in
+			yes-install)
+				apt_update_handler 'update-apps'
+				package_installer "$1" 'install-missing'
+				returnValue=$?
+				;;
+			no-skip-feature)
+				returnValue=1
+				;;
+			no-quit-now)
+				returnValue=1
+				print_quit
+				;;
+			*)
+				print_error opt
+				repeat='true'
+				;;
+		esac
+		break
+	done
+
+	log_function_data "Return Value: $returnValue"
+	eval $LOGUE
+
+	if [ "$repeat" == 'true' ];then
+		install_missing_apps "$1" "$2"
+	else
+		if [ "$returnValue" -gt 0 ];then
+			echo $MLINE
+			echo "${M}Cannot run the requested feature, skipping it and continuing with script.${N}"
+			print_hec
+		else
+			echo $LINE
+			echo "${S}Finished installing missing applications, continuing with script.${N}"
+		fi
+		return $returnValue
+	fi
+}
+
+###**EOF**###

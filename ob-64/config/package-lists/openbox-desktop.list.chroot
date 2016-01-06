@@ -1,0 +1,27 @@
+openbox
+# lxappearance-obconf
+obconf
+obmenu
+tint2
+
+hsetroot
+nitrogen
+
+xfce4-terminal
+compton
+arandr
+lxappearance
+gmrun
+geany
+# evince
+# atril
+zathura
+
+thunar
+thunar-data
+thunar-volman
+thunar-archive-plugin
+thunar-media-tags-plugin
+# thunar-actions-plugin
+tumbler
+

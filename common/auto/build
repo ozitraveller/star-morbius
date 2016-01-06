@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+# export MKSQUASHFS_OPTIONS="-comp xz"
+
+# export MKSQUASHFS_OPTIONS=" -no-recovery -always-use-fragments -b 1048576 -comp xz -Xbcj x86 -Xdict-size 75%"
+
+# export MKSQUASHFS_OPTIONS=" -no-recovery -always-use-fragments -b 1048576 -comp xz -Xbcj x86"
+
+#  jessie verion of squash-tools is 4.2!
+export MKSQUASHFS_OPTIONS=" -no-recovery -always-use-fragments -b 1048576"
+
+
+lb build noauto "${@}" 2>&1 | tee "Build - $(date "+%d.%m.%Y - %H:%M").log"
+

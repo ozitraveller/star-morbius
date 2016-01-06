@@ -1,0 +1,48 @@
+#!/bin/sh
+
+set -e
+
+DISTRIBUTION="jessie"
+ARCHITECTURES="amd64"
+LINUX_FLAVOURS="amd64"
+# ARCHIVE_AREAS="main contrib non-free"
+ARCHIVE_AREAS="main"
+SOURCE="false"
+# MIRROR_BINARY="http://packages.devuan.org/merged"
+MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
+# MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
+# MIRROR_BINARY="http://au.mirror.devuan.org/devuan/dists/jessie/main/"
+# MIRROR_BINARY="http://188.165.204.61/repo/dists/jessie/main/"
+
+#	--build-with-chroot false \
+
+lb config noauto \
+	--mode devuan \
+	--chroot-filesystem squashfs \
+	--distribution "${_DISTRIBUTION}" \
+	--debian-installer-distribution "${_DISTRIBUTION}" \
+	--debian-installer live \
+	--architectures "${_ARCHITECTURES}" \
+	--linux-flavours "${_LINUX_FLAVOURS}" \
+	--apt-recommends false \
+	--apt-secure true \
+	--apt-indices false \
+	--apt-source-archives false \
+	--archive-areas "${_ARCHIVE_AREAS}" \
+	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
+	--parent-mirror-binary "${_MIRROR_BINARY}" \
+	--mirror-bootstrap "${_MIRROR_BINARY}" \
+	--mirror-binary "${_MIRROR_BINARY}" \
+	--iso-application "DIY Linux" \
+	--iso-publisher "DIY" \
+	--iso-volume "DIY Live" \
+	--backports false \
+	--security false \
+    --updates false \
+	--memtest none \
+	--win32-loader false \
+	--debug \
+	--verbose \
+	--bootappend-live "boot=live config components file=/preseed.cfg quiet splash autologin nouveau.modeset=0 radeon.modeset=0" \
+"${@}"
+

@@ -1,0 +1,4 @@
+[public on wdmycloud]
+host=wdmycloud
+scheme=smb
+share=public

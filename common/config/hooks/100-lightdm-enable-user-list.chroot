@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+echo STAR-LIVE-Hook: "$0"
+echo ""
+echo "I: Enable the user list in lightdm login screen"
+
+# sed -i "s/#greeter-hide-users=true/greeter-hide-users=false/g" /etc/lightdm/lightdm.conf
+sed -i "s/#greeter-hide-users=true/greeter-hide-users=false/g" /usr/share/lightdm/lightdm.conf.d/01_debian.conf
+
+# echo "dir exists? /var/lib/lightdm/data"
+# if [ ! -d /var/lib/lightdm/data ]; then
+# echo "mkdir /var/lib/lightdm/data"
+#  	mkdir /var/lib/lightdm/data
+# fi
+

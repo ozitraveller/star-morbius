@@ -1,0 +1,30 @@
+xfce4-panel 
+xfce4-session 
+xfce4-settings 
+# xfce4-volumed
+# volti
+
+xfce4-terminal
+xfce4-screenshooter 
+
+libxfce4ui-utils
+# xfce4-mixer
+xfwm4 
+xfwm4-themes 
+xfdesktop4
+
+menu
+
+# evince
+# atril
+zathura
+ncdu
+geany
+
+thunar
+thunar-data
+thunar-volman
+thunar-archive-plugin
+thunar-media-tags-plugin
+# thunar-actions-plugin
+tumbler

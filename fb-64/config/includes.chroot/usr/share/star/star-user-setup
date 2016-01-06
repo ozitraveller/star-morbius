@@ -1,0 +1,40 @@
+#!/bin/bash
+#Star User Set-up
+
+set -e
+
+if [ ! -d "/home/$USER/.config/star" ]; then
+	mkdir /home/$USER/.config/star
+fi
+
+if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
+
+    if [ -f "/home/$USER/.fluxbox/init" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.fluxbox/init > /dev/null 2>&1
+    fi
+    if [ -f "/home/$USER/.gtkrc-2.0" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.gtkrc-2.0 > /dev/null 2>&1
+    fi
+    if [ -f "/home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
+    fi
+    
+    ln -s /usr/share/backgrounds /home/$USER/images/wallpapers/shared
+    
+    if [ "$USER" != "starlive" ]; then
+		sed -i".bak" '/# installer start/,/# installer end/d' /etc/skel/.fluxbox/menu
+		rm /etc/skel/.fluxbox/menu.bak
+		if [ -f "/home/$USER/.fluxbox/menu" ]; then
+			rm /home/$USER/.fluxbox/menu
+		fi
+		cp /etc/skel/.fluxbox/menu /home/$USER/.fluxbox/menu
+	fi
+	
+	touch /home/$USER/.config/star/star-setup
+    chown -R $USER:$USER /home/$USER
+
+fi
+
+xdg-user-dirs-update
+
+exit 0

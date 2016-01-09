@@ -1,30 +1,14 @@
 
 #############################################################
 ###################
-################### OFFICIAL DEBIAN REPOS ###################
+################### OFFICIAL DEVUAN REPO  ###################
 #############################################################
 
+deb http://packages.devuan.org/merged/ jessie main 
+# contrib non-free 
 
-###### Debian Main Repos
-# deb http://mirror.aarnet.edu.au/debian/ jessie main contrib non-free 
-# deb http://ftp.us.debian.org/debian/ jessie main contrib non-free
-deb http://httpredir.debian.org/debian jessie main contrib non-free
-
-# deb-src http://ftp.us.debian.org/debian/ jessie main
-
-deb http://security.debian.org/ jessie/updates main
-# deb-src http://security.debian.org/ jessie/updates main contrib non-free
-
-# jessie-updates, previously known as 'volatile'
-# deb http://mirror.aarnet.edu.au/debian/ jessie-updates main
-# deb http://ftp.us.debian.org/debian/ jessie-updates main
-# deb-src http://ftp.us.debian.org/debian/ jessie-updates main
-
-# Backports repository
-# deb http://ftp.us.debian.org/debian/ jessie-backports main contrib non-free
-deb http://httpredir.debian.org/debian jessie-backports main contrib non-free
-
-# deb http://ftp.debian.org/debian/ jessie-backports main contrib non-free
+deb http://ftp.us.debian.org/debian/ jessie contrib non-free 
+# main 
 
 ##############################################################
 ######################

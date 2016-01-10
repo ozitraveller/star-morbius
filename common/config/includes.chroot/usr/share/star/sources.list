@@ -7,9 +7,6 @@
 deb http://packages.devuan.org/merged/ jessie main 
 # contrib non-free 
 
-deb http://ftp.us.debian.org/debian/ jessie contrib non-free 
-# main 
-
 ##############################################################
 ######################
 ##################### UNOFFICIAL  REPOS ######################

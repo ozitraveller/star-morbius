@@ -2,15 +2,9 @@
 # Base
 #####################
 xorg
-# xserver-xorg
 
 sysvinit-core
 
-# systemd 
-# systemd-sysv
-# libpam-systemd
-# systemd-ui
-# dh-systemd
 accountsservice
 upower
 
@@ -115,7 +109,7 @@ usbutils
 # post install locale purge #
 localepurge
 
-# xserver-xorg-video-all
+xserver-xorg-video-all
 
 # intel-microcode
 # amd64-microcode

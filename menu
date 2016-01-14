@@ -66,9 +66,20 @@ remove(){
 	#pause
 }
 
+purge(){
+
+	if prompt "  Purge '$1'?"; then
+		if [ -d "$1" ]; then
+			cd $1
+			sudo lb clean --purge
+			cd ..
+		fi
+	fi
+}
+
 setup(){
 	
-	if prompt "  Remove '$1'?"; then
+	if prompt "  Setup '$1'?"; then
 		if [ -d "$1" ]; then
 			sudo rm -rf $1
 		fi
@@ -93,7 +104,7 @@ update(){
 	#echo $PWD
 		
 	rm -rf ./auto/*
-	cp -rf /home/simon/${_SOURCE}/common/auto/* ./auto/
+	cp -rf /home/$SUDO_USER/${_SOURCE}/common/auto/* ./auto/
 	cd config
 
 	if [ ! -d "bootloaders" ]; then
@@ -114,16 +125,16 @@ update(){
 		mkdir ./includes.binary/install
 	fi
 
-	cp -r /home/simon/${_SOURCE}/common/config/* ./
+	cp -r /home/$SUDO_USER/${_SOURCE}/common/config/* ./
 
-	cp -r /home/simon/${_SOURCE}/$1-64/config/hooks/* ./hooks/
-	cp -r /home/simon/${_SOURCE}/$1-64/config/includes.chroot/* ./includes.chroot/
-	cp /home/simon/${_SOURCE}/$1-64/config/package-lists/* ./package-lists/
+	cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/hooks/* ./hooks/
+	cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.chroot/* ./includes.chroot/
+	cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/package-lists/* ./package-lists/
 	
-	cp -r /home/simon/${_SOURCE}/$1-64/config/includes.chroot/* ./includes.chroot/
-	cp /home/simon/${_SOURCE}/$1-64/config/package-lists/* ./package-lists/
+	cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.chroot/* ./includes.chroot/
+	cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/package-lists/* ./package-lists/
 	
-	#cp -r /home/simon/${_SOURCE}/custom/config/* ./
+	#cp -r /home/$SUDO_USER/${_SOURCE}/custom/config/* ./
 	
 	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/hostname
 	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/issue
@@ -150,14 +161,15 @@ main(){
 	echo -e "\tr. Remove        f. Fluxbox"
 	echo -e "\tu. Update        o. Openbox"
 	echo -e "\tb. Build"
+	echo -e "\tp. Purge"
 	echo " "
-	echo -e "\tExample - sx Setup Xfce"
+	echo -e "\tExample - sx (Setup Xfce)"
 	echo " "
 	echo -e "\tq. Quit"
 	echo " "
 		
 	local choice
-	read -p "Enter choice [ 1 - 6] or q : " choice
+	read -p "Enter choice or q : " choice
 
 	case $choice in
 		sx) setup "xfce" ;;
@@ -172,6 +184,9 @@ main(){
 		bx) build "xfce" ;;
 		bf) build "fb" ;;
 		bo) build "ob" ;;
+		px) purge "xfce" ;;
+		pf) purge "fb" ;;
+		po) purge "ob" ;;
 		q|Q) break;;
 		*) echo -e "\tinvalid answer, please try again" ;;
 	esac

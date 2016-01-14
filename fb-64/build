@@ -5,9 +5,9 @@
 # lb config
 # lb build
 
-sudo lb clean --purge
+# sudo lb clean --purge
 # lb clean noauto --all
-# sudo lb clean
+sudo lb clean
 sudo lb init --distribution jessie
 sudo lb config
 sudo lb build

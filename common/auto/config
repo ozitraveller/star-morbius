@@ -15,6 +15,7 @@ MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://188.165.204.61/repo/dists/jessie/main/"
 
 #	--build-with-chroot false \
+#	--debootstrap-options "--variant=minbase"
 
 lb config noauto \
 	--mode devuan \

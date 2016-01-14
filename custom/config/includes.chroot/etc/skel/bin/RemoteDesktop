@@ -1,9 +1,0 @@
-x-terminal-emulator -x 
-sudo openconnect --script /etc/vpnc/vpnc-script --user=peroot\\gillsi vpn2.pearsonra.com.au --authgroup=AnyconnectSSL
-# sudo openconnect --script /etc/vpnc/vpnc-script --user=peroot\\gillsi 159.182.91.142
-
-
-to exit from the fullmode and back to linux desktop (ALT+CTRL+ENTER)
-Back to windows Desktop again (ALT+CTRL+ENTER)
-
-rdesktop -f gillsi-w7 -d PEROOT -u gillsi -p tcs0tmQR

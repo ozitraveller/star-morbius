@@ -8,6 +8,6 @@
 # sudo lb clean --purge
 # lb clean noauto --all
 sudo lb clean
-# sudo lb init --distribution jessie
+sudo lb init --distribution jessie
 sudo lb config
 sudo lb build

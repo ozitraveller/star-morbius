@@ -79,7 +79,7 @@ Mod1 F2 :Exec gmrun
 Mod4 l :Exec /usr/bin/i3lock -n -p default --color=000000
 
 # open a dialog to exit
-Mod4 x :Exec /usr/bin/star-exit
+Mod4 x :Exec /usr/bin/oblogout
 
 
 # volume settings, using common keycodes

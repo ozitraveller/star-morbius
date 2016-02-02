@@ -13,8 +13,8 @@ lxappearance
 gmrun
 geany
 # evince
-# atril
-zathura
+atril
+# zathura
 
 thunar
 thunar-data

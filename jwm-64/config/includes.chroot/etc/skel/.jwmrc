@@ -38,7 +38,7 @@
       <Menu icon="folder.png" label="Internet">
           <Program icon="firefox.png" label="Iceweasel">x-www-browser</Program>
           <!-- <Program label="Transmission">/usr/bin/transmission-gtk</Program> -->
-          <Program label="Wicd Network Manager">gksudo /usr/sbin/wicd</Program>
+          <Program label="Wicd Network Manager">gksudo /usr/bin/wicd-gtk</Program>
       </Menu>  
       <Menu icon="folder.png" label="Multimedia">
           <Program label="SMPlayer" confirm="false">/usr/bin/smplayer</Program>
@@ -66,7 +66,7 @@
       <Separator/>
       <Restart label="Restart" icon="restart.png"/>
       <Exit label="Exit" confirm="true" icon="quit.png"/>
-      <Program icon="exit.png" label="Log Out">/usr/bin/star-exit</Program>
+      <Program icon="exit.png" label="Log Out">/usr/bin/oblogout</Program>
    </RootMenu>
 
 <!--
@@ -260,7 +260,7 @@
    <Key mask="4" key="e">exec:editor</Key>
    <Key mask="4" key="m">exec:/usr/bin/smplayer</Key>
    <Key mask="4" key="l">exec:/usr/bin/i3lock -n -p default --color=000000</Key>
-   <Key mask="4" key="x">exec:/usr/bin/star-exit</Key>
+   <Key mask="4" key="x">exec:/usr/bin/oblogout</Key>
    <Key mask="A" key="F3">exec:dmenu_run</Key>
 
 </JWM>

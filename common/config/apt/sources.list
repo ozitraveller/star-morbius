@@ -1,0 +1,3 @@
+deb http://packages.devuan.org/merged/ jessie main 
+
+# contrib non-free 

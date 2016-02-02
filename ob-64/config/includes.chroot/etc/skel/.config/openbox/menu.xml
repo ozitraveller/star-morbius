@@ -178,7 +178,7 @@
 			<item label="Wicd Network Manager">
 				<action name="Execute">
 					<command>
-						gksudo /usr/sbin/wicd
+						gksudo /usr/bin/wicd-gtk
 					</command>
 				</action>
 			</item>
@@ -224,7 +224,7 @@
 		   	<item label="Pdf Viewer">
 				<action name="Execute">
 					<command>
-						/usr/bin/zathura
+						/usr/bin/atril
 					</command>
 				</action>
 			</item>
@@ -319,7 +319,7 @@
 		<item label="Exit">
 			<action name="Execute">
 				<command>
-					/usr/bin/star-exit
+					/usr/bin/oblogout
 				</command>
 			</action>
 		</item>

@@ -4,7 +4,7 @@ set -e
 
 RED='\033[0;41;30m'
 STD='\033[0;0;39m'
-_VERSION='8.2'
+_VERSION='0.4'
 _SOURCE='star-morbius'
  
 pause(){
@@ -39,50 +39,54 @@ function prompt {
 }
 
 build(){
-	# echo "-Parameter #1 is \"$1\".-"
-# 	if [ -d "$1" ]; then
-
-# 	fi
-	#echo $PWD
+	
 	cd $1
-	#echo $PWD
 	sudo x-terminal-emulator -e './build'
-	#sudo ./build
-	#echo $PWD
+	# sudo xfce-terminal -e './build'
+	# ./build
+	
 	cd ..	
-	#echo $PWD
-	# uncomment pause to see messages
-	#pause
+	
+}
+
+removeprompt(){
+
+	if prompt "  Remove '$1'?"; then
+		remove $1
+	fi	
+
 }
 
 remove(){
-	if prompt "  Remove '$1'?"; then
-		if [ -d "$1" ]; then
-			sudo rm -rf $1
-		fi
-	fi	
-	
-	# uncomment pause to see messages
-	#pause
+
+ 	if [ -d "$1" ]; then
+		purge $1
+		sudo rm -rf $1
+	fi
+
+}
+
+purgeprompt(){
+
+	if prompt "  Purge '$1'?"; then
+		purge $1
+	fi
 }
 
 purge(){
 
-	if prompt "  Purge '$1'?"; then
-		if [ -d "$1" ]; then
-			cd $1
-			sudo lb clean --purge
-			cd ..
-		fi
+	if [ -d "$1" ]; then
+		cd $1
+		sudo lb clean --purge
+		cd ..
 	fi
+
 }
 
 setup(){
 	
 	if prompt "  Setup '$1'?"; then
-		if [ -d "$1" ]; then
-			sudo rm -rf $1
-		fi
+		remove $1
 	fi	
 
 	sudo mkdir $1 && cd $1 && sudo lb config
@@ -120,6 +124,7 @@ update(){
 	rm -rf ./binary_debian-installer
 	rm -rf ./bootloaders/*
 	rm -rf ./includes.binary/*
+	rm -rf ./packages.chroot/* 
 
 	if [ ! -d "./includes.binary/install" ]; then
 		mkdir ./includes.binary/install
@@ -133,14 +138,19 @@ update(){
 	
 	cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.chroot/* ./includes.chroot/
 	cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/package-lists/* ./package-lists/
+
+	DIRECTORY="/home/$SUDO_USER/${_SOURCE}/$1-64/config/packages.chroot/"
+	if [ "$(ls -A $DIRECTORY)" ]; then
+		cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/packages.chroot/* ./packages.chroot/
+	fi
 	
 	#cp -r /home/$SUDO_USER/${_SOURCE}/custom/config/* ./
 	
-	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/hostname
-	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/issue
-	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/issue.net
-	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/motd
-	sed -i -e 's/VERSION/'${_VERSION}'/g' ./includes.chroot/etc/os-release
+	sed -i -e 's/REPLACEME/'${_VERSION}'/g' ./includes.chroot/etc/hostname
+	sed -i -e 's/REPLACEME/'${_VERSION}'/g' ./includes.chroot/etc/issue
+	sed -i -e 's/REPLACEME/'${_VERSION}'/g' ./includes.chroot/etc/issue.net
+	sed -i -e 's/REPLACEME/'${_VERSION}'/g' ./includes.chroot/etc/motd
+	sed -i -e 's/REPLACEME/'${_VERSION}'/g' ./includes.chroot/etc/os-release
 	#echo $PWD	
 	cd ../..
 	#echo $PWD
@@ -160,7 +170,7 @@ main(){
 	echo -e "\ts. Setup         x. Xfce"
 	echo -e "\tr. Remove        f. Fluxbox"
 	echo -e "\tu. Update        o. Openbox"
-	echo -e "\tb. Build"
+	echo -e "\tb. Build         j. Jwm"
 	echo -e "\tp. Purge"
 	echo " "
 	echo -e "\tExample - sx (Setup Xfce)"
@@ -175,18 +185,23 @@ main(){
 		sx) setup "xfce" ;;
 		sf) setup "fb" ;;
 		so) setup "ob" ;;
+		sj) setup "jwm" ;;
 		rx) remove "xfce" ;;
 		rf) remove "fb" ;;
 		ro) remove "ob" ;;
+		rj) remove "jwm" ;;
 		ux) update "xfce" ${_VERSION} ;;
 		uf) update "fb" ${_VERSION} ;;
 		uo) update "ob" ${_VERSION} ;;
+		uj) update "jwm" ${_VERSION} ;;
 		bx) build "xfce" ;;
 		bf) build "fb" ;;
 		bo) build "ob" ;;
+		bj) build "jwm" ;;
 		px) purge "xfce" ;;
 		pf) purge "fb" ;;
 		po) purge "ob" ;;
+		pj) purge "jwm" ;;
 		q|Q) break;;
 		*) echo -e "\tinvalid answer, please try again" ;;
 	esac

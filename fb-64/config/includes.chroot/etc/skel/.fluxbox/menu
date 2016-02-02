@@ -44,17 +44,17 @@
 #        [exec] (FileZilla) {/usr/bin/filezilla} <>
          [exec] (Iceweasel) {x-www-browser} <>
 #        [exec] (Transmission) {/usr/bin/transmission-gtk} <>
-         [exec] (Wicd Network Manager) {gksudo /usr/sbin/wicd} <>
+         [exec] (Wicd Network Manager) {gksudo /usr/bin/wicd-gtk} <>
       [end]
       [submenu] (Multimedia) {}
          [exec] (SMPlayer) {/usr/bin/smplayer}
          # [exec] (Audio Player) {/usr/bin/audacious}
          # [exec] (Pulseaudio Control) {/usr/bin/pavucontrol}
          [exec] (Audio Mixer) {/usr/bin/xfce4-mixer}
-         [exec] (Xfburn) {/usr/bin/xfburnxfburn}
+         [exec] (Xfburn) {/usr/bin/xfburn}
       [end]
       [submenu] (Office) {}
-         [exec] (Pdf Viewer) {/usr/bin/zathura}
+         [exec] (Pdf Viewer) {/usr/bin/atril}
       [end]
       [submenu] (System) {}
 		 [exec] (Alternatives Configurator) {gksudo /usr/bin/galternatives} <>
@@ -81,5 +81,5 @@
     [end]
   [separator]
     [exec] (Lock) {/usr/bin/i3lock -n -p default --color=000000} <>  
-	[exec] (Exit) {/usr/bin/star-exit} <>   
+	[exec] (Exit) {/usr/bin/oblogout} <>   
 [end]

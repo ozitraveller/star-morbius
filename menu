@@ -143,7 +143,12 @@ update(){
 	if [ "$(ls -A $DIRECTORY)" ]; then
 		cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/packages.chroot/* ./packages.chroot/
 	fi
-	
+
+	# remove default .conkyrc
+	if [ $1 == "i3" ]; then
+		rm ./includes.chroot/etc/skel/.conkyrc
+	fi
+		
 	#cp -r /home/$SUDO_USER/${_SOURCE}/custom/config/* ./
 	
 	sed -i -e 's/REPLACEME/'${_VERSION}'/g' ./includes.chroot/etc/hostname
@@ -171,7 +176,7 @@ main(){
 	echo -e "\tr. Remove        f. Fluxbox"
 	echo -e "\tu. Update        o. Openbox"
 	echo -e "\tb. Build         j. Jwm"
-	echo -e "\tp. Purge"
+	echo -e "\tp. Purge         i. i3"
 	echo " "
 	echo -e "\tExample - sx (Setup Xfce)"
 	echo " "
@@ -186,22 +191,27 @@ main(){
 		sf) setup "fb" ;;
 		so) setup "ob" ;;
 		sj) setup "jwm" ;;
+		si) setup "i3" ;;
 		rx) remove "xfce" ;;
 		rf) remove "fb" ;;
 		ro) remove "ob" ;;
 		rj) remove "jwm" ;;
+		ri) remove "i3" ;;
 		ux) update "xfce" ${_VERSION} ;;
 		uf) update "fb" ${_VERSION} ;;
 		uo) update "ob" ${_VERSION} ;;
 		uj) update "jwm" ${_VERSION} ;;
+		ui) update "i3" ${_VERSION} ;;
 		bx) build "xfce" ;;
 		bf) build "fb" ;;
 		bo) build "ob" ;;
 		bj) build "jwm" ;;
+		bi) build "i3" ;;
 		px) purge "xfce" ;;
 		pf) purge "fb" ;;
 		po) purge "ob" ;;
 		pj) purge "jwm" ;;
+		pi) purge "i3" ;;
 		q|Q) break;;
 		*) echo -e "\tinvalid answer, please try again" ;;
 	esac

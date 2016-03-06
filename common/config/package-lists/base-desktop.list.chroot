@@ -38,6 +38,7 @@ galternatives
 # zenity
 
 i3lock
+dmenu
 
 smplayer
 iceweasel
@@ -52,7 +53,7 @@ gnome-calculator
 
 # audacious
 # filezilla 
-# hexchat 
+hexchat 
 # bleachbit
 # gsimplecal
 catfish

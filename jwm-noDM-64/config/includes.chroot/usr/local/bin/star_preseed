@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# set star sources.list
+cp /usr/share/star/preferences /etc/apt/preferences
+cp /usr/share/star/apt.conf /etc/apt/apt.conf
+cp /usr/share/star/sources.list /etc/apt/sources.list
+
+# remove the live tools
+dpkg --purge live-tools
+
+# update grub
+sed -i "s/echo Debian/echo Star/g" /etc/default/grub
+# sed -i "s/quiet/quiet init=/lib/systemd/systemd/g" /etc/default/grub
+echo "GRUB_BACKGROUND=\"/usr/share/images/desktop-base/joy-grub.png\"" >> /etc/default/grub
+update-grub
+
+# sed -i "s/echo Debian/echo Star/g" /etc/issue
+# sed -i "s/echo Debian/echo Star/g" /etc/issue.net 
+# sed -i "s/echo Debian/echo Star/g" /usr/share/base-files/motd 
+
+# fix network-manager
+# ----------------------------------------------------------------------
+#sed --in-place=.bak 's/managed=false/managed=true/' /etc/NetworkManager/NetworkManager.conf
+
+# This is a fugly hack for fixing fstab after installing
+# CrunchBang using unetbootin. Basically, if using unetbootin,
+# the USB device is identified as a cdrom drive and added to
+# /etc/fstab as that. This script will find any such entries
+# in fstab and disable them. It is looking for cdrom entries
+# which reference devices under "/dev/sdX".
+
+# a big thank you to corenominal, dev of CrunchbangLinux
+
+#FSTAB=/etc/fstab
+#if grep "^/dev/sd" ${FSTAB} | grep "/media/" | grep "auto"
+#then
+    #NEEDLE=`grep "^/dev/sd" ${FSTAB} | grep "/media/" | grep "auto"`
+    #if ! echo "${NEEDLE}" | grep "#/dev/sd"
+    #then
+        #CORK="#${NEEDLE}"
+        #rpl -q "${NEEDLE}" "${CORK}" ${FSTAB}
+    #fi
+#fi
+#exit 0
+
+# echo 'Acquire::Languages {"none";};' > /etc/apt/apt.conf.d/70debconf
+# echo 'LANG="en_AU.UTF-8"' > /etc/default/locale
+# echo 'LANGUAGE="en_AU:en"' >> /etc/default/locale
+# locale-gen en_AU.UTF-8
+# update-locale en_AU.UTF-8

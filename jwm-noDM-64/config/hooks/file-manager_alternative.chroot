@@ -1,0 +1,5 @@
+#!/bin/sh
+# set thunar as default file-manager.
+#############################################
+# set -e
+# update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/thunar 99

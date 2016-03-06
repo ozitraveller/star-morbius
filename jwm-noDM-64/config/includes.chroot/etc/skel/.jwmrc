@@ -1,0 +1,341 @@
+<?xml version="1.0"?>
+
+<JWM>
+
+   <!-- The root menu, if this is undefined you will not get a menu. -->
+   <!-- Additional RootMenu attributes: onroot, labeled, label -->
+   <RootMenu height="15" onroot="123">
+      <Program icon="terminal.png" label="Run Program">gmrun</Program>
+      <Program icon="terminal.png" label="Terminal">x-terminal-emulator</Program>
+      <Program icon="thunar.png" label="File Manager">/usr/bin/pcmanfm</Program>
+      <Program icon="firefox.png" label="Web Browser">x-www-browser</Program>   
+      <Separator/>
+      <Menu icon="folder.png" label="Settings">
+          <Program label="Display" confirm="false">/usr/bin/lxrandr</Program>
+          <Program label="Appearance" confirm="false">/usr/bin/lxappearance</Program>
+      </Menu>
+      <Separator/>
+      <Menu icon="folder.png" label="Accessories">
+        <Program label="Calculator" confirm="false">/usr/bin/gcalctool</Program>
+      </Menu>
+      <Menu icon="folder.png" label="Graphics">
+          <Program label="Mirage" confirm="false">mirage</Program>
+      </Menu>      
+      <Menu icon="folder.png" label="Internet">
+      <Program icon="firefox.png" label="Web Browser">x-www-browser</Program>
+      </Menu>  
+      <Menu icon="folder.png" label="Multimedia">
+          <Program label="VLC media player" confirm="false">/usr/bin/vlc</Program>
+      </Menu>      
+      <Menu icon="folder.png" label="Office">
+          <Program label="Pdf Viewer" confirm="false">/usr/bin/xpdf</Program>
+      </Menu>      
+      <Menu icon="folder.png" label="System">
+          <Program label="System Information" confirm="false">su-to-root -X -c /usr/bin/hardinfo</Program>
+<!--          <Program label="Disk Manager" confirm="false">su-to-root -X -c  /usr/sbin/disk-manager</Program>
+-->
+          <Program label="Bootup Manager" confirm="false">su-to-root -X -c  /usr/bin/bum</Program>
+          <Program icon="programs.png" label="Synaptic" confirm="false">su-to-root -X -c /usr/sbin/synaptic</Program>
+          <Program label="Terminal as root" confirm="false">su-to-root -X -c /usr/bin/x-terminal-emulator</Program>
+      </Menu>
+      <Separator/>
+      <Restart label="Restart" icon="restart.png"/>
+      <Exit label="Exit" confirm="true" icon="quit.png"/>
+      <!-- <Program icon="exit.png" label="Log Out">/usr/bin/star-exit</Program> -->
+   </RootMenu>
+
+<!--
+   <Group>
+      <Class>Pidgin</Class>
+      <Option>sticky</Option>
+   </Group>
+
+   <Group>
+      <Name>gkrellm</Name>
+      <Option>nolist</Option>
+      <Option>sticky</Option>
+   </Group>
+
+   <Group>
+      <Name>xterm</Name>
+      <Option>vmax</Option>
+      <Option>icon:terminal.png</Option>
+   </Group>
+-->
+
+   <!-- Additional tray attributes: autohide, width, border, layer, layout -->
+   <Tray  x="0" y="-1" height="32" autohide="false">
+
+      <!-- Additional TrayButton attribute: label -->
+      <TrayButton label="star">root:1</TrayButton>
+      <!-- <TrayButton label="☆">root:1</TrayButton> -->
+	  <!-- <TrayButton icon="/usr/share/images/star-logo-2.0-16x16.png">root:1</TrayButton> -->
+      <TrayButton label="_">showdesktop</TrayButton>
+      <TrayButton label="t">exec:x-terminal-emulator</TrayButton>
+      <TrayButton label="f">exec:pcmanfm</TrayButton>
+      <TrayButton label="m">exec:vlc</TrayButton>
+      <TrayButton label="w">exec:x-www-browser</TrayButton>
+
+      <!-- Additional Pager attribute: labeled -->
+
+      <TaskList maxwidth="256"/>
+
+      <Pager labeled="true"/>
+
+      <Dock/>
+      <!-- Additional Swallow attribute: height
+
+
+ 
+      <Swallow name="xload" width="64">
+         xload -nolabel -bg black -fg red -hl white
+      </Swallow>
+
+      
+      <Swallow name="volumeicon">
+         volumeicon
+      </Swallow>   
+      <Swallow name="wicd-gtk">
+         wicd-client
+      </Swallow>         
+      -->
+    
+      <Clock format="%l:%m %p">xclock</Clock>
+
+   </Tray>
+
+   <!-- Visual Styles -->
+<!--
+   <WindowStyle>
+
+      <Font>liberation.sans-11</Font>
+      <Width>4</Width>
+      <Height>20</Height>
+
+      <Active>
+         <Text>#ffffff</Text>
+         <Title>#398EE7</Title>
+         <Outline>#404040</Outline>
+      </Active>
+      <Corner>#404040</Corner>
+
+      <Inactive>
+         <Text>#c0c0c0</Text>
+         <Title>#202020</Title>
+         <Outline>#202020</Outline>
+      </Inactive>
+
+   </WindowStyle>
+
+   <TaskListStyle>
+      <Font>liberation.sans-11</Font>
+      <ActiveForeground>#000000</ActiveForeground>
+      <ActiveBackground>#398EE7</ActiveBackground>
+      <Foreground>#FFFFFF</Foreground>
+      <Background>#262626</Background>
+   </TaskListStyle>
+
+   <TrayStyle>
+      <Font>liberation.sans-11</Font>
+      <Background>#262626</Background>
+      <Foreground>#ffffff</Foreground>
+   </TrayStyle>
+
+   <PagerStyle>
+      <Outline>#1a1a1a</Outline>
+      <Foreground>#2b2b2b</Foreground>
+      <Background>#0d0d0d</Background>
+      <ActiveForeground>#d9d9d9</ActiveForeground>
+      <ActiveBackground>#3c3c3c</ActiveBackground>
+   </PagerStyle>
+
+   <MenuStyle>
+      <Font>liberation.sans-11</Font>
+      <Foreground>#000000</Foreground>
+      <Background>#ffffff</Background>
+      <ActiveForeground>#ffffff</ActiveForeground>
+      <ActiveBackground>#398EE7</ActiveBackground>
+   </MenuStyle>
+
+   <PopupStyle>
+      <Font>liberation.sans-11</Font>
+      <Outline>#3c3c3c</Outline>
+      <Foreground>white</Foreground>
+      <Background>#3c3c3c</Background>
+   </PopupStyle>
+-->
+
+   <WindowStyle>
+
+      <Font>liberation.sans-11</Font>
+      <Width>2</Width>
+      <Height>20</Height>
+
+      <Active>
+         <Text>#ffffff</Text>
+         <Title>#398EE7</Title>
+         <Outline>#404040</Outline>
+      </Active>
+      <Corner>#404040</Corner>
+
+      <Inactive>
+         <Text>#c0c0c0</Text>
+         <Title>#202020</Title>
+         <Outline>#202020</Outline>
+      </Inactive>
+
+   </WindowStyle>
+<!--
+<WindowStyle>
+    <Font>liberation.sans-11</Font>
+    <Width>3</Width>
+    <Height>22</Height>     
+    <Active>
+       <Text>black</Text>
+       <Title>#FFFFFF:#549FC1</Title>
+       <Corner>#4A5966</Corner>
+       <Outline>black</Outline>
+    </Active>
+    <Inactive>
+       <Text>gray30</Text>
+       <Title>#549FC1:#C4C4C4</Title>         
+       <Corner>#DCDAD5</Corner>
+       <Outline>gray30</Outline>
+    </Inactive>
+</WindowStyle> 
+-->
+   <TaskListStyle>
+      <Font>liberation.sans-11</Font>
+      <ActiveForeground>#000000</ActiveForeground>
+      <ActiveBackground>#398EE7</ActiveBackground>
+      <Foreground>#FFFFFF</Foreground>
+      <Background>#262626</Background>
+   </TaskListStyle>
+<!--
+<TaskListStyle>
+<Font>liberation.sans-11</Font>
+<ActiveForeground>white</ActiveForeground>
+<ActiveBackground>#393F96:#30528D</ActiveBackground>
+<Background>#549FC1:#393F96</Background>
+</TaskListStyle>
+-->
+	<!-- TRAY PROPERTIES -->
+
+   <TrayStyle>
+      <Font>liberation.sans-11</Font>
+      <Background>#262626</Background>
+      <Foreground>#ffffff</Foreground>
+   </TrayStyle>
+<!--
+	<TrayStyle>
+		<Font>liberation.sans-11</Font>
+		<Foreground>white</Foreground>
+		<Background>#00225E</Background>
+	</TrayStyle>
+-->
+	<!-- PAGER PROPERTIES -->
+
+   <PagerStyle>
+      <Outline>#1a1a1a</Outline>
+      <Foreground>#2b2b2b</Foreground>
+      <Background>#0d0d0d</Background>
+      <ActiveForeground>#d9d9d9</ActiveForeground>
+      <ActiveBackground>#3c3c3c</ActiveBackground>
+   </PagerStyle>
+
+<!--
+	<PagerStyle>
+		<Outline>black</Outline>
+		<Foreground>#DCDAD5</Foreground>
+		<Background>#888888</Background>
+		<ActiveForeground>#8899AA</ActiveForeground>
+		<ActiveBackground>#3A4956</ActiveBackground>
+	</PagerStyle>
+-->
+	<PopupStyle>
+		<Font>liberation.sans-11</Font>
+		<Outline>black</Outline>
+		<Foreground>white</Foreground>
+		<Background>darkblue</Background>
+	</PopupStyle>
+
+	<MenuStyle>
+      		<Font>liberation.sans-11</Font>
+		<Foreground>#000000</Foreground>
+		<Background>#ffffff</Background>
+		<ActiveForeground>#ffffff</ActiveForeground>
+		<ActiveBackground>#398EE7</ActiveBackground>
+	</MenuStyle>
+
+	<IconPath>
+	/usr/share/icons/wm-icons/32x32-gant
+	</IconPath>
+
+   <!-- Virtual Desktops -->
+   <!-- Desktop tags can be contained within Desktops for desktop names. -->
+   <Desktops width="2">
+      <!-- Default background. Note that a Background tag can be
+           contained within a Desktop tag to give a specific background
+           for that desktop.
+      <Background type="image">/export0/images/formulae.jpg</Background>
+       -->
+   </Desktops>
+
+   <!-- Double click speed (in milliseconds) -->
+   <DoubleClickSpeed>400</DoubleClickSpeed>
+
+   <!-- Double click delta (in pixels) -->
+   <DoubleClickDelta>2</DoubleClickDelta>
+
+   <!-- The focus model (sloppy or click) -->
+   <FocusModel>click</FocusModel>
+
+   <!-- The snap mode (none, screen, or border) -->
+   <SnapMode>none</SnapMode>
+
+   <!-- The move mode (outline or opaque) -->
+   <MoveMode>outline</MoveMode>
+
+   <!-- The resize mode (outline or opaque) -->
+   <ResizeMode>outline</ResizeMode>
+
+   <!-- 
+   <StartupCommand>volumeicon</StartupCommand>
+   <StartupCommand>wicd-gtk</StartupCommand>
+    -->
+    
+    <StartupCommand>~/bin/wicdjwm.sh</StartupCommand>
+	<RestartCommand>~/bin/wicdjwm.sh</RestartCommand>
+
+   <!-- Key bindings -->
+   <Key key="Up">up</Key>
+   <Key key="Down">down</Key>
+   <Key key="Right">right</Key>
+   <Key key="Left">left</Key>
+   <Key key="h">left</Key>
+   <Key key="j">down</Key>
+   <Key key="k">up</Key>
+   <Key key="l">right</Key>
+   <Key key="Return">select</Key>
+   <Key key="Escape">escape</Key>
+
+   <Key mask="A" key="Tab">next</Key>
+   <Key mask="A" key="F4">close</Key>
+   <Key mask="A" key="#">desktop#</Key>
+   <Key mask="A" key="F1">root:1</Key>
+   <Key mask="A" key="F2">window</Key>
+   <Key mask="A" key="F10">maximize</Key>
+   <Key mask="A" key="Right">rdesktop</Key>
+   <Key mask="A" key="Left">ldesktop</Key>
+   <Key mask="A" key="Up">udesktop</Key>
+   <Key mask="A" key="Down">ddesktop</Key>
+   
+   <Key mask="4" key="t">exec:x-terminal-emulator</Key>
+   <Key mask="4" key="w">exec:x-www-browser</Key>
+   <Key mask="4" key="f">exec:pcmanfm</Key>
+   <Key mask="4" key="e">exec:editor</Key>
+   <Key mask="4" key="m">exec:vlc</Key>
+   <Key mask="4" key="x">exec:sudo /usr/bin/star-exit</Key>
+   <Key mask="A" key="F3">exec:dmenu_run</Key>
+
+</JWM>

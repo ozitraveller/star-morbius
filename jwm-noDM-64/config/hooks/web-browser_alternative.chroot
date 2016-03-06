@@ -1,0 +1,6 @@
+#!/bin/sh
+# set iceweasel as default X web browser.
+#############################################
+set -e
+# update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/iceweasel 99
+update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/midori 99

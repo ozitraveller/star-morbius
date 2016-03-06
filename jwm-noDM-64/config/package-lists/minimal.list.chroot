@@ -1,0 +1,171 @@
+xorg
+
+jwm
+
+lxappearance
+# lxsession-edit
+# lxpolkit
+# lxtask
+lxrandr
+
+lxterminal
+# rxvt-unicode
+xterm
+# geany
+leafpad
+# file-roller
+xarchiver
+pm-utils
+# xfburn
+# xfce4-notifyd
+# xfce4-settings
+# xfce4-taskmanager
+# xfce4-terminal
+xdg-user-dirs
+xdg-utils
+# lightdm
+desktop-base
+alsa-utils
+alsa-base
+# volumeicon-alsa
+# menu
+# menu-xdg
+tasksel
+i3lock
+
+wicd
+
+# ttf-Inconsolata
+ttf-liberation
+ttf-dejavu 
+fonts-liberation 
+fontconfig-config 
+
+
+dmz-cursor-theme
+# gnome-colors
+# gnome-icon-theme
+# gnome-brave-icon-theme
+# tango-icon-theme
+# gtk2-engines-murrine 
+# gtk2-engines 
+# gtk2-engines-pixbuf
+
+#####################
+# SYSTEM UTILITIES
+#####################
+bum 
+hdparm 
+# disk-manager 
+ufw 
+# gparted  
+htop
+gksu 
+# gdebi 
+hardinfo 
+synaptic
+# gamin
+cpufrequtils
+tzdata
+ntp
+
+#####################
+# APPS
+#####################
+gmrun
+# orage
+# epdfview
+xpdf
+# evince
+vlc
+# chromium-browser
+# google-chrome-stable
+# iceweasel
+midori
+# xfe
+pcmanfm
+# thunar
+# thunar-data
+# thunar-volman
+# thunar-archive-plugin
+# thunar-media-tags-plugin
+# thunar-actions-plugin
+# tumbler
+# peazip
+zip
+unzip
+# bzip2
+p7zip-full
+unrar
+# ncdu
+# dtrx
+# w64codecs
+# geany
+# clipit
+# parcellite
+# medit
+# leafpad
+# meld
+# aria2
+# gpicview
+# geeqie
+# ristretto
+mirage
+nitrogen
+conky-all 
+# terminator 
+# file-roller
+# squeeze
+# gnumeric
+gcalctool 
+# filezilla 
+# gftp
+# transmission-gtk 
+# uget 
+ 
+scrot 
+whois 
+rpl
+# fuse-utils gigolo fusesmb
+# gvfs-bin
+# gvfs-fuse
+# gvfs-backends
+avahi-utils
+xfsprogs 
+# reiserfsprogs 
+# reiser4progs 
+jfsutils 
+ 
+ntfs-3g 
+# mtools
+debian-keyring 
+libxss1 
+logrotate 
+# libdvdcss 
+mpg321 
+libgstreamer-perl 
+gstreamer0.10-plugins-base 
+gstreamer0.10-plugins-good 
+gstreamer0.10-plugins-bad 
+gstreamer0.10-plugins-ugly 
+gstreamer0.10-ffmpeg 
+libgstreamer-interfaces-perl
+
+hwdata
+policykit-1
+policykit-1-gnome
+rfkill
+usbutils
+
+firmware-linux 
+firmware-linux-nonfree 
+firmware-ralink 
+firmware-iwlwifi 
+firmware-ipw2x00 
+firmware-brcm80211
+firmware-realtek
+firmware-b43-installer 
+firmware-b43legacy-installer 
+b43-fwcutter 
+mobile-broadband-provider-info 
+wireless-tools

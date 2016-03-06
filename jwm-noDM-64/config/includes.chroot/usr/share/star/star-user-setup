@@ -1,0 +1,72 @@
+#!/bin/bash
+#Star User Set-up
+
+if [ -d "/home/$USER/.config/star" ]; then
+	mkdir /home/$USER/.config/star
+fi
+
+if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
+#    cd /etc/skel
+#    tar cpzf skel.tar.gz .
+#    mv skel.tar.gz /home/$USER/skel.tar.gz
+#    cd /home/$USER
+#    tar xkpsf skel.tar.gz
+#    rm skel.tar.gz
+    if [ -f "/home/$USER/.config/autostart/xfce4-autostart.desktop" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.config/autostart/xfce4-autostart.desktop > /dev/null 2>&1
+    fi
+#    if [ -f "/home/$USER/.config/geany/geany.conf" ]; then
+#        rpl -q 'REPLACEME' $USER /home/$USER/.config/geany/geany.conf > /dev/null 2>&1
+#    fi
+#    if [ -f "/home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml" ]; then
+#        rpl -q 'REPLACEME' $USER /home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml > /dev/null 2>&1
+#    fi
+#    if [ -f "/home/$USER/.gtk-bookmarks" ]; then
+#        rpl -q 'REPLACEME' $USER /home/$USER/.gtk-bookmarks > /dev/null 2>&1
+#    fi
+    if [ -f "/home/$USER/.config/autostart/Conky.desktop" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.config/autostart/Conky.desktop > /dev/null 2>&1
+    fi
+    if [ -f "/home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-panel.xml > /dev/null 2>&1
+    fi
+    #if [ -f "/home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
+        #rpl -q 'REPLACEME' $USER /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
+    #fi
+    if [ -f "/home/$USER/.config/midori/config" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.config/midori/config > /dev/null 2>&1
+    fi    
+    ln -s /usr/share/backgrounds /home/$USER/images/wallpapers/shared
+
+    if [ "$USER" != "starlive" ]; then
+		sed -i".bak" '/<!-- installer start -->/,/<!-- installer end -->/d' /etc/skel/.jwmrc
+		rm /etc/skel/.jwmrc.bak
+		if [ -f "/home/$USER/.jwmrc" ]; then
+			rm /home/$USER/.jwmrc
+		fi
+		cp /etc/skel/.jwmrc /home/$USER/.jwmrc
+	fi
+
+#    if [ -x "/usr/bin/openbox" ]; then
+#        cp /etc/conkyrc-openbox /home/$USER/.conkyrc
+#    else
+#        cp /etc/conkyrc-xfce /home/$USER/.conkyrc
+#    fi
+	touch /home/$USER/.config/star/star-setup
+    chown -R $USER:$USER /home/$USER
+    
+#    if [ -f "/home/$USER/installer.sh" ]; then
+#		rm installer.sh
+#	fi
+
+fi
+
+xdg-user-dirs-update
+
+##Install Openbox menu with install item for live user
+#if [ "$USER" = "crunchbang" ] && [ -d /live/cow ]; then
+#    rm /home/$USER/.config/openbox/menu.xml
+#    cp /usr/share/crunchbang/live-menu.xml /home/$USER/.config/openbox/menu.xml
+#    chown $USER:$USER /home/$USER/.config/openbox/menu.xml
+#fi
+exit 0

@@ -38,12 +38,14 @@ hsetroot -solid "#000000" &
 
 sleep 1
 {
-	compton --config ~/.compton.conf &
+#	compton --config ~/.compton.conf &
+#	(sleep 3 && wicd-client -t) &
 	(sleep 3 && wicd-gtk --tray) &
 # 	(sleep 3 && volumeicon --tray) &
-	(sleep 3 && clipit) &
+#	(sleep 3 && clipit) &
 	(sleep 3 && conky -c ~/.conkyrc) &
-	nitrogen --restore &
+	# nitrogen --restore &
+	# feh --bg-scale $HOME/images/wallpapers/shared/filename.jpg &
 	(sleep 6 && star-welcome --firstrun) &
 }
 

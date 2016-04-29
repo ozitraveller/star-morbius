@@ -4,7 +4,6 @@
   <property name="commands" type="empty">
     <property name="default" type="empty">
       <property name="&lt;Alt&gt;F2" type="empty"/>
-      <property name="&lt;Alt&gt;F3" type="empty"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;Delete" type="empty"/>
       <property name="XF86Display" type="empty"/>
       <property name="&lt;Super&gt;p" type="empty"/>
@@ -16,7 +15,6 @@
       <property name="&lt;Primary&gt;&lt;Alt&gt;Delete" type="string" value="xflock4"/>
       <property name="&lt;Primary&gt;Escape" type="string" value="xfdesktop --menu"/>
       <property name="&lt;Alt&gt;F2" type="string" value="xfrun4"/>
-      <property name="&lt;Alt&gt;F3" type="string" value="~/.config/dmenu/dmenu-bind.sh"/>
       <property name="override" type="bool" value="true"/>
       <property name="&lt;Super&gt;x" type="string" value="xfce4-session-logout"/>
       <property name="&lt;Super&gt;w" type="string" value="iceweasel"/>
@@ -25,6 +23,8 @@
       <property name="&lt;Super&gt;e" type="string" value="geany"/>
       <property name="&lt;Super&gt;t" type="string" value="xfce4-terminal"/>
       <property name="&lt;Super&gt;l" type="string" value="/usr/bin/i3lock -n -p default --color=000000"/>
+	  <property name="&lt;Super&gt;d" type="string" value="dmenu_run -b -i -nb &apos;#151617&apos; -nf &apos;#d8d8d8&apos; -sb &apos;#d8d8d8&apos; -sf &apos;#151617&apos;"/>
+
     </property>
   </property>
   <property name="xfwm4" type="empty">

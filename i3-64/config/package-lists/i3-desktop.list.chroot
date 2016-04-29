@@ -1,29 +1,34 @@
 i3
-i3
 i3status
-i3blocks
-suckless-tools
+# i3blocks
 dunst
-
-mc
-rxvt-unicode
 
 hsetroot
 feh
 
-xfce4-terminal
-compton
-arandr
+# rxvt-unicode
+# xfce4-terminal
 lxappearance
+lxterminal
+lxtask
+# compton
+arandr
 leafpad
-pcmanfm
-geany
+# geany
 xpdf
 
-thunar
-thunar-data
-thunar-volman
-thunar-archive-plugin
-thunar-media-tags-plugin
+# pcmanfm
+spacefm
+isof
+udevil
+# pcmanfm
+# mc
+# xfe
+# xfe-themes
+# thunar
+# thunar-data
+# thunar-volman
+# thunar-archive-plugin
+# thunar-media-tags-plugin
 
-tumbler
+# tumbler

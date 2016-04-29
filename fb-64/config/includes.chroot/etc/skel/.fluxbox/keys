@@ -58,7 +58,7 @@ Mod4 8 :Tab 8
 Mod4 9 :Tab 9
 
 # dmenu
-Mod1 F3 :Exec ~/.config/dmenu/dmenu-bind.sh
+Mod4 d :Exec ~/.config/dmenu/dmenu-bind.sh
 
 # media player
 Mod4 m :Exec smplayer

@@ -3,13 +3,15 @@ fbpager
 fbpanel
 
 hsetroot
-nitrogen
+# nitrogen
+feh
 
 xfce4-terminal
 # xfce4-mixer
-compton
+# compton
 arandr
 lxappearance
+lxtask
 gmrun
 geany
 # evince

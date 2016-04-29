@@ -8,6 +8,7 @@ LINUX_FLAVOURS="amd64"
 # ARCHIVE_AREAS="main contrib non-free"
 ARCHIVE_AREAS="main"
 SOURCE="false"
+
 # MIRROR_BINARY="http://packages.devuan.org/merged"
 MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
@@ -34,9 +35,9 @@ lb config noauto \
 	--parent-mirror-binary "${_MIRROR_BINARY}" \
 	--mirror-bootstrap "${_MIRROR_BINARY}" \
 	--mirror-binary "${_MIRROR_BINARY}" \
-	--iso-application "DIY Linux" \
-	--iso-publisher "DIY" \
-	--iso-volume "DIY Live" \
+	--iso-application "Star Linux" \
+	--iso-publisher "Star" \
+	--iso-volume "Star Live" \
 	--backports false \
 	--security false \
     --updates false \

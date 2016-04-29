@@ -1,16 +1,21 @@
 jwm
 
 hsetroot
-nitrogen
+# nitrogen
+feh
 
 lxterminal
 # xfce4-mixer
-compton
+# compton
 lxrandr
 lxappearance
+lxtask
 gmrun
 leafpad
 xpdf
 
-pcmanfm
-
+# pcmanfm
+# pcmanfm
+spacefm
+isof
+udevil

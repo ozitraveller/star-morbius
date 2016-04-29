@@ -80,7 +80,7 @@
   bindsym $mod+Ctrl+e exec editor
   bindsym $mod+Ctrl+f exec exec x-file-manager
   bindsym $mod+Ctrl+m exec smplayer
-  bindsym $mod+Ctrl+l exec /usr/bin/i3lock -n -p default --color=000000
+  bindsym $mod+Ctrl+li exec /usr/bin/i3lock -n -p default --color=000000
   bindsym $mod+Return exec x-terminal-emulator
   bindsym $mod+d exec $HOME/.config/dmenu/dmenu-bind.sh
 #  bindsym $mod+d exec dmenu_run

@@ -28,7 +28,7 @@
 		  <Program label="Catfish File Search" confirm="false">/usr/bin/catfish</Program>
           <Program label="Geany" confirm="false">editor</Program>
 		  <Program label="Terminal">x-terminal-emulator</Program>
-		  <Program label="Thunar">x-file-manager</Program>
+		  <Program label="Pcmanfm">x-file-manager</Program>
 		  <Program label="Xarchiver">/usr/bin/xarchiver</Program>
       </Menu>
       <Menu icon="folder.png" label="Graphics">
@@ -38,7 +38,7 @@
       <Menu icon="folder.png" label="Internet">
           <Program icon="firefox.png" label="Iceweasel">x-www-browser</Program>
           <!-- <Program label="Transmission">/usr/bin/transmission-gtk</Program> -->
-          <Program label="Wicd Network Manager">gksudo /usr/bin/wicd-gtk</Program>
+          <Program label="Wicd Network Manager">/usr/bin/wicd-gtk --no-tray</Program>
       </Menu>  
       <Menu icon="folder.png" label="Multimedia">
           <Program label="SMPlayer" confirm="false">/usr/bin/smplayer</Program>
@@ -56,7 +56,7 @@
           <Program label="Bootup-Manager" confirm="false">gksudo /usr/bin/bum</Program>
           <Program label="Disk Manager" confirm="false">gksudo /usr/sbin/disk-manager</Program>
 		  <Program label="Gdebi Package Installer" confirm="false">gksudo /usr/bin/gdebi-gtk</Program>
-		  <Program label="Gigolo" confirm="false">/usr/bin/gigolo</Program>
+		  <!--<Program label="Gigolo" confirm="false">/usr/bin/gigolo</Program> -->
           <Program label="Gparted" confirm="false">gksudo /usr/sbin/gparted</Program>
           <Program label="Root Terminal" confirm="false">gksudo x-terminal-emulator</Program>
           <Program label="Root File Manager" confirm="false">gksudo x-file-manager</Program>
@@ -66,7 +66,7 @@
       <Separator/>
       <Restart label="Restart" icon="restart.png"/>
       <Exit label="Exit" confirm="true" icon="quit.png"/>
-      <Program icon="exit.png" label="Log Out">/usr/bin/oblogout</Program>
+      <Program icon="exit.png" label="Log Out">/usr/bin/star-exit</Program>
    </RootMenu>
 
 <!--
@@ -93,12 +93,17 @@
 
       <!-- Additional TrayButton attribute: label -->
       <TrayButton label="star">root:1</TrayButton>
-	  <!-- <TrayButton icon="/usr/share/tc/logo.png">root:1</TrayButton> -->
       <TrayButton label="_">showdesktop</TrayButton>
       <TrayButton label="t">exec:x-terminal-emulator</TrayButton>
       <TrayButton label="f">exec:x-file-manager</TrayButton>
       <TrayButton label="m">exec:smplayer</TrayButton>
       <TrayButton label="w">exec:x-www-browser</TrayButton>
+	  <!-- <TrayButton icon="/usr/share/tc/logo.png">root:1</TrayButton> -->
+      <!-- <TrayButton label="_">showdesktop</TrayButton> -->
+      <!-- <TrayButton icon="usr/share/icons/gnome/16x16/apps/utilities-terminal.png">exec:x-terminal-emulator</TrayButton> -->
+      <!-- <TrayButton icon="usr/share/icons/gnome/16x16/apps/system-file-manager.png">exec:x-file-manager</TrayButton> -->
+      <!-- <TrayButton icon="/usr/share/icons/gnome-colors-common/16x16/apps/smplayer.png">exec:smplayer</TrayButton> -->
+      <!-- <TrayButton icon="usr/share/icons/gnome/16x16/apps/web-browser.png">exec:x-www-browser</TrayButton> -->
 
       <!-- Additional Pager attribute: labeled -->
 
@@ -260,7 +265,7 @@
    <Key mask="4" key="e">exec:editor</Key>
    <Key mask="4" key="m">exec:/usr/bin/smplayer</Key>
    <Key mask="4" key="l">exec:/usr/bin/i3lock -n -p default --color=000000</Key>
-   <Key mask="4" key="x">exec:/usr/bin/oblogout</Key>
-   <Key mask="A" key="F3">exec:~/.config/dmenu/dmenu-bind.sh</Key>
+   <Key mask="4" key="x">exec:/usr/bin/star-exit</Key>
+   <Key mask="4" key="d">exec:~/.config/dmenu/dmenu-bind.sh</Key>
 
 </JWM>

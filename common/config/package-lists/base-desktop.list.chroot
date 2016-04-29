@@ -5,6 +5,7 @@ libnotify-bin
 bash-completion
 xfce4-mixer
 # pavucontrol
+# volumeicon-alsa
 
 ttf-dejavu 
 fonts-liberation 
@@ -38,11 +39,12 @@ galternatives
 # zenity
 
 i3lock
-dmenu
+suckless-tools
 
 smplayer
 iceweasel
-clipit
+# epiphany-browser
+# clipit
 mirage
 conky-all 
 file-roller
@@ -53,8 +55,8 @@ gnome-calculator
 
 # audacious
 # filezilla 
-hexchat 
-# bleachbit
+# hexchat 
+bleachbit
 # gsimplecal
 catfish
 # mlocate

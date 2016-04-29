@@ -322,7 +322,7 @@
         <command>gmrun</command>
       </action>
     </keybind>
-    <keybind key="A-F3">
+    <keybind key="W-d">
       <action name="Execute">
         <startupnotify>
           <enabled>true</enabled>

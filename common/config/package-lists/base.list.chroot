@@ -27,7 +27,6 @@ xdg-user-dirs
 xdg-utils
 alsa-utils
 alsa-base
-# volumeicon-alsa
 # pulseaudio
 # pulseaudio-module-x11
 # rtkit

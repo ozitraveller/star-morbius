@@ -20,14 +20,14 @@
       [submenu] (Settings) {}
          [exec] (ARandR Screen Layout Editor) {arandr}
          [exec] (Appearance) {/usr/bin/lxappearance} <>
-         [exec] (Choose Wallpaper) {/usr/bin/nitrogen} <>
+         # [exec] (Choose Wallpaper) {/usr/bin/nitrogen} <>
          [exec] (Power Manager) {/usr/bin/xfce4-power-manager-settings} <>
       [end]
 [separator]	
-
       [submenu] (Accessories) {}
+		 [exec] (Bleachbit) {/usr/bin/bleachbit} <>
          [exec] (Archive Manager) {/usr/bin/file-roller} <>	
-         [exec] (Calculator) {/usr/bin/gnome-calculator} <>
+		 [exec] (Calculator) {/usr/bin/gnome-calculator} <>
          [exec] (Catfish File Search) {/usr/bin/catfish} <>
          [exec] (Geany Editor) {editor} <>
          [exec] (Thunar) {x-file-manager} <>
@@ -44,7 +44,7 @@
 #        [exec] (FileZilla) {/usr/bin/filezilla} <>
          [exec] (Iceweasel) {x-www-browser} <>
 #        [exec] (Transmission) {/usr/bin/transmission-gtk} <>
-         [exec] (Wicd Network Manager) {gksudo /usr/bin/wicd-gtk} <>
+         [exec] (Wicd Network Manager) {/usr/bin/wicd-gtk --no-tray} <>
       [end]
       [submenu] (Multimedia) {}
          [exec] (SMPlayer) {/usr/bin/smplayer}
@@ -57,17 +57,31 @@
          [exec] (Pdf Viewer) {/usr/bin/atril}
       [end]
       [submenu] (System) {}
-		 [exec] (Alternatives Configurator) {gksudo /usr/bin/galternatives} <>
-		 [exec] (Htop Task Manager) {x-terminal-emulator -T 'htop task manager' -e htop} <>
-         [exec] (Bootup-Manager) {gksudo /usr/bin/bum}
-         [exec] (Disk Manager) {gksudo /usr/sbin/disk-manager}
-         [exec] (Gdebi Package Installer) {gksudo /usr/bin/gdebi-gtk} <>
-         [exec] (Gigolo) {/usr/bin/gigolo} <>
-         [exec] (Gparted) {gksudo /usr/sbin/gparted}
-         [exec] (Root Terminal) {gksudo x-terminal-emulator} <>
-         [exec] (Root File Manager) {gksudo x-file-manager} <>
+      	 [exec] (Alternatives Configurator) {su-to-root -X -c /usr/bin/galternatives} <>
+		 # [exec] (Htop Task Manager) {x-terminal-emulator -T 'htop task manager' -e htop} <>
+		 [exec] (LxTask Manager) {/usr/bin/lxtask} <>
+         [exec] (Bootup Manager) {su-to-root -X -c /usr/bin/bum}
+         [exec] (Disk Manager) {su-to-root -X -c /usr/sbin/disk-manager}
+         [exec] (Gdebi Package Installer) {su-to-root -X -c /usr/bin/gdebi-gtk} <>
+         # [exec] (Gigolo) {/usr/bin/gigolo} <>
+         [exec] (Gparted) {su-to-root -X -c /usr/sbin/gparted}
+		 [exec] (Root Bleachbit) {su-to-root -X -c /usr/bin/bleachbit} <>
+         [exec] (Root Terminal) {su-to-root -X -c x-terminal-emulator} <>
+         [exec] (Root File Manager) {su-to-root -X -c x-file-manager} <>
          [exec] (System Information) {/usr/bin/hardinfo}
-         [exec] (Synaptic Package Manager) {gksudo /usr/sbin/synaptic} <>
+         [exec] (Synaptic Package Manager) {su-to-root -X -c /usr/sbin/synaptic} <>
+      
+#		 [exec] (Alternatives Configurator) {gksudo /usr/bin/galternatives} <>
+#		 [exec] (Htop Task Manager) {x-terminal-emulator -T 'htop task manager' -e htop} <>
+#         [exec] (Bootup-Manager) {gksudo /usr/bin/bum}
+#         [exec] (Disk Manager) {gksudo /usr/sbin/disk-manager}
+#         [exec] (Gdebi Package Installer) {gksudo /usr/bin/gdebi-gtk} <>
+#         # [exec] (Gigolo) {/usr/bin/gigolo} <>
+#         [exec] (Gparted) {gksudo /usr/sbin/gparted}
+#         [exec] (Root Terminal) {gksudo x-terminal-emulator} <>
+#        [exec] (Root File Manager) {gksudo x-file-manager} <>
+#         [exec] (System Information) {/usr/bin/hardinfo}
+#        [exec] (Synaptic Package Manager) {gksudo /usr/sbin/synaptic} <>
       [end]
       [submenu] (Fluxbox) {Settings} <>
         [config] (Fluxbox Menu)

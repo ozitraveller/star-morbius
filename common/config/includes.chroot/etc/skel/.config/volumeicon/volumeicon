@@ -5,7 +5,7 @@ lmb_slider=true
 mmb_mute=false
 use_horizontal_slider=false
 show_sound_level=false
-onclick=pavucontrol
+onclick=xfce4-mixer
 theme=Default
 
 [Hotkeys]

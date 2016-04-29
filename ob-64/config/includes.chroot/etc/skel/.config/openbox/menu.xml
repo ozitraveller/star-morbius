@@ -84,16 +84,23 @@
 					</command>
 				</action>
 			</item>
-			<item label="Choose Wallpaper">
+			<!-- <item label="Choose Wallpaper">
 				<action name="Execute">
 					<command>
 						/usr/bin/nitrogen ~/images/wallpapers/
 					</command>
 				</action>
-			</item>
+			</item> -->
 		</menu>		
 		<separator/>
 		<menu id="accessories" label="Accessories">
+			<item label="Bleachbit">
+				<action name="Execute">
+					<command>
+						/usr/bin/bleachbit
+					</command>
+				</action>
+			</item>
 			<item label="Archive Manager">
 				<action name="Execute">
 					<command>
@@ -178,7 +185,7 @@
 			<item label="Wicd Network Manager">
 				<action name="Execute">
 					<command>
-						gksudo /usr/bin/wicd-gtk
+						/usr/bin/wicd-gtk --no-tray
 					</command>
 				</action>
 			</item>
@@ -233,35 +240,42 @@
 			<item label="Alternatives Configurator">
 				<action name="Execute">
 					<command>
-						gksudo /usr/bin/galternatives
+						su-to-root -X -c /usr/bin/galternatives
 					</command>
 				</action>
 			</item>
-			<item label="Htop Task manager">
+			<!--<item label="Htop Task manager">
 				<action name="Execute">
 					<command>
 						x-terminal-emulator -T 'htop task manager' -e htop
 					</command>
 				</action>
-			</item>
-			<item label="Bootup-Manager">
+			</item> -->
+			<item label="LxTask Manager">
 				<action name="Execute">
 					<command>
-						gksudo /usr/bin/bum
+						/usr/bin/lxtask
+					</command>
+				</action>
+			</item>
+			<item label="Bootup Manager">
+				<action name="Execute">
+					<command>
+						su-to-root -X -c /usr/bin/bum
 					</command>
 				</action>
 			</item>
 			<item label="Disk Manager">
 				<action name="Execute">
 					<command>
-						gksudo /usr/sbin/disk-manager
+						su-to-root -X -c /usr/sbin/disk-manager
 					</command>
 				</action>
 			</item>
 			<item label="Gdebi Package Installer">
 				<action name="Execute">
 					<command>
-						gksudo /usr/bin/gdebi-gtk
+						su-to-root -X -c /usr/bin/gdebi-gtk
 					</command>
 				</action>
 			</item>
@@ -275,21 +289,28 @@
 		    <item label="Gparted">
 				<action name="Execute">
 					<command>
-						gksudo /usr/sbin/gparted
+						su-to-root -X -c /usr/sbin/gparted
+					</command>
+				</action>
+			</item>
+			<item label="Root Bleachbit">
+				<action name="Execute">
+					<command>
+						su-to-root -X -c /usr/bin/bleachbit
 					</command>
 				</action>
 			</item>
 			<item label="Root Terminal">
 				<action name="Execute">
 					<command>
-						gksudo x-terminal-emulator
+						su-to-root -X -c x-terminal-emulator
 					</command>
 				</action>
 			</item>			
 			<item label="Root File Manager">
 				<action name="Execute">
 					<command>
-						gksudo x-file-manager
+						su-to-root -X -c x-file-manager
 					</command>
 				</action>
 			</item>	
@@ -303,7 +324,7 @@
 			<item label="Synaptic Package Manager">
 				<action name="Execute">
 					<command>
-						gksudo /usr/sbin/synaptic
+						su-to-root -X -c /usr/sbin/synaptic
 					</command>
 				</action>
 			</item>

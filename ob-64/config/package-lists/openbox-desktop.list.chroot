@@ -5,12 +5,14 @@ obmenu
 tint2
 
 hsetroot
-nitrogen
+# nitrogen
+feh
 
 xfce4-terminal
-compton
+# compton
 arandr
 lxappearance
+lxtask
 gmrun
 geany
 # evince

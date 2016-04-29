@@ -147,6 +147,8 @@ update(){
 	# remove default .conkyrc
 	if [ $1 == "i3" ]; then
 		rm ./includes.chroot/etc/skel/.conkyrc
+		rm -rf ./includes.chroot/etc/skel/.config/volumeicon
+		
 	fi
 		
 	#cp -r /home/$SUDO_USER/${_SOURCE}/custom/config/* ./

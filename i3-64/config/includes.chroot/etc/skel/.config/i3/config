@@ -53,7 +53,7 @@
   bindsym $mod+Shift+k move up
   bindsym $mod+Shift+l move right
   bindsym $mod+Shift+space floating toggle
-  bindsym $mod+f fullscreen toggl
+  bindsym $mod+f fullscreen toggle
   bindsym $mod+v layout toggle split
   #bindsym $mod+h split h
   #bindsym $mod+space focus mode_toggle
@@ -80,7 +80,7 @@
   bindsym $mod+Ctrl+e exec editor
   bindsym $mod+Ctrl+f exec exec x-file-manager
   bindsym $mod+Ctrl+m exec smplayer
-  bindsym $mod+Ctrl+li exec /usr/bin/i3lock -n -p default --color=000000
+  bindsym $mod+Ctrl+l exec /usr/bin/i3lock -n -p default --color=000000
   bindsym $mod+Return exec x-terminal-emulator
   bindsym $mod+d exec $HOME/.config/dmenu/dmenu-bind.sh
 #  bindsym $mod+d exec dmenu_run
@@ -179,7 +179,8 @@
   for_window [title="alsamixer"] floating enable border pixel 2
   for_window [class="Galculator"] floating enable border pixel 2
   for_window [class="GParted"] floating enable border normal
-  for_window [class="Nitrogen"] floating enable border normal
+  
+  # for_window [class="Nitrogen"] floating enable border normal
   for_window [class="Oblogout"] fullscreen enable
   for_window [class="Star-welcome"] floating enable
 

@@ -194,11 +194,11 @@ main(){
 		so) setup "ob" ;;
 		sj) setup "jwm" ;;
 		si) setup "i3" ;;
-		rx) remove "xfce" ;;
-		rf) remove "fb" ;;
-		ro) remove "ob" ;;
-		rj) remove "jwm" ;;
-		ri) remove "i3" ;;
+		rx) removeprompt "xfce" ;;
+		rf) removeprompt "fb" ;;
+		ro) removeprompt "ob" ;;
+		rj) removeprompt "jwm" ;;
+		ri) removeprompt "i3" ;;
 		ux) update "xfce" ${_VERSION} ;;
 		uf) update "fb" ${_VERSION} ;;
 		uo) update "ob" ${_VERSION} ;;
@@ -209,11 +209,11 @@ main(){
 		bo) build "ob" ;;
 		bj) build "jwm" ;;
 		bi) build "i3" ;;
-		px) purge "xfce" ;;
-		pf) purge "fb" ;;
-		po) purge "ob" ;;
-		pj) purge "jwm" ;;
-		pi) purge "i3" ;;
+		px) purgeprompt "xfce" ;;
+		pf) purgeprompt "fb" ;;
+		po) purgeprompt "ob" ;;
+		pj) purgeprompt "jwm" ;;
+		pi) purgeprompt "i3" ;;
 		q|Q) break;;
 		*) echo -e "\tinvalid answer, please try again" ;;
 	esac

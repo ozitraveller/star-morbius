@@ -7,4 +7,4 @@ set -e
 echo STAR-LIVE-Hook: "$0"
 echo ""
 
-update-alternatives --install /usr/bin/editor editor /usr/bin/leafpad 99
+update-alternatives --install /usr/bin/editor editor /usr/bin/geany 99

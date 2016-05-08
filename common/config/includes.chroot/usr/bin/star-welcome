@@ -98,7 +98,8 @@ else
 fi
 
 # Run through steps
-STEPS_BASIC=('apt-update' 'apt-dist-upgrade' 'install-nonfree' 'install-printer-packages' 'install-pulseaudio' 'install-java-packages' 'install-gigolo-gvfs' 'install-gimp' 'install-libreoffice' 'devel')
+# STEPS_BASIC=('apt-update' 'apt-dist-upgrade' 'install-printer-packages' 'install-pulseaudio' 'install-java-packages' 'install-gigolo-gvfs' 'install-gimp' 'install-libreoffice' 'devel')
+STEPS_BASIC=('apt-update' 'apt-dist-upgrade' 'install-printer-packages' 'install-pulseaudio' 'install-java-packages' 'install-gimp' 'install-libreoffice' 'devel')
 STEPS_DEVEL=('devel-install-version-control-tools' 'devel-install-ssh-server' 'devel-install-lamp-stack' 'devel-install-packaging-tools')
 STEP=1
 (( STEPS = ${#STEPS_BASIC[@]} + ${#STEPS_DEVEL[@]} + 2 )) # 2 is intro and fini

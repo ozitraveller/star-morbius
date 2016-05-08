@@ -13,13 +13,13 @@ lxterminal
 lxtask
 # compton
 arandr
-leafpad
-# geany
-xpdf
+# leafpad
+geany
+atril
 
 # pcmanfm
 spacefm
-isof
+lsof
 udevil
 # pcmanfm
 # mc

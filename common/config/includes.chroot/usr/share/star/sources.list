@@ -4,11 +4,25 @@
 ################### OFFICIAL DEVUAN REPO  ###################
 #############################################################
 
-deb http://packages.devuan.org/merged/ jessie main
-# contrib non-free 
+# deb http://packages.devuan.org/merged/ jessie main
+# deb http://us.mirror.devuan.org/merged/ jessie main
+deb http://auto.mirror.devuan.org/merged/ jessie main
+# deb-src http://auto.mirror.devuan.org/merged/ jessie main
 
-deb http://ftp.us.debian.org/debian/ jessie contrib non-free
-# deb http://security.debian.org/ jessie/updates main
+# Devuan only packages free software. The non-free archive comes from
+# Debian.  Activate the non-free component, as you would in Debian, and
+# you should be set.
+deb http://ftp.us.debian.org/debian/ stable contrib non-free
+
+# Security
+deb http://packages.devuan.org/merged jessie-security main
+# deb http:///auto.mirror.devuan.org/merged jessie-security main
+# or with https if you use apt-transport-https.
+
+# Updates
+deb http://packages.devuan.org/merged/ jessie-updates main
+# deb http://auto.mirror.devuan.org/merged/ jessie-updates main
+# deb-src http://auto.mirror.devuan.org/merged/ jessie-updates main
 
 ##############################################################
 ######################

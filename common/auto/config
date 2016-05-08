@@ -29,7 +29,7 @@ lb config noauto \
 	--apt-recommends false \
 	--apt-secure true \
 	--apt-indices false \
-	--apt-source-archives false \
+	--apt-source-archives true \
 	--archive-areas "${_ARCHIVE_AREAS}" \
 	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
 	--parent-mirror-binary "${_MIRROR_BINARY}" \

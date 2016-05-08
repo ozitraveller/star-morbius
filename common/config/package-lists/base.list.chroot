@@ -37,6 +37,7 @@ gamin
 cpufrequtils
 tzdata
 ntp
+xterm
 
 # unrar
 unace
@@ -110,27 +111,27 @@ localepurge
 
 xserver-xorg-video-all
 
-# intel-microcode
-# amd64-microcode
-# iucode-tool
+intel-microcode
+amd64-microcode
+iucode-tool
 
-# zd1211-firmware
-# firmware-linux 
-# firmware-linux-nonfree 
-# firmware-netxen
-# firmware-ralink 
-# firmware-iwlwifi
-# firmware-intelwimax 
+zd1211-firmware
+firmware-linux 
+firmware-linux-nonfree 
+firmware-netxen
+firmware-ralink 
+firmware-iwlwifi
+firmware-intelwimax 
 # firmware-ipw2x00 
-# firmware-brcm80211
-# firmware-realtek
-# firmware-atheros
-# firmware-libertas
-# firmware-bnx2
-# firmware-b43-installer 
-# firmware-b43legacy-installer 
-# b43-fwcutter 
-# mobile-broadband-provider-info 
-# wireless-tools
+firmware-brcm80211
+firmware-realtek
+firmware-atheros
+firmware-libertas
+firmware-bnx2
+firmware-b43-installer 
+firmware-b43legacy-installer 
+b43-fwcutter 
+mobile-broadband-provider-info 
+wireless-tools
 
-# lsb-release
+lsb-release

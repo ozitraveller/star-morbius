@@ -9,6 +9,7 @@ alias re='source ~/.bashrc'
 alias cd..='cd ..'
 alias md=mkdir
 alias sdn='sudo shutdown -h now'
+alias rbt='sudo reboot'
 alias prg="sudo apt-get purge"
 alias ls='ls -F --color --group-directories-first'
 alias l="ls -lha"

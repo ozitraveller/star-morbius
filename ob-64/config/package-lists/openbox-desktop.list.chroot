@@ -19,11 +19,15 @@ geany
 atril
 # zathura
 
-thunar
-thunar-data
-thunar-volman
-thunar-archive-plugin
-thunar-media-tags-plugin
-# thunar-actions-plugin
-tumbler
+spacefm
+lsof
+udevil
+
+# thunar
+# thunar-data
+# thunar-volman
+# thunar-archive-plugin
+# thunar-media-tags-plugin
+# # thunar-actions-plugin
+# tumbler
 

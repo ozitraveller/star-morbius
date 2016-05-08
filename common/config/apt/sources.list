@@ -1,4 +1,2 @@
 # deb http://packages.devuan.org/merged/ jessie main 
-deb http://au.mirror.devuan.org/merged/ jessie main
-
-# contrib non-free 
+# deb http://au.mirror.devuan.org/merged/ jessie main

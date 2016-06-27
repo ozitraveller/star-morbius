@@ -4,7 +4,7 @@ set -e
 
 RED='\033[0;41;30m'
 STD='\033[0;0;39m'
-_VERSION='0.4'
+_VERSION='0.8'
 _SOURCE='star-morbius'
  
 pause(){
@@ -106,6 +106,10 @@ update(){
 #	echo "-Parameter #1 is \"$1\".-"
 	cd $1
 	#echo $PWD
+	echo $1
+	echo $2
+	# pause
+	# return
 		
 	rm -rf ./auto/*
 	cp -rf /home/$SUDO_USER/${_SOURCE}/common/auto/* ./auto/
@@ -130,7 +134,18 @@ update(){
 		mkdir ./includes.binary/install
 	fi
 
-	cp -r /home/$SUDO_USER/${_SOURCE}/common/config/* ./
+#	echo "1"
+#	echo $2
+	if [ $2 == "min" ]; then
+#	echo "2"
+		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/apt/* ./apt/
+		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/archives/* ./archives/
+		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/bootloaders/* ./bootloaders/
+		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.installer/* ./includes.installer/
+		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.installer/preseed.cfg ./includes.binary/install/
+	else
+		cp -r /home/$SUDO_USER/${_SOURCE}/common/config/* ./
+	fi
 
 	cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/hooks/* ./hooks/
 	cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.chroot/* ./includes.chroot/
@@ -140,8 +155,10 @@ update(){
 	cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/package-lists/* ./package-lists/
 
 	DIRECTORY="/home/$SUDO_USER/${_SOURCE}/$1-64/config/packages.chroot/"
-	if [ "$(ls -A $DIRECTORY)" ]; then
-		cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/packages.chroot/* ./packages.chroot/
+	if [ -d $DIRECTORY ]; then
+		if [ "$(ls -A $DIRECTORY)" ]; then
+			cp /home/$SUDO_USER/${_SOURCE}/$1-64/config/packages.chroot/* ./packages.chroot/
+		fi
 	fi
 
 	# remove default .conkyrc
@@ -165,7 +182,7 @@ update(){
 	#echo $1-"Updated"
 
 	# uncomment pause to see messages
-	#pause
+	pause
 }
 
 main(){
@@ -174,11 +191,11 @@ main(){
 	echo -e "\t M A I N - M E N U"
 	echo -e "\t~~~~~~~~~~~~~~~~~~~~~"
 	echo " "
-	echo -e "\ts. Setup         x. Xfce"
-	echo -e "\tr. Remove        f. Fluxbox"
-	echo -e "\tu. Update        o. Openbox"
-	echo -e "\tb. Build         j. Jwm"
-	echo -e "\tp. Purge         i. i3"
+	echo -e "\ts. Setup    x. Xfce       n. Netinst"
+	echo -e "\tr. Remove   f. Fluxbox"
+	echo -e "\tu. Update   o. Openbox"
+	echo -e "\tb. Build    j. Jwm"
+	echo -e "\tp. Purge    i. i3"
 	echo " "
 	echo -e "\tExample - sx (Setup Xfce)"
 	echo " "
@@ -194,26 +211,41 @@ main(){
 		so) setup "ob" ;;
 		sj) setup "jwm" ;;
 		si) setup "i3" ;;
-		rx) removeprompt "xfce" ;;
-		rf) removeprompt "fb" ;;
-		ro) removeprompt "ob" ;;
-		rj) removeprompt "jwm" ;;
-		ri) removeprompt "i3" ;;
-		ux) update "xfce" ${_VERSION} ;;
-		uf) update "fb" ${_VERSION} ;;
-		uo) update "ob" ${_VERSION} ;;
-		uj) update "jwm" ${_VERSION} ;;
-		ui) update "i3" ${_VERSION} ;;
+		sn) setup "netinst" ;;
+		sjm) setup "jwm-min" ;;
+		sim) setup "i3-min" ;;
+		rx) remove "xfce" ;;
+		rf) remove "fb" ;;
+		ro) remove "ob" ;;
+		rj) remove "jwm" ;;
+		ri) remove "i3" ;;
+		rn) remove "netinst" ;;
+		rjm) remove "jwm-min" ;;
+		rim) remove "i3-min" ;;
+		ux) update "xfce" ;;
+		uf) update "fb" ;;
+		uo) update "ob" ;;
+		uj) update "jwm" ;;
+		ui) update "i3" ;;
+		un) update "netinst" "min";;
+		ujm) update "jwm-min" "min";;
+		uim) update "i3-min" "min";;
 		bx) build "xfce" ;;
 		bf) build "fb" ;;
 		bo) build "ob" ;;
 		bj) build "jwm" ;;
 		bi) build "i3" ;;
-		px) purgeprompt "xfce" ;;
-		pf) purgeprompt "fb" ;;
-		po) purgeprompt "ob" ;;
-		pj) purgeprompt "jwm" ;;
-		pi) purgeprompt "i3" ;;
+		bn) build "netinst" ;;
+		bjm) build "jwm-min" ;;
+		bim) build "i3-min" ;;
+		px) purge "xfce" ;;
+		pf) purge "fb" ;;
+		po) purge "ob" ;;
+		pj) purge "jwm" ;;
+		pi) purge "i3" ;;
+		pn) purge "netinst" ;;
+		pjm) purge "jwm-min" ;;
+		pim) purge "i3-min" ;;
 		q|Q) break;;
 		*) echo -e "\tinvalid answer, please try again" ;;
 	esac

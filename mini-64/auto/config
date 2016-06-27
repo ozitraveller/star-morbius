@@ -1,0 +1,119 @@
+#!/bin/sh
+
+
+#~ lb config noauto \
+	#~ --clean \
+	#~ --ignore-system-defaults \
+	#~ --mode debian \
+	#~ --debian-installer live \
+	#~ --linux-flavours "${_LINUX_FLAVOURS}" \
+	#~ --linux-packages "linux-image linux-headers" \
+	#~ --source "${_SOURCE}" \
+#~ "${@}"
+
+
+set -e
+
+_DISTRIBUTION="wheezy"
+_ARCHITECTURES="amd64"
+_LINUX_FLAVOURS="amd64"
+_ARCHIVE_AREAS="main contrib non-free"
+_SOURCE="false"
+_MIRROR_BOOTSTRAP="http://localhost:3142/http.debian.net/debian/"
+_MIRROR_BINARY="http://mirror.aarnet.edu.au/debian/"
+# _MIRROR_BINARY="http://ftp.us.debian.org/debian/"
+# _MIRROR_BINARY="http://10.0.2.15:3142/http.debian.org/debian/"
+
+# LB_MIRROR_CHROOT_SECURITY="http://localhost:3142/security.debian.org/"
+# LB_MIRROR_CHROOT_BACKPORTS="http://localhost:3142/ftp.debian.org/debian/"
+
+#http://ftp.us.debian.org/debian/
+
+# 	--firmware-binary true \
+#~ --bootstrap debootstrap \
+#--bootloader "syslinux" \
+# 	--linux-packages "linux-image linux-headers" \
+
+	
+lb config noauto \
+	--mode debian \
+	--distribution "${_DISTRIBUTION}" \
+	--debian-installer-distribution "${_DISTRIBUTION}" \
+	--debian-installer live \
+	--architectures "${_ARCHITECTURES}" \
+	--linux-flavours "${_LINUX_FLAVOURS}" \
+	--apt-recommends false \
+	--apt-options "--yes --no-install-recommends" \
+	--apt-secure true \
+	--apt-indices false \
+	--apt-source-archives false \
+	--archive-areas "${_ARCHIVE_AREAS}" \
+ 	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
+ 	--mirror-bootstrap "${_MIRROR_BINARY}" \
+	--parent-mirror-binary "${_MIRROR_BINARY}" \
+	--mirror-binary "${_MIRROR_BINARY}" \
+	--iso-application "Star Linux" \
+	--iso-publisher "Star" \
+	--iso-volume "Star Live" \
+	--backports true \
+	--security false \
+    --updates false \
+	--memtest none \
+	--win32-loader false \
+	--debug \
+	--verbose \
+	--bootappend-live "boot=live config quiet noautologin splash nouveau.modeset=0 radeon.modeset=0" \
+"${@}"
+
+# 	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
+# 	--mirror-bootstrap "${_MIRROR_BINARY}" \
+
+#  noswap user-default-groups=audio,cdrom,dip,floppy,video,plugdev,netdev,powerdev,scanner,bluetooth,fuse
+
+# 	--bootappend-live "boot=live debug noconfig noeject" \
+
+	#--bootappend-live "boot=live debug config=user-setup,sudo,lightdm noeject \
+	                   #username=star-live user-fullname=star-live hostname=star \
+	                   #user-default-groups=audio,cdrom,dip,floppy,video,plugdev,netdev,powerdev,scanner,bluetooth,fuse" \
+
+
+#    --bootappend-live "boot=live hostname=star noconfig=sudo username=star-live" \
+
+	#--bootappend-live "boot=live \
+                       #noconfig=sudo \
+                       #persistence \
+                       #hostname=star" \
+                       
+
+# 	live-config.user-default-groups=audio,cdrom,dip,floppy,video,plugdev,netdev,powerdev,scanner,bluetooth,fuse" \
+#~ 
+        #~ --bootappend-live "boot=live config quiet splash \
+#~ components \
+#~ nottyautologin \
+#~ noeject \
+#~ swapon \
+#~ hostname=vsido \
+#~ " \
+
+#	--bootappend-live "boot=live config quiet splash persistence hostname=star" \
+# --bootappend-live "boot=live config quiet splash persistence"
+#	--bootappend-live "boot=live noconfig=sudo hostname=star persistence" \
+
+#~ lb config noauto \
+	#~ --clean \
+	#~ --debian-installer "true" \
+	#~ --architectures amd64 \
+	#~ --linux-flavours amd64 \
+	#~ --zsync false \
+	#~ --checksums md5 \
+	#~ --apt-recommends false \
+	#~ --apt aptitude \
+	#~ --apt-indices false \
+	#~ --apt-source-archives false \
+	#~ --archive-areas "main contrib non-free" \
+	#~ --memtest "none" \
+	#~ --win32-loader "false" \
+	#~ --debug \
+	#~ --verbose \
+	#~ --source "false" \
+#~ "${@}"

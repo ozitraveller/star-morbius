@@ -3,6 +3,8 @@
 #####################
 xorg
 
+# reportbug - reportbug postgres
+
 sysvinit-core
 
 accountsservice
@@ -82,17 +84,18 @@ jfsutils
 # dmraid
 # dmsetup
 
-debian-keyring 
-libxss1 
-logrotate 
-# libdvdcss 
-mpg321 
-libgstreamer-perl 
-gstreamer1.0-plugins-base 
+debian-keyring
+libxss1
+logrotate
+debfoster
+# libdvdcss
+mpg321
+libgstreamer-perl
+gstreamer1.0-plugins-base
 gstreamer1.0-plugins-good 
-gstreamer1.0-plugins-bad 
-gstreamer1.0-plugins-ugly 
-# gstreamer0.10-ffmpeg 
+gstreamer1.0-plugins-bad
+gstreamer1.0-plugins-ugly
+# gstreamer0.10-ffmpeg
 libgstreamer-interfaces-perl
 gstreamer1.0-alsa
 gir1.2-gst-plugins-base-1.0
@@ -135,3 +138,7 @@ mobile-broadband-provider-info
 wireless-tools
 
 lsb-release
+
+discover
+discover-data
+lshw

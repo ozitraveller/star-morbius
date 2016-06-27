@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+# This variable is required otherwise
+# /usr/share/live/build/scripts/build/binary_debian-installer fails because
+# the version is empty (nothing known in
+# /usr/share/live/build/functions/releases.sh)
+# export RELEASE_star="0.60"
+
+lb build noauto "${@}" 2>&1 | tee build.log
+# lb build noauto "${@}" 2>&1 | tee star-stable_013-`date +%Y%m%d-%H%M`.log

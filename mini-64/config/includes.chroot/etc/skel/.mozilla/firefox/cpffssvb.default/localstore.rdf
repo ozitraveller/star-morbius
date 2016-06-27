@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="chrome://browser/content/preferences/preferences.xul#BrowserPreferences"
+                   screenX="385"
+                   screenY="146"
+                   lastSelected="paneMain" />
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul">
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentTags"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentUrl"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentDate"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentVisitCount"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentKeyword"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentDescription"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentDateAdded"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#placesContentLastModified"/>
+    <NC:persist RDF:resource="chrome://browser/content/places/places.xul#places"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentTags"
+                   ordinal="3" />
+  <RDF:Description RDF:about="chrome://browser/content/sanitize.xul#itemList"
+                   collapsed="false" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#sidebar-title"
+                   value="" />
+  <RDF:Description RDF:about="place:folder=21&amp;excludeItems=1&amp;expandQueries=0"
+                   NC:open="true" />
+  <RDF:Description RDF:about="chrome://browser/content/sanitize.xul#detailsExpander"
+                   class="expander-up" />
+  <RDF:Description RDF:about="chrome://browser/content/sanitize.xul">
+    <NC:persist RDF:resource="chrome://browser/content/sanitize.xul#SanitizeDialog"/>
+    <NC:persist RDF:resource="chrome://browser/content/sanitize.xul#detailsExpander"/>
+    <NC:persist RDF:resource="chrome://browser/content/sanitize.xul#itemList"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentLastModified"
+                   ordinal="17" />
+  <RDF:Description RDF:about="chrome://browser/content/preferences/preferences.xul">
+    <NC:persist RDF:resource="chrome://browser/content/preferences/preferences.xul#BrowserPreferences"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentKeyword"
+                   ordinal="11" />
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentDate"
+                   ordinal="7"
+                   sortDirection="descending" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul">
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#main-window"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#sidebar-box"/>
+    <NC:persist RDF:resource="chrome://browser/content/browser.xul#sidebar-title"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentDescription"
+                   ordinal="13" />
+  <RDF:Description RDF:about="chrome://browser/content/browser.xul#main-window"
+                   width="1032"
+                   height="549"
+                   sizemode="normal"
+                   screenY="31"
+                   screenX="205" />
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentDateAdded"
+                   ordinal="15" />
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentUrl"
+                   ordinal="5" />
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#places"
+                   screenX="672"
+                   screenY="271"
+                   width="700"
+                   height="500"
+                   sizemode="normal" />
+  <RDF:Description RDF:about="chrome://browser/content/places/places.xul#placesContentVisitCount"
+                   ordinal="9" />
+  <RDF:Description RDF:about="chrome://browser/content/sanitize.xul#SanitizeDialog"
+                   screenX="77"
+                   screenY="206" />
+</RDF:RDF>

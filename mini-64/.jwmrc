@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+
+<JWM>
+
+   <!-- The root menu, if this is undefined you will not get a menu. -->
+   <!-- Additional RootMenu attributes: onroot, labeled, label -->
+   <RootMenu height="15" onroot="123">
+      <Program icon="terminal.png" label="Terminal">x-terminal-emulator</Program>
+      <Program icon="firefox.png" label="Web Browser">gnome-www-browser</Program>
+      <Program icon="thunar.png" label="File Manager">/usr/bin/thunar</Program>
+
+      <Separator/>
+      <Menu icon="folder.png" label="Settings">
+          <Program label="Display" confirm="false">/usr/bin/arandr</Program>
+          <Program label="Appearance" confirm="false">/usr/bin/lxappearance</Program>
+      </Menu>
+      <Separator/>
+      <Menu icon="folder.png" label="Accessories">
+        <Program label="Calculator" confirm="false">/usr/bin/gcalctool</Program>
+      </Menu>
+      <Menu icon="folder.png" label="Graphics">
+          <Program label="Mirage" confirm="false">mirage</Program>
+      </Menu>      
+      <Menu icon="folder.png" label="Internet">
+      <Program icon="firefox.png" label="Web Browser">gnome-www-browser</Program>
+      </Menu>  
+      <Menu icon="folder.png" label="Multimedia">
+          <Program label="VLC media player" confirm="false">/usr/bin/qvlc</Program>
+      </Menu>      
+      <Menu icon="folder.png" label="Office">
+          <Program label="Evince" confirm="false">/usr/bin/evince</Program>
+      </Menu>      
+      <Menu icon="folder.png" label="System">
+          <Program label="System Information" confirm="false">/usr/bin/hardinfo</Program>
+          <Program label="Disk Manager" confirm="false">gksudo /usr/sbin/disk-manager</Program>
+          <Program icon="programs.png" label="Synaptic" confirm="false">
+             gksudo synaptic
+          </Program>
+          <Program label="Terminal as root" confirm="false">/usr/bin/gksu -u root /usr/bin/x-terminal-emulator</Program>
+      </Menu>
+      <Separator/>
+      <Restart label="Restart" icon="restart.png"/>
+      <Exit label="Exit" confirm="true" icon="quit.png"/>
+      <Program icon="exit.png" label="Log Out">
+         /usr/bin/vsido-exit
+      </Program>   
+   </RootMenu>
+
+<!--
+   <Group>
+      <Class>Pidgin</Class>
+      <Option>sticky</Option>
+   </Group>
+
+   <Group>
+      <Name>gkrellm</Name>
+      <Option>nolist</Option>
+      <Option>sticky</Option>
+   </Group>
+
+   <Group>
+      <Name>xterm</Name>
+      <Option>vmax</Option>
+      <Option>icon:terminal.png</Option>
+   </Group>
+-->
+
+   <!-- Additional tray attributes: autohide, width, border, layer, layout -->
+   <Tray  x="0" y="-1" height="22" autohide="false">
+
+      <!-- Additional TrayButton attribute: label -->
+      <TrayButton label="JWM">root:1</TrayButton>
+
+      <TrayButton label="_">showdesktop</TrayButton>
+
+      <!-- Additional Pager attribute: labeled -->
+      <Pager labeled="true"/>
+
+      <TaskList maxwidth="256"/>
+
+      <Dock/>
+      <!-- Additional Swallow attribute: height
+
+
+ 
+      <Swallow name="xload" width="64">
+         xload -nolabel -bg black -fg red -hl white
+      </Swallow>
+
+      
+      <Swallow name="volumeicon">
+         volumeicon
+      </Swallow>   
+      <Swallow name="wicd-gtk">
+         wicd-client
+      </Swallow>      
+       -->
+      <Clock format="%l:%m %p">xclock</Clock>
+
+   </Tray>
+
+   <!-- Visual Styles -->
+
+   <WindowStyle>
+
+      <Font>liberation.sans-10</Font>
+      <Width>4</Width>
+      <Height>20</Height>
+
+<!--
+      <Active>
+         <Text>white</Text>
+         <Title>#2f2f2f:#1c1c1c</Title>
+         <Outline>#1c1c1c</Outline>
+      </Active>
+
+      <Inactive>
+         <Text>#9c9c9c</Text>
+         <Title>#1f1f1f:#1a1a1a</Title>
+         <Outline>#1a1a1a</Outline>
+      </Inactive>
+-->
+      <Active>
+         <Text>#c0c0c0</Text>
+         <Title>#404040</Title>
+         <Outline>#404040</Outline>
+      </Active>
+      <Corner>#404040</Corner>
+
+      <Inactive>
+         <Text>#c0c0c0</Text>
+         <Title>#202020</Title>
+         <Outline>#202020</Outline>
+      </Inactive>
+
+   </WindowStyle>
+
+<!--
+   <TaskListStyle>
+      <Font>liberation.sans-10</Font>
+      <ActiveForeground>white</ActiveForeground>
+      <ActiveBackground>#2f2f2f:#1c1c1c</ActiveBackground>
+      <Foreground>#808080</Foreground>
+      <Background>#2b2b2b:#1d1d1d</Background>
+   </TaskListStyle>
+
+    <TrayStyle>
+      <Font>liberation.sans-10</Font>
+      <Background>white</Background>
+      <Foreground>#1a1a1a</Foreground>
+   </TrayStyle>
+
+   <PagerStyle>
+      <Outline>#1a1a1a</Outline>
+      <Foreground>#2b2b2b</Foreground>
+      <Background>#0d0d0d</Background>
+      <ActiveForeground>#d9d9d9</ActiveForeground>
+      <ActiveBackground>#3c3c3c</ActiveBackground>
+   </PagerStyle>
+
+   <MenuStyle>
+      <Font>liberation.sans-10</Font>
+      <Foreground>#d9d9d9</Foreground>
+      <Background>#1a1a1a</Background>
+      <ActiveForeground>white</ActiveForeground>
+      <ActiveBackground>#2c2c2c:#3c3c3c</ActiveBackground>
+   </MenuStyle>
+-->
+
+   <TaskListStyle>
+      <Font>liberation.sans-10</Font>
+      <ActiveForeground>#c0c0c0</ActiveForeground>
+      <ActiveBackground>#404040</ActiveBackground>
+      <Foreground>#c0c0c0</Foreground>
+      <Background>#202020</Background>
+   </TaskListStyle>
+
+   <!-- Additional TrayStyle attribute: insert -->
+   <TrayStyle>
+      <Font>liberation.sans-10</Font>
+      <Background>#c0c0c0</Background>
+      <Foreground>black</Foreground>
+   </TrayStyle>
+
+   <PagerStyle>
+      <Outline>#1a1a1a</Outline>
+      <Foreground>#2b2b2b</Foreground>
+      <Background>#0d0d0d</Background>
+      <ActiveForeground>#d9d9d9</ActiveForeground>
+      <ActiveBackground>#3c3c3c</ActiveBackground>
+   </PagerStyle>
+
+   <MenuStyle>
+      <Font>liberation.sans-10</Font>
+      <Foreground>#c0c0c0</Foreground>
+      <Background>#202020</Background>
+      <ActiveForeground>#c0c0c0</ActiveForeground>
+      <ActiveBackground>#404040</ActiveBackground>
+   </MenuStyle>
+
+   <PopupStyle>
+      <Font>liberation.sans-10:weight=bold</Font>
+      <Outline>#3c3c3c</Outline>
+      <Foreground>white</Foreground>
+      <Background>#3c3c3c</Background>
+   </PopupStyle>
+
+   <IconPath>
+      /usr/share/icons/wm-icons/32x32-gant
+   </IconPath>
+
+   <!-- Virtual Desktops -->
+   <!-- Desktop tags can be contained within Desktops for desktop names. -->
+   <Desktops width="2">
+      <!-- Default background. Note that a Background tag can be
+           contained within a Desktop tag to give a specific background
+           for that desktop.
+      <Background type="image">/export0/images/formulae.jpg</Background>
+       -->
+   </Desktops>
+
+   <!-- Double click speed (in milliseconds) -->
+   <DoubleClickSpeed>400</DoubleClickSpeed>
+
+   <!-- Double click delta (in pixels) -->
+   <DoubleClickDelta>2</DoubleClickDelta>
+
+   <!-- The focus model (sloppy or click) -->
+   <FocusModel>sloppy</FocusModel>
+
+   <!-- The snap mode (none, screen, or border) -->
+   <SnapMode>none</SnapMode>
+
+   <!-- The move mode (outline or opaque) -->
+   <MoveMode>putline</MoveMode>
+
+   <!-- The resize mode (outline or opaque) -->
+   <ResizeMode>opaque</ResizeMode>
+
+   <!-- 
+   <StartupCommand>volumeicon</StartupCommand>
+   <StartupCommand>wicd-gtk</StartupCommand>
+    -->
+
+   <!-- Key bindings -->
+   <Key key="Up">up</Key>
+   <Key key="Down">down</Key>
+   <Key key="Right">right</Key>
+   <Key key="Left">left</Key>
+   <Key key="h">left</Key>
+   <Key key="j">down</Key>
+   <Key key="k">up</Key>
+   <Key key="l">right</Key>
+   <Key key="Return">select</Key>
+   <Key key="Escape">escape</Key>
+
+   <Key mask="A" key="Tab">next</Key>
+   <Key mask="A" key="F4">close</Key>
+   <Key mask="A" key="#">desktop#</Key>
+   <Key mask="A" key="F1">root:1</Key>
+   <Key mask="A" key="F2">window</Key>
+   <Key mask="A" key="F10">maximize</Key>
+   <Key mask="A" key="Right">rdesktop</Key>
+   <Key mask="A" key="Left">ldesktop</Key>
+   <Key mask="A" key="Up">udesktop</Key>
+   <Key mask="A" key="Down">ddesktop</Key>
+   
+   <Key mask="4" key="t">exec:xfce4-terminal</Key>
+   <Key mask="4" key="w">exec:iceweasel</Key>
+   <Key mask="4" key="f">exec:thunar</Key>
+   <Key mask="4" key="m">exec:vlc</Key>
+   <Key mask="4" key="x">exec:sudo /usr/bin/vsido-exit</Key>
+   <Key mask="A" key="F3">exec:dmenu_run</Key>
+
+</JWM>

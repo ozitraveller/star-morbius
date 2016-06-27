@@ -1,0 +1,105 @@
+# http://conky.pitstop.free.fr/wiki/index.php5?title=Using_Sensors_%28en%29
+# sudo apt-get install lm-sensors hddtemp
+
+background yes
+use_xft yes
+xftfont HandelGotD:size=8
+xftalpha 0.5
+update_interval 4.0
+total_run_times 0
+own_window yes
+own_window_type normal
+own_window_transparent no
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+minimum_size 200 5
+maximum_width 200
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders yes
+default_color grey
+default_shade_color red
+default_outline_color green
+alignment top_right
+gap_x 10
+gap_y 20
+no_buffers yes
+uppercase no
+cpu_avg_samples 2
+override_utf8_locale no
+if_up_strictness address
+
+# ${alignc 35}${font Arial Black:size=26}${time %I:%M}${font}
+# ${alignc}${time %A, %B %d, %Y}
+
+# ${color slate grey}uptime    ${color }${alignr}${uptime}
+# ${color slate grey}IP${color }${alignr}${execi 3600 wget -O - http://whatismyip.org/ | tail}
+# PROCESSES ${hr 2}
+# ${cpugraph cpu1 25 ff0000 ff00ff}
+# ${cpugraph cpu2 25 ff0000 ff00ff}
+# ${color slate grey}shared${goto 55}${fs_size /windows}${alignr}${color } ${fs_used_perc /windows}%   ${fs_bar 8,60 /windows}
+# ${goto 117}${color slate grey}Essid: ${color }${wireless_essid wlan0}
+# ${color slate grey}/var/log/messages:
+# ${color}${exec tail -n20 /var/log/messages}
+
+## box chars - plus - works on #! Statler
+## Inspired by Arpinux, Box Chars by Aphelion & Sector11
+## http://crunchbanglinux-fr.org/forum/viewtopic.php?pid=15355#p15355
+## ¦ - + - + + - + + + ¦
+## ¦ - + - + + - + ¦ + ¦
+
+## ? ? ? ? ? ? ? ? ? « »
+## ¦  ¦  ¦ ? ? ? ? ? ?
+## • ? ? ? ? ? ? ? ¤
+## ¼ ½ ¾ ® ©
+# shared${alignr}${color } ${fs_used_perc /windows}%   ${fs_bar 8,60 /windows}
+#external IP${goto 75}${exec wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'}
+
+# ${goto 15}${pre_exec cat /etc/issue.net} ${machine}
+
+TEXT
+${font sans-serif:bold:size=8}SYSTEM ${hr 2}${font sans-serif:normal:size=8}
+
+${goto 15}${kernel}
+
+core 0${goto 55}${platform coretemp.0 temp 2}°C${alignr}${cpu cpu1}%   ${cpubar cpu1 8,60 cpu}
+core 1${goto 55}${platform coretemp.0 temp 3}°C${alignr}${cpu cpu2}%   ${cpubar cpu2 8,60 cpu}
+ram${goto 55}${mem}${alignr}${memperc}%   ${membar 8,60}
+swap${alignr}${swapperc}%   ${swapbar 8,60}
+
+${font sans-serif:bold:size=8}CPU ${hr 2}${font sans-serif:normal:size=8}
+${color #ddaa00}${top name 1}${alignr}${top cpu 1}${color }
+${top name 2} ${alignr}${top cpu 2}
+${top name 3} ${alignr}${top cpu 3}
+${top name 4} ${alignr}${top cpu 4}
+${top name 5} ${alignr}${top cpu 5}
+
+${font sans-serif:bold:size=8}MEM ${hr 2}${font sans-serif:normal:size=8}
+${color #ddaa00}${top_mem name 1}${alignr}${top_mem mem 1}${color }
+${top_mem name 2}${alignr}${top_mem mem 2}
+${top_mem name 3}${alignr}${top_mem mem 3}
+${top_mem name 4}${alignr}${top_mem mem 4}
+${top_mem name 5}${alignr}${top_mem mem 5}
+
+processes${alignr}${processes} (${running_processes} running)
+
+${font sans-serif:bold:size=8}HD ${hr 2}${font sans-serif:normal:size=8}
+boot${alignr}${fs_used_perc /boot}%   ${fs_bar 8,60 /boot}
+root${alignr}${fs_used_perc /}%   ${fs_bar 8,60 /}
+home${alignr}${fs_used_perc /home}%   ${fs_bar 8,60 /home}
+
+${font sans-serif:bold:size=8}Network ${hr 2}${font sans-serif:normal:size=8}
+internal IP${goto 75}${addr eth0}
+${if_up ppp0}down:${goto 40}${downspeed ppp0}k/s${goto 107}up:${goto 140}${upspeed ppp0}k/s
+total:${goto 40}${totaldown ppp0}${goto 107}total:${goto 140}${totalup ppp0}
+${downspeedgraph ppp0 20,100 ddaa00 facf40}${alignr}${upspeedgraph ppp0 20,100 ddaa00 facf40}
+${endif}${if_up eth0}down:${goto 40}${downspeed eth0}k/s${goto 107}up:${goto 140}${upspeed eth0}k/s
+total:${goto 40}${totaldown eth0}${goto 107}total:${goto 140}${totalup eth0}
+${downspeedgraph eth0 20,100 ddaa00 facf40}${alignr}${upspeedgraph eth0 20,100 ddaa00 facf40}
+${endif}${if_up wlan0}Strength: ${wireless_link_qual_perc wlan0}%
+down:${goto 40}${downspeed wlan0}k/s${goto 107}up:${goto 140}${upspeed wlan0}k/s
+total:${goto 40}${totaldown wlan0}${goto 107}total:${goto 140}${totalup wlan0}
+${downspeedgraph wlan0 20,100 ddaa00 facf40}${alignr}${upspeedgraph wlan0 20,100 ddaa00 facf40}
+${endif}
+

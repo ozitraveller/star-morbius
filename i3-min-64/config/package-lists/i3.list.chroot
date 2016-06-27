@@ -1,0 +1,97 @@
+xorg
+# xserver-xorg
+xinit
+# policykit-1 
+# policykit-1-gnome
+# xauth
+
+wmctrl
+
+uuid-runtime
+user-setup
+zsh
+xdg-utils
+
+dosfstools
+gpart
+mtools
+ntfs-3g
+xfsprogs
+xfsdump 
+btrfs-tools
+reiserfsprogs 
+reiser4progs 
+
+# efibootmgr
+# efivar
+
+# python-minimal
+# python-tk
+
+# spacefm
+lsof
+udevil
+pmount
+uzbl
+# surf
+# iceweasel
+leafpad
+# lxterminal
+sakura
+# xterm
+dmenu
+ceni
+# wicd
+# ufw
+
+i3
+i3status
+dunst
+i3lock
+suckless-tools
+conky
+
+#  adwaita-icon-theme busybox ca-certificates consolekit dbus
+#  dconf-gsettings-backend dconf-service debian-keyring dmsetup eject file
+#  fontconfig fontconfig-config fonts-dejavu-core glib-networking
+#  glib-networking-common glib-networking-services gsettings-desktop-schemas
+#  hicolor-icon-theme initramfs-tools klibc-utils libatk-bridge2.0-0
+#  libatk1.0-0 libatk1.0-data libatspi2.0-0 libavahi-client3
+#  libavahi-common-data libavahi-common3 libcairo-gobject2 libcairo2 libcap-ng0
+#  libck-connector0 libcolord2 libcroco3 libcups2 libdatrie1 libdbus-1-3
+#  libdbus-glib-1-2 libdconf1 libdevmapper1.02.1 libexpat1 libfontconfig1
+#  libfreetype6 libgdk-pixbuf2.0-0 libgdk-pixbuf2.0-common libglib2.0-0
+#  libgraphite2-3 libgssapi-krb5-2 libgtk-3-0 libgtk-3-bin libgtk-3-common
+#  libharfbuzz0b libjasper1 libjbig0 libjpeg62-turbo libjson-glib-1.0-0
+#  libjson-glib-1.0-common libk5crypto3 libkeyutils1 libklibc libkrb5-3
+#  libkrb5support0 liblcms2-2 libmagic1 libpango-1.0-0 libpangocairo-1.0-0
+#  libpangoft2-1.0-0 libpixman-1-0 libpng12-0 libpolkit-agent-1-0
+#  libpolkit-backend-1-0 libpolkit-gobject-1-0 libproxy1 librest-0.7-0
+#  librsvg2-2 librsvg2-common libsoup-gnome2.4-1 libsoup2.4-1 libsqlite3-0
+#  libthai-data libthai0 libtiff5 libuuid-perl libwayland-client0
+#  libwayland-cursor0 libx11-6 libx11-data libxau6 libxcb-render0 libxcb-shm0
+#  libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxdmcp6 libxext6 libxfixes3
+#  libxi6 libxinerama1 libxkbcommon0 libxml2 libxrandr2 libxrender1 linux-base
+#  linux-image-3.16.0-4-amd64 linux-image-amd64 live-boot
+#  live-boot-initramfs-tools live-config live-config-sysvinit 
+#  locales openssl policykit-1 policykit-1-gnome rsync shared-mime-info sudo
+#   ucf  uuid-runtime xkb-data
+
+
+#  adduser busybox coreutils cpio cryptsetup cryptsetup-bin debconf debianutils
+#  dmeventd dmsetup dpkg firmware-linux-free gcc-4.9-base gettext-base
+#  grub-common grub-pc grub-pc-bin grub2-common init-system-helpers
+#  initramfs-tools initscripts insserv jfsutils klibc-utils kmod libacl1
+#  libasprintf0c2 libattr1 libaudit-common libaudit1 libblkid1 libbz2-1.0 libc6
+#  libcryptsetup4 libdb5.3 libdevmapper-event1.02.1 libdevmapper1.02.1
+#  libfdisk1 libfreetype6 libfuse2 libgcc1 libgcrypt20 libgdbm3 libgpg-error0
+#  libklibc libkmod2 liblvm2cmd2.02 liblzma5 libmount1 libncurses5 libncursesw5
+#  libpam-modules libpam-modules-bin libpam0g libpcre3 libpng12-0 libpopt0
+#  libprocps3 libreadline5 libselinux1 libsemanage-common libsemanage1
+#  libsepol1 libslang2 libsmartcols1 libstdc++6 libtinfo5 libudev1
+#  libustr-1.0-1 libuuid-perl libuuid1 lilo linux-base
+#  linux-image-3.16.0-4-amd64 linux-image-amd64 lsb-base lvm2 mdadm mount
+#  multiarch-support passwd perl perl-base perl-modules procps readline-common
+#  sensible-utils startpar sysv-rc sysvinit-utils tar tzdata ucf udev
+#  util-linux xfsprogs zlib1g
+

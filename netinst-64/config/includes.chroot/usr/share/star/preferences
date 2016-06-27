@@ -1,0 +1,24 @@
+
+# Package: *
+# Pin: release n=sid
+# Pin-Priority: 500
+
+# Package: *
+# Pin: release n=unstable
+# Pin-Priority: 200
+
+# Package: *
+# Pin: release n=experimental
+# Pin-Priority: 100
+
+Package: *
+Pin: release a=jessie
+Pin-Priority: 500
+
+# Package: *
+# Pin: release a=jessie-backports
+# Pin-Priority: 100
+
+Package: *
+Pin: release a=stable
+Pin-Priority: 100

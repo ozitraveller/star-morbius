@@ -1,0 +1,12 @@
+# deb http://au.mirror.devuan.org/merged/ jessie main
+
+deb http://au.mirror.devuan.org/merged/ jessie main
+deb-src http://au.mirror.devuan.org/merged/ jessie main
+
+# jessie-security, previously known as 'volatile'
+deb http://au.mirror.devuan.org/merged/ jessie-security main
+deb-src http://au.mirror.devuan.org/merged/ jessie-security main
+
+# jessie-updates, previously known as 'volatile'
+deb http://au.mirror.devuan.org/merged/ jessie-updates main
+deb-src http://au.mirror.devuan.org/merged/ jessie-updates main

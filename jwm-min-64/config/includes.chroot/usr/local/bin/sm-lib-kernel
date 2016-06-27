@@ -1,0 +1,937 @@
+#!/bin/bash
+########################################################################
+####  Script Name: sm-lib-kernel
+####  version: 2.6.45
+####  Date: 2014-06-30
+
+####  Copyright (C) Harald Hope 2005-2014
+####  This program is free software; you can redistribute it and/or modify it under
+####  the terms of the GNU General Public License as published by the Free Software
+####  Foundation; either version 2 of the License, or (at your option) any later version.
+
+####  This program is distributed in the hope that it will be useful, but WITHOUT
+####  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+####  FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+####  Get the full text of the GPL here:
+####  http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
+####  Script Author: Harald Hope
+####  This is a library file for smxi and cannot be run independently
+
+####  Script URL: http://smxi.org/sm/sm-lib-kernel
+####  Script SVN: http://code.google.com/p/smxi
+####  Script Home page: http://techpatterns.com/forums/about736.html
+########################################################################
+
+########################################################################
+####  VARIABLES
+########################################################################
+# 32 bit lists 
+KERNEL_LIST_32='3.14-9.dmz.1-liquorix-686 3.13-11.dmz.3-liquorix-686 3.12-10.dmz.1-liquorix-686 3.11-10.dmz.1-liquorix-686 3.10-22.dmz.1-liquorix-686 3.9-11.dmz.1-liquorix-686 3.8-13.dmz.1-liquorix-686 3.7.0-10.dmz.1-liquorix-686 3.6.0-11.dmz.1-liquorix-686 3.4.0-35.dmz.1-liquorix-686 3.2.0-14.dmz.1-liquorix-686 3.0.0-9.dmz.1-liquorix-686 2.6.38-7.dmz.2-liquorix-686 2.6.36-3.dmz.2-liquorix-686 2.6.34-2.dmz.3-liquorix-686 2.6.32-12.dmz.1-liquorix-686'
+KERNEL_ADVANCED_LIST_32=''
+TESTING_KERNEL_32=''
+# 64 bit lists 
+KERNEL_LIST_64='3.14-9.dmz.1-liquorix-amd64 3.13-11.dmz.3-liquorix-amd64 3.12-10.dmz.1-liquorix-amd64 3.11-10.dmz.1-liquorix-amd64 3.10-22.dmz.1-liquorix-amd64 3.9-11.dmz.1-liquorix-amd64 3.8-13.dmz.1-liquorix-amd64 3.7.0-10.dmz.1-liquorix-amd64 3.6.0-11.dmz.1-liquorix-amd64 3.4.0-35.dmz.1-liquorix-amd64 3.2.0-14.dmz.1-liquorix-amd64 3.0.0-9.dmz.1-liquorix-amd64 2.6.38-7.dmz.2-liquorix-amd64 2.6.36-3.dmz.2-liquorix-amd64 2.6.34-2.dmz.3-liquorix-amd64 2.6.32-12.dmz.1-liquorix-amd64'
+KERNEL_ADVANCED_LIST_64=''
+TESTING_KERNEL_64=''
+
+########################################################################
+####  FUNCTIONS
+########################################################################
+
+check_kernel()
+{
+	eval $LOGMS
+	local opt='' options='continue alternate-kernel-install'
+	local advancedKernel='' kernelFile='' 
+	local kernelMath=$KERNEL_MATH kernel_slice=2 
+	local kernelAptMath=0
+
+	local prefId='meta-package-selection'
+	local smPref=$( sm_pref_tester $prefId 'equal' )
+
+	# two cases, one it's not set, the other standard default
+	if [ -z "$smPref" -o "$smPref" == 'manual' ];then
+		# set to use proper advanced kernel data 64 / 32 bit
+		# no need to load this data more than once per run through.
+		# only need this data in the single case of -K option startup
+		# otherwise it loads in advanced kernel install
+		if [ "$B_KERNEL_DATA_SET" != 'true' -a "$B_ADVANCED_KERNEL" == 'true' ];then
+			set_kernel_data
+			B_KERNEL_DATA_SET='true'
+		fi
+
+		# test for advanced kernels too for the comparison, no need to test for null strings
+		# first need to normalize data for comparison
+		if [ -n "$KERNEL_ADVANCED_LIST" ];then
+			local kalNormal=$( echo "$KERNEL_ADVANCED_LIST" | cut -d ' ' -f 1  )
+			kalNormal=$kalNormal
+			local ckNormal=$CURRENT_KERNEL
+			advancedKernel=$( echo $kalNormal | grep -o $ckNormal )
+			if [ -n "$advancedKernel" ];then
+				B_KERNEL_EQUAL_INSTALL='true'
+			fi
+		fi
+		# sets B_KERNEL_EQUAL_INSTALL
+		test_kernel_strings "$CURRENT_APT_KERNEL" 'set-ke'
+		
+		if [ "$CURRENT_APT_KERN_BASE" == '2.6' ];then
+			kernel_slice='3'
+		fi
+		
+		local kernelAptMath=$( echo $CURRENT_APT_KERNEL | cut -d '-' -f 1 | grep -oE "^(2\.6|[3-9])\.[0-9]+" | cut -d '.' -f $kernel_slice )
+
+		# this is for comparing say 23/25 (2.6.23/2.6.25) with arithmetic, sometimes
+		# need to force du prior to kernel install to avoid errors
+		# need to see if it's new or 2.6 kernel first
+		case $CURRENT_APT_KERN_BASE in
+			3)	kernelAptMath=$(( $kernelAptMath + 40 ))
+				;;
+			4)	kernelAptMath=$(( $kernelAptMath + 80 ))
+				;;
+		esac
+		case $KERNEL_BASE in
+			3)	kernelMath=$(( $kernelMath + 40 ))
+				;;
+			4)	kernelMath=$(( $kernelMath + 80 ))
+				;;
+		esac
+
+		local kernelCompare=$(( $kernelAptMath - $kernelMath ))
+		log_function_data "kernelAptMath: $kernelAptMath - kernelMath: $kernelMath - kernelCompare: $kernelCompare"
+
+		# set this data if required for debian type kernels
+		check_debian_kernel_version
+
+		# test to see if same kernel or newer is available
+		if [ "$B_KERNEL_EQUAL_INSTALL" == 'true' ];then
+			if [ -n "$advancedKernel" ];then
+				kernelFile=$advancedKernel
+			elif [ "$CURRENT_APT_KERNEL" == "$CURRENT_KERNEL" ];then
+				kernelFile=$CURRENT_APT_KERNEL
+			fi
+		fi
+
+		print_lib_info $LIB_KERNEL
+		echo $MLINE
+		# check for too old kernel version
+		if [ "$B_KERNEL_EQUAL_INSTALL" != 'true' ];then
+			# this is now a real, dynamic compare, if user kernel is > 2 major versions behind
+			# go to dist-upgrade first, and kernel install will come after. Only run first time
+			# the first condition handles cases where the latest install kernel requires a du first
+			# the first case will now never happen, needs to be dumped
+			# if [ "$kernelAptMath" == "$KERNEL_FORCE_DU"  ] || [ "$kernelCompare" -gt 1 -a "$B_KERNEL_POST_DU_INSTALL" != 'true' -a "$B_KERNEL_EQUAL_INSTALL" != 'true' ]
+			if [ "$kernelCompare" -gt 1 -a "$B_KERNEL_POST_DU_INSTALL" != 'true' -a "$B_UDEV_KERNEL26" != 'true' ];then
+				echo "${M}Your kernel version ${C}$KERNEL_NUMBER${M} requires that you first run"
+				echo "a ${C}$DU_UPGRADE${M} before you install a new kernel. The option to install"
+				echo "the new kernels is in the ${C}POST $( tr [a-z] [A-Z] <<< $DU_UPGRADE ) FIXES${M} menu.${N}"
+				B_KERNEL_POST_DU_INSTALL='true'
+				print_hec
+				eval $LOGME
+			else
+				eval $LOGME
+				kernel_options
+			fi
+		else
+			echo "${M}Your current kernel:              ${C}$CURRENT_KERNEL$DEBIAN_KERNEL_INSTALLED${M}"
+			echo "is the same as the latest kernel: ${C}$kernelFile$DEBIAN_KERNEL_CANDIDATE"
+			echo
+			echo "${S}You can install other kernels in ${C}POST DIST-UPGRADE FIXES kernel-install${S}."
+			echo -n "${M}Continuing."
+			for i in $( seq 0 16 )
+			do
+				sleep 0.3
+				echo -n '.'
+			done
+			echo ${N}
+			eval $LOGME
+		fi
+	fi
+}
+
+check_debian_kernel_version()
+{
+	eval $LOGUS
+
+	local debKernCandidate='' debKernInstalled=''
+	# only getting subversions if debian and appears the same
+	if [ -n "$CURRENT_DEBIAN_KERNEL" -a "$B_KERNEL_EQUAL_INSTALL" == 'true' -a "$DEFAULT_KERNEL" == 'debian' ];then
+		debKernInstalled=$( check_package_status "linux-image-$CURRENT_DEBIAN_KERNEL" 'installed' )
+		debKernCandidate=$( check_package_status "linux-image-$CURRENT_DEBIAN_KERNEL" 'candidate' )
+		if [  -n "$debKernCandidate" ];then
+			DEBIAN_KERNEL_CANDIDATE="-$( cut -d '-' -f 2 <<< $debKernCandidate )"
+		fi
+		if [ -n "$debKernInstalled" ];then
+			DEBIAN_KERNEL_INSTALLED="-$( cut -d '-' -f 2 <<< $debKernInstalled )"
+		fi
+		if [ "$debKernInstalled" != "$debKernCandidate" ];then
+			B_KERNEL_EQUAL_INSTALL='false'
+		fi
+	else
+		# this needs to be calculated dynamically, so set to null each time this
+		# function is called, ie, on kernel type changes
+		DEBIAN_KERNEL_CANDIDATE=''
+	fi
+	eval $LOGUE
+}
+
+# args: $1 - post-du, started via post du options
+kernel_options()
+{
+	eval $LOGPS
+	local opt='' repeat='' kernelsNotEqual='' kernelsNotEqualOpt='' 
+	local duText="Continue to $DU_UPGRADE." repeat='' removeModules='' installModules=''
+	local options=" alternate-kernel-install advanced-kernel-options kernel-remover continue"
+	local tempCount=$( echo $options | wc -w ) altKernelText1='' defaultKernel=''
+	# sets B_KERNEL_EQUAL_INSTALL
+	test_kernel_strings "$CURRENT_APT_KERNEL" 'set-ke'
+	# set this data if required for debian type kernels
+	check_debian_kernel_version
+	# handle the switch of kernel install location text here
+	if [ "$B_KERNEL_POST_DU_INSTALL" == 'true' -o "$B_KERNEL_EQUAL_INSTALL" == 'true' -o "$1" == 'post-du' ];then
+		duText='Continue. Return to main menu.'
+	fi
+
+	if [ "$DEFAULT_KERNEL" == 'no-kernel'  -o -z "$CURRENT_APT_KERNEL$DEBIAN_KERNEL_CANDIDATE" ];then
+		if [ "$DEFAULT_KERNEL" != 'no-kernel' ];then
+			defaultKernel=" ${C}$DEFAULT_KERNEL${M}"
+		fi
+		kernelsNotEqual='echo -e "${M}There are no$defaultKernel kernels in apt available to install for your system.\n$MLINE"'
+	elif [ "$B_KERNEL_EQUAL_INSTALL" != 'true' ];then
+		tempCount=$(( $tempCount + 1 ))
+		kernelsNotEqualOpt='install-apt-kernel'
+		kernelsNotEqual='echo -e "${M}Your current kernel version is: ${C}$CURRENT_KERNEL$DEBIAN_KERNEL_INSTALLED\n$LINE\n${C}1 - install-apt-kernel${S} - Installs latest ${C}$DEFAULT_KERNEL${S} apt kernel: ${C}$CURRENT_APT_KERNEL$DEBIAN_KERNEL_CANDIDATE${S}\n"'
+	else
+		kernelsNotEqual='echo -e "${M}Your current kernel: ${C}$CURRENT_KERNEL$DEBIAN_KERNEL_INSTALLED${M}\nis the same as the latest kernel:  ${C}$CURRENT_APT_KERNEL$DEBIAN_KERNEL_CANDIDATE\n$MLINE"'
+	fi
+	options="$kernelsNotEqualOpt $options"
+	tempCount=$( echo $options | wc -w ) altKernelText1=''
+	local contOption=$tempCount
+	local kmOption=$(( $tempCount - 1 ))
+	local akoOption=$(( $tempCount - 2 ))
+	local akiOption=$(( $tempCount - 3 ))
+
+	if [ "$1" == 'post-du' ];then
+		print_lib_info $LIB_KERNEL
+		echo $MLINE
+	fi
+	if [ "$B_APTOSID_SOURCES" == 'true' -o "$B_MEPIS_SOURCES" == 'true' -o "$B_LIQUORIX_SOURCES" == 'true' -o "$B_USE_DEBIAN_KERNEL" == 'true' ];then
+		altKernelOption='echo "    ${S}You can also install alternate kernels from apt for your ${C}$DISTRO${S} system (or reinstall current kernel)."'
+	fi
+
+	echo "${S}If you are using wifi, you may need to reinstall your wifi drivers to the new kernel."
+	echo $LINE
+	echo "${S}If you restart the script after you reboot and no network connection is found,"
+	echo "the script will offer you choices of wifi modules to reinstall automatically."
+
+	if [ "$B_NVIDIA" == 'true' -o "$B_ATI" == 'true' ];then
+		echo $MLINE
+		echo "${M}If you use ${C}Nvidia${M} or ${C}Fglrx${M} video drivers, you must reinstall them after your kernel install."
+		echo "${M}Graphics drivers can now be reinstalled without a reboot, right to the new kernel.${S}"
+		echo
+
+		if [ "$1" != 'post-du' ];then
+			echo "${S}If you are going to use this script for the ${C}$DU_UPGRADE${S}, just install the kernel, "
+			echo "then, when kernel install is finished, select the ${C}continue${S} option, and"
+			echo "you can install your ${C}nvidia${S} or ${C}fglrx${S} drivers without rebooting."
+		else
+			echo "If you reboot, or restart the script, you can skip script parts using the following ${C}$SCRIPT_NAME${S} arguments:"
+			echo "${C}smxi -kwidt${S} (to skip directly to Graphics driver install)"
+			echo "${C}smxi -kwid${S} (to skip to the post ${C}$DU_UPGRADE${S} options menu)"
+		fi
+	fi
+	if [ "$B_GRUB_2" != 'true' ];then
+		echo $MLINE
+		echo "${S}Please note, if you install a kernel, a backup copy of your grub configuration file"
+		echo "${C}menu.lst${S}, will be created here: ${C}$GRUB_BU_PATH${S}."
+	fi
+	echo $MLINE
+	eval "$kernelsNotEqual"
+
+	echo "${C}$akiOption - alternate-kernel-install${S} - The alternate kernel options allow you install archived kernels."
+	echo "    Sometimes older kernels work and newer ones don't for some hardware issues."
+	eval "$altKernelOption"
+	echo "${C}$akoOption - advanced-kernel-options${S} Kernel metapackage options (add/remove kernel metapackages); "
+	echo "    Add ${C}liquorix${S} kernel sources (if supported); Update ${C}$SCRIPT_NAME${S} default kernel; Add/Remove kernel modules."
+	echo "${C}$kmOption - kernel-remover${S} Remove unused kernels."
+	echo
+	#echo "${C}3${S} - Install wifi modules. ${W}This only works if you are booted into the kernel "
+	#echo "    which you want to install the modules, and if you installed that kernel with this script."
+	#echo
+	echo "${C}$contOption${S} - $duText"
+	echo $LINE
+	echo $SLE
+	echo $LINE
+
+	select opt in $options
+	do
+		case $opt in
+			install-apt-kernel)
+				eval $LOGPE
+				run_script_import $LIB_KERNEL_INSTALL
+				print_lib_info $LIB_KERNEL_INSTALL
+				double_check_kernel 'apt' # installs system default apt kernel
+				;;
+			kernel-remover)
+				run_script_import $LIB_CLEAN_UP
+				kernel_remover_main
+				repeat='true'
+				;;
+			alternate-kernel-install)
+				eval $LOGPE
+				run_script_import $LIB_KERNEL_INSTALL
+				#echo "${S}Running advanced options now${N}"
+				alternate_kernel_install
+				;;
+			advanced-kernel-options)
+				advanced_kernel_options
+				repeat='true'
+				;;
+			continue)
+				if [ "$1" == "nogo" ];then
+					echo "${W}Ok, but you cannot do the $DU_UPGRADE with this kernel."
+					eval $LOGPE
+					print_quit
+				else
+					#echo $1' is this x value'
+					echo "${S}Ok, remember, you can use this to upgrade your kernel any time you want.${N}"
+					eval $LOGPE
+				fi
+				;;
+			install-wifi)
+				install_wireless_modules
+				repeat='true'
+				;;
+			*)
+				print_error opt
+				repeat='true'
+				;;
+		esac
+		break
+	done
+
+	if [ "$repeat" == 'true' ];then
+		eval $LOGPE
+		kernel_options $1
+	fi
+}
+# set_kernel_data
+# check_kernel
+
+###---------------------------------------------------------------------
+### super advanced kernel utilities
+###---------------------------------------------------------------------
+
+advanced_kernel_options()
+{
+	eval $LOGPS
+	local opt='' options='' repeat=''
+	
+	echo $MLINE
+	echo "${M}Advanced Kernel Options"
+	echo $MLINE
+	echo "${S}Here are some advanced kernel options, that might be of use to some people."
+	echo "You should generally not need to do these more than one or two times."
+	echo $LINE
+
+	echo "${C}1 - kernel-metapackage-options${S} Kernel metapackage options: remove, install"
+	echo "     apt kernel/module metapackages. Also, install current apt kernel + modules."
+	echo "${C}2 - add-liquorix-sources${S} Add liquorix kernel sources (Debian Sid/Testing only, and if system supports)"
+	echo "${C}3 - add-siduction-sources${S} Add siduction/towo kernel sources (Debian Sid/Testing only)"
+	echo "${C}4 - change-$SCRIPT_NAME-default-kernel${S} Change the default kernel $SCRIPT_NAME uses to your preference."
+	echo "${C}5 - install-kernel-modules${S} - Install kernel modules. Offers list of modules, install one by one"
+	echo "    (${M}if the module is currently available in apt${S})."
+	echo "${C}6 - remove-kernel-modules${S} - Remove installed kernel modules. Offers list of modules"
+	echo "    which you can remove one by one."
+	echo "${C}7 - return-to-previous-menu${S} - Ok, all done, back to kernel main menu."
+	echo $LINE
+	echo -e $SLE
+	echo $LINE
+	options="kernel-metapackage-options add-liquorix-sources add-siduction-sources change-$SCRIPT_NAME-default-kernel install-kernel-modules remove-kernel-modules return-to-previous-menu"
+	select opt in $options
+	do
+		log_function_data "opt selected: $opt"
+		case $opt in
+			add-liquorix-sources)
+				add_alternate_kernels_sources "liquorix"
+				repeat='true'
+				;;
+			add-siduction-sources)
+				add_alternate_kernels_sources "siduction"
+				repeat='true'
+				;;
+			change-$SCRIPT_NAME-default-kernel)
+				run_script_import $LIB_MISC_TWEAKS
+				set_default_system_kernel
+				repeat='true'
+				;;
+			kernel-metapackage-options)
+				kernel_meta_package_handler standard
+				repeat='true'
+				;;
+			remove-kernel-modules)
+				remove_kernel_modules
+				repeat='true'
+				;;
+			install-kernel-modules)
+				run_script_import $LIB_KERNEL_INSTALL
+				kernel_module_installer
+				repeat='true'
+				;;
+			return-to-previous-menu)
+				repeat=''
+				;;
+			*)
+				print_error opt
+				repeat='true'
+				;;
+		esac
+		break
+	done
+	eval $LOGPE
+	if [ "$repeat" == 'true' ];then
+		advanced_kernel_options
+	fi
+}
+
+# args: $1 - which kernel type, currently only 
+add_alternate_kernels_sources()
+{
+	local bDoAdd='false'
+	if [ "$SYSTEM_BASE" == 'testing' -o "$SYSTEM_BASE" == 'sid' ];then
+		case $1 in
+			siduction)
+				bDoAdd='true'
+				;;
+			liquorix)
+				if [ "$BITS" == '64' -o "$( check_pae_exists )" == 'true' ];then
+					bDoAdd='true'
+				else
+					echo "${E}You can not run Liquorix kernels because your CPU does not support ${C}PAE${E}."
+					echo "${S}If this is wrong for your cpu, please let me know.${N}"
+					print_hec
+				fi
+				;;
+		esac
+		if [ "$bDoAdd" == 'true' ];then
+			update_sources "$1"
+			run_script_import $LIB_KERNEL_INSTALL # make sure lib is here
+			kernel_authentication_handler "$1" # add keyrings
+			set_distro_data 'force' # have to reset globals now
+		fi
+	else
+		echo "${E}It is not safe to run these kernels on Debian Stable based distros."
+		echo "${S}If your system is running Sid or Testing base, please let me know.${N}"
+		print_hec
+	fi
+}
+
+###---------------------------------------------------------------------
+### kernel question utilities
+###---------------------------------------------------------------------
+
+###---------------------------------------------------------------------
+### kernel meta package / apt install handling
+###---------------------------------------------------------------------
+
+# args: $1 prefs/standard
+kernel_meta_package_handler()
+{
+	eval $LOGPS
+
+	local metaDebianExists=$( package_tester 'linux-image-(2\.6-|)(686|486|amd64)' )
+	local metaLiquorixExists=$( package_tester 'linux-image-(2\.6-|)liquorix-(686|486|amd64)' )
+	local metaAptosidExists=$( package_tester 'linux-image-(2\.6-|)aptosid-(686|amd64)' )
+	local metaSiductionExists=$( package_tester 'linux-image-(2\.6-|)siduction-(686|amd64)' )
+	local repeat='' kernelArch='686' startType='standard' userSelection=''
+	local linuxAptosidImage='' linuxAptosidHeaders='' linuxSiductionImage='' linuxSiductionHeaders=''
+	if [ -n "$1" ];then
+		startType=$1
+	fi
+	if [ "$BITS" == '64' ];then
+		kernelArch='amd64'
+	fi
+	
+	
+	local continueOption='continue-manual' kiAction='show'
+	local defaultAction='manual' kiState='on'
+	
+	# not using this one yet: install-kernel-metapackages-full
+	if [ -n "$B_APTOSID_SOURCES" ];then
+		linuxAptosidImage="linux-image-aptosid-$kernelArch"
+		linuxAptosidHeaders="linux-headers-aptosid-$kernelArch"
+	fi
+
+	if [ -n "$metaSiductionExists" -o  -n "$metaAptosidExists" -o  -n "$metaDebianExists" -o -n "$metaLiquorixExists" ];then
+		continueOption='continue-automatic'
+		kiAction='skip'
+		defaultAction='automatic'
+		kiState='off'
+	fi
+
+	local opt='' options="remove-kernel-metapackages install-kernel-metapackages-custom-aptosid install-current-apt-kernel $continueOption"
+
+	echo $MLINE
+	echo "${M}Kernel Meta-Package Options${N}"
+	echo $MLINE
+	if [ "$1" == 'prefs' ];then
+		echo "${M}You will only see this message automatically one time prior to kernel install."
+		echo "If you are seeing it, it means you have ${C}kernel metapackages${M} installed."
+		echo $MLINE
+	fi
+
+	echo "${M}You have two main choices, with possible postive / negative outcomes. Pick the one"
+	echo "you prefer for your style."
+	echo $MLINE
+	echo "${C}Kernel metapackages:  ${M}Advantage:${S} Latest kernels and modules installed via ${C}$DU_UPGRADE"
+	echo "${M}Negatives:${S} ${C}1.${S} Some distros, like ${C}aptosid${S}, release kernels often, sometimes 1 or more a day."
+	echo "Usually you do not need new subversions of kernels, like ${C}2.6.39.dmz.3${S} to ${C}2.6.39.dmz.4${S}"
+	echo "${C}2.${S} Needing to reboot after the $DU_UPGRADE ${C}3.${S} Slow servers slowing $DU_UPGRADE"
+	echo "${C}4.${S} Possible unexpected kernel / hardware issues, kernel regressions, etc."
+	echo $LINE
+	echo "${C}Manual apt install of kernels: ${M}Advantage:${S} ${C}1.${S} Gives full control, lets you decide"
+	echo "when you want to install your new kernel, or if you want to install it."
+	echo "${C}2.${S} No change from prior system. ${M}Negatives:${S} You don't always have latest kernel."
+	echo $LINE
+	echo "${S}To change your selections here later, either start ${C}$SCRIPT_NAME${S} with ${C}-N${S} option, or"
+	echo "access this option page using ${C}kernel-install -> alternate-kernel-install${S}"
+	echo "using the ${C}post $DU_UPGRADE options${S} of ${C}$SCRIPT_NAME${S}"
+	echo
+	echo "Choices ${C}1${S} or ${C}3${S} convert your system to use user run kernel install (${C}manual${S})."
+	echo "Choice ${C}2${S} converts your system to use metapackages (${C}automatic${S})."
+	echo "The ${C}automatic${S} option turns off the pre $DU_UPGRADE kernel install section."
+	echo
+	echo "${C}4${S} leaves your system alone, and merely turns ${C}$kiState${S} the pre $DU_UPGRADE kernel install"
+	echo "question, and returns you to ${C}$SCRIPT_NAME${S} to do what you want."
+	echo
+	echo "${S}Confused? You can always try one way, then the other via this control panel, so don't worry!"
+	echo "${M}You current kernel is: ${C}$CURRENT_KERNEL"
+	echo $LINE
+	echo "${C}1 - remove-kernel-metapackages${S} Restore manual control of kernel install."
+	echo "${C}2 - install-kernel-metapackages-custom-aptosid${S} For automatic, no user control, install of"
+	echo "    new aptosid kernels and modules. (${M}must have aptosid apt sources installed${S})"
+	echo "${C}3 - install-current-apt-kernel${S} Install the current ${C}$DEFAULT_KERNEL${S} apt kernel: ${C}$CURRENT_APT_KERNEL"
+	echo "    ${S}Will also remove metapackages if they are installed automatically."
+	echo "${C}4 - $continueOption${S} Sets default ${C}$SCRIPT_NAME${S} to: ${C}$defaultAction${S} ($kiAction kernel install question)"
+	echo $LINE
+	echo $SLE
+	echo $LINE
+
+	select opt in $options
+	do
+		case $opt in
+			remove-kernel-metapackages)
+				set_metapackage_prefs
+				set_metapackage_selections 'manual'
+				remove_kernel_metapackages
+				repeat='true'
+				;;
+			install-kernel-metapackages-custom-aptosid)
+				if [ -n "$B_APTOSID_SOURCES" ];then
+					set_metapackage_prefs
+					set_metapackage_selections 'automatic'
+					package_installer "$linuxAptosidHeaders $linuxAptosidImage" 'install-user'
+					update_kernel_links $CURRENT_APT_KERNEL # must run prior to update_grub
+					update_grub
+					install_apt_kernel_modules 'meta-aptosid'
+					extra_module_installer $CURRENT_APT_KERNEL 'madwifi'
+					post_install_messages
+					reboot_now_question $CURRENT_APT_KERNEL
+				else
+					echo $MLINE
+					echo "${M}This feature is currently only available for systems with ${C}aptosid${M} sources present.${N}"
+					print_hec
+				fi
+				;;
+			install-current-apt-kernel)
+				set_metapackage_prefs
+				set_metapackage_selections 'manual'
+				if [ -n "$metaSiductionExists" -o -n "$metaAptosidExists" -o -n "$metaDebianExists" -o -n "$metaLiquorixExists" ];then
+					remove_kernel_metapackages
+				fi
+				double_check_kernel 'apt'
+				;;
+			continue-manual|continue-automatic)
+				set_metapackage_prefs
+				set_metapackage_selections $defaultAction
+				echo "${S}Ok, continuing on using ${C}$defaultAction${S} settings.${N}"
+				if [ "$defaultAction" == 'automatic' ];then
+					echo "${S}Remember, if you want to run this section prior to a ${C}$DU_UPGRADE${S},"
+					echo "just start ${C}$SCRIPT_NAME${S} like this: ${C}$SCRIPT_NAME -N"${N}
+					print_hec
+				fi
+				;;
+			*)
+				print_error opt
+				repeat='true'
+				;;
+		esac
+		break
+	done
+	eval $LOGPE
+	if [ "$repeat" == 'true' ];then
+		kernel_meta_package_handler $1
+	fi
+}
+
+remove_kernel_metapackages()
+{
+	eval $LOGUS
+	local metaPackageList=$( package_tester '(linux-image|linux-headers|modules)-(2\.6-|)(aptosid-|liquorix-|siduction-|sidux-|)(686|486|amd64)' 'wild-full' )
+
+	if [ -n "$metaPackageList" ];then
+		package_remover "$metaPackageList" 'purge -y'
+	else
+		echo $ELINE
+		echo "${E}There are no kernel meta packages installed, so none were removed.${N}"
+		print_hec
+	fi
+	eval $LOGUE
+}
+
+set_metapackage_prefs()
+{
+	eval $LOGUS
+	local prefId='kernel-metapackage-1'
+	local smPref=$( sm_pref_tester $prefId )
+
+	if [ "$smPref" -eq 0 ];then
+		set_sticky_prefs $prefId
+	fi
+	eval $LOGUE
+}
+
+# args: $1 manual/automatic
+set_metapackage_selections()
+{
+	eval $LOGUS
+	set_sm_pref_values 'meta-package-selection' "$1"
+	eval $LOGUE
+}
+
+
+
+# install kernel modules, either new ones, or ones you want to try
+kernel_module_installer()
+{
+	eval $LOGPS
+	# clean out -modules- from list
+	local availableModules="$( sed 's/-modules-//g' <<< $( print_module_list ) )"
+	# manual override of that lirc double modules thing
+	availableModules="$( sed 's/lircmodules-/lirc-modules/' <<< $availableModules )"
+	local skip='' opt='' options='' module='' found=''
+	local kernelType='' fullModule='' metaText=''
+	local options="$availableModules continue"
+	local contCount=$( wc -w <<< $options )
+	local moduleCount=$(( $contCount - 1 ))
+	local isMeta=$( package_tester "linux-image-(2\.6-|)(aptosid-|liquorix-|)(486|686|amd64)" '' )
+
+	if [ -n "$isMeta" ];then
+		metaText='echo "Since you are using kernel metapackages, the script will install the module metapackage."'
+		kernelType=$( sed 's/linux-image-//g' <<< $isMeta )
+	else
+		kernelType=$CURRENT_KERNEL
+	fi
+
+	echo $MLINE
+	echo "${M}Kernel Module Installer${N}"
+	echo $MLINE
+
+	echo "${S}Select from the following to install a kernel module."
+	echo "Not all modules are available all the time, or for each platform (64/32 bit)"
+	echo "If the module is not currently in apt, the script will let you know."
+	echo "* ${C}squashfs${S} is useful for browsing iso files"
+	echo
+	echo "${M}Module installs to your current kernel: ${C}$CURRENT_KERNEL${S}"
+	eval $metaText
+	echo $LINE
+	echo "${C}1-$moduleCount${S} - Install desired module to your currently running kernel."
+	echo
+	echo "${C}$contCount${S} - When you are done installing, continue with script."
+	echo $LINE
+	echo -e $SLE
+	echo $LINE
+
+	select opt in $options
+	do
+		for module in $options
+		do
+			if [ "$opt" == "$module" ];then
+				found='true'
+				if [ "$module" == 'continue' ];then
+					skip='true'
+				else
+					found='true'
+					# assemble actual package name string
+					fullModule="$module-modules-$kernelType"
+				fi
+				break
+			else
+				found='false'
+			fi
+		done
+		break
+	done
+	eval $LOGPE
+	if [ "$found" == 'true' ];then
+		if [ "$skip" == 'true' ];then
+			echo "${S}Returning to main menu now.${N}"
+		else
+			echo $LINE
+			# echo "${S}Installing ${C}$fullModule${S} now....${N}"
+			install_the_apt_kernel_module "$fullModule" 'manual'
+			kernel_module_installer
+		fi
+	else
+		print_error opt
+		kernel_module_installer
+	fi
+
+}
+
+remove_kernel_modules()
+{
+	eval $LOGPS
+	local installedModules="$( package_tester 'modules-.*(aptosid-|sidux-|)' 'wild-full' )"
+	local moduleStoreTemp='' store='' store2=''
+	# we need to dump the multi modules first:
+	for store in $installedModules
+	do
+		store=$( grep -Eo '.*-modules' <<< $store )
+		if [ "$store" != "$store2" ];then
+			moduleStoreTemp="$moduleStoreTemp $store"
+		fi
+		store2=$store
+	done
+	installedModules="$moduleStoreTemp continue"
+
+	local moduleCount="$(( $( wc -w <<< $installedModules ) - 1 ))"
+	local opt='' options='' module='' skip='' found='' modules=''
+	local options=$installedModules
+	local contCount="$( wc -w <<< $options )"
+
+	echo $MLINE
+	echo "${M}Kernel Module Remover"
+	echo $MLINE
+	echo "${S}Select from the following to remove an installed kernel module."
+	echo "* ${C}squashfs${S} is useful for browsing iso files"
+	echo $LINE
+	echo "${C}1-$moduleCount${S} - Remove modules one by one until completed."
+	echo "       ${W}WARNING: The selected module for ALL installed kernels will be removed."
+	echo "${C}$contCount${S} - When you are done removing, select this to continue with script."
+	echo $LINE
+	echo -e $SLE
+	echo $LINE
+
+	select opt in $options
+	do
+		for module in $installedModules
+		do
+			if [ "$opt" == "$module" ];then
+				found='true'
+				if [ "$module" == 'continue' ];then
+					skip='true'
+				else
+					found='true'
+				fi
+				break
+			else
+				found='false'
+			fi
+		done
+		break
+	done
+	eval $LOGPE
+	if [ "$found" == 'true' ];then
+		if [ "$skip" == 'true' ];then
+			echo "${S}Returning to main script now.${N}"
+		else
+			#echo "${S}Removing ${C}$module${S} now....${N}"
+			# we're doing a wildcard remover here so we can dump all the modules
+			modules="$( package_tester "$module" 'wild-full' )"
+			package_remover "$modules" 'purge -y'
+			remove_kernel_modules
+		fi
+	else
+		print_error opt
+		remove_kernel_modules
+	fi
+}
+
+# this can't be a module because it's required if connection is dropped
+install_wireless_modules()
+{
+	eval $LOGPS
+	local repeat='' RebootFlag='' opt='' ReturnValue=''
+	local xOption='' advanced='' cont='' quit=''
+	local options="at76c503a ipw3945 linux-wlan-ng madwifi ndiswrapper rt2400 rt2500 rt61"
+	local tempCount=$( echo $options | wc -w )
+
+	if [ "$CORE_COUNT" -eq 1 ];then # currently only new up kernels have this.
+		tempCount=$(( $tempCount + 1 ))
+		xOption='rt2570'
+		advanced='echo -e "${C}'$tempCount'${S} - Installs ${C}rt2570${S} module. (for ${C}up${S} CPUs only)."'
+		tempCount=''
+	fi
+	options="$options $xOption continue-no-wifi quit"
+	tempCount=$( echo $options | wc -w )
+
+	cont=$(( $tempCount - 1 ))
+	quit=$(( $tempCount ))
+
+	echo $MBAR
+	echo "${M} WIFI MODULE INSTALLER"
+	echo $MBAR
+	echo "${W}You must have used this script to install the kernel for wifi install to work!!"
+	echo "${S}You can install the following modules:"
+	echo "${C}1${S} - Installs the ${C}at76c503a${S} module. Driver for the Atmel USB WLAN adapters."
+	echo "${C}2${S} - Installs the ${C}ipw3945${S} module. Intel 3945 Centrino wireless card."
+	echo "${C}3${S} - Installs the ${C}linux-wlan-ng${S} module. Intersil 802.11b Prism2,"
+	echo "    Prism2.5, and Prism3 reference designs for PCMCIA, PCI, and USB."
+	echo "${C}4${S} - Installs the ${C}madwifi${S} module. Atheros Driver."
+	echo "${C}5${S} - Installs ${C}ndiswrapper${S} module."
+	echo "${C}6${S} - Installs ${C}rt2400${S} module."
+	echo "${C}7${S} - Installs ${C}rt2500${S} module."
+	echo "${C}8${S} - Installs ${C}rt61${S} module."
+	eval $advanced
+	echo
+	echo "${C}$cont${S} - Continues script without installing wireless modules."
+	echo "${C}$quit${S} - Exit the script now."
+	echo $LINE
+	echo $SLE
+	echo $LINE
+
+	select opt in $options
+	do
+		case $opt in
+			at76c503a|ipw3945|linux-wlan-ng|madwifi|ndiswrapper|rt2400|rt2500|rt2570|rt61)
+				install_the_module $opt
+				ReturnValue=$?
+				if [ "$ReturnValue" -eq 0 ];then
+					RebootFlag='true'
+				fi
+				;;
+			continue-no-wifi)
+				echo "${S}OK, continuing with script without installing a wifi module.${N}"
+				B_SKIP_CONNECTIONS='true'
+				;;
+			quit)
+				print_quit
+				;;
+			*)
+				print_error opt
+				repeat='true'
+				;;
+		esac
+		break
+	done
+
+	if [ "$RebootFlag" == 'true' ];then
+		echo $LINE
+		echo "${S}The new wifi module you installed will not work until you reboot."
+		echo "If you get the same connection failure box then I guess the wifi module didn't"
+		echo "work. You can try the other one I guess, but that's as far as this script can"
+		echo "take you. Remember, you can always boot with your old kernel in grub if you need to."
+		echo -e "${Q}Would you like to reboot now?$YNE"
+		echo $LINE
+		read response
+
+		case $response in
+			y)	echo "${S}Rebooting now.${N}"
+				handle_shutdowns 'reboot'
+				exit 0
+				;;
+			n)	echo "${S}Exiting the script. You will need to reboot before proceeding.${N}"
+				exit 0
+				;;
+			*)	print_error yn
+				repeat='true'
+				;;
+		esac
+
+	fi
+	eval $LOGPE
+	if [ "$repeat" == 'true' ];then
+		install_wireless_modules
+	fi
+}
+
+install_the_module()
+{
+	eval $LOGUS
+
+	# $1 is module
+	local WifiModule=$KERNEL_DIRECTORY/$CURRENT_KERNEL/$1'*.deb'
+	# WifiModule='/var/local/kernel-current/'$1'*.deb'
+
+	if [ -f $WifiModule -o "$1" == 'madwifi' ];then
+		echo $LINE
+		echo "${S}The script will now install the ${C}$1${S} module for you.${N}"
+		if [ "$1" != 'madwifi' ];then
+			dpkg -i $WifiModule
+		else
+			m-a a-i madwifi
+		fi
+		echo "${S}If all went well, the ${C}$1${S} module is now installed.${N}"
+		return 0
+	else
+		echo $EBAR
+		echo "${E}I'm sorry, but the script could not locate that module. This module installer"
+		echo "only works if you also used the script to install your current kernel."
+		echo $EBAR
+		return 1
+	fi
+	eval $LOGUE
+}
+# install_wireless_modules
+
+# switch the kernel file name to get the correct latest 64 bit slh kernel
+set_kernel_data()
+{
+	eval $LOGUS
+	local isUpSmp='' testingKernel=''
+
+	# run_script_import $LIB_KERNELS
+
+	if [ "$BITS" == "64" ];then
+		KERNEL_LIST=$KERNEL_LIST_64 # with -K, this includes advanced list
+		KERNEL_ADVANCED_LIST=$KERNEL_ADVANCED_LIST_64
+		testingKernel=$TESTING_KERNEL_64
+	else
+		KERNEL_LIST=$KERNEL_LIST_32
+		KERNEL_ADVANCED_LIST=$KERNEL_ADVANCED_LIST_32
+		testingKernel=$TESTING_KERNEL_32
+	fi
+	if [ "$B_TESTING_1" == 'true' ];then
+		KERNEL_LIST="$testingKernel $KERNEL_LIST"
+	fi
+	# this will be used for kernel mirror selection, only standard/testing default will be
+	# attempted via mirror install
+	KERNEL_BASE_FILE=$(echo $KERNEL_LIST | cut -f 1 -d ' ')
+
+	# add advanced kernels if any to llst
+	if [ "$B_ADVANCED_KERNEL" == 'true' ];then
+		KERNEL_LIST="$KERNEL_ADVANCED_LIST $KERNEL_LIST"
+	fi
+
+	# pull out first kernel from the 64/32 list
+	KERNEL_FILE=$(echo $KERNEL_LIST | cut -f 1 -d ' ')
+	isSmpUp=$( echo $KERNEL_FILE | grep '\-up\-' )
+
+	# take 32 bit second position kernel if first kernel is up in list. Legacy now almost
+	if [ "$BITS" == '32' -a -n "$isSmpUp" ];then
+		LATEST_UP_KERNEL=$KERNEL_FILE
+		KERNEL_FILE=$(echo $KERNEL_LIST | cut -d ' ' -f 2 )
+	fi
+	# this will fix a small looping bug in the advanced install options
+	KERNEL_FILE_RESET=$KERNEL_FILE
+
+	log_function_data "KERNEL_FILE: $KERNEL_FILE"
+	log_function_data "KERNEL_FILE_RESET: $KERNEL_FILE_RESET"
+	eval $LOGUE
+}
+## DEBUGGER
+#script_debugger set_kernel_data 'echo bits: $BITS' ''
+
+###**EOF**###

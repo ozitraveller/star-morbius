@@ -42,7 +42,8 @@ i3lock
 suckless-tools
 
 smplayer
-iceweasel
+# iceweasel
+firefox-esr
 # epiphany-browser
 # clipit
 mirage

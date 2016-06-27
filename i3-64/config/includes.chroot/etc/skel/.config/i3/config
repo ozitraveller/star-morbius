@@ -74,14 +74,14 @@
 
 # Program-Related Bindings
 # installer start
-  bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
+# bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
 # installer end	
   bindsym $mod+Ctrl+w exec x-www-browser
   bindsym $mod+Ctrl+e exec editor
-  bindsym $mod+Ctrl+f exec exec x-file-manager
+  bindsym $mod+Ctrl+f exec x-file-manager
+  bindsym $mod+Return exec x-terminal-emulator
   bindsym $mod+Ctrl+m exec smplayer
   bindsym $mod+Ctrl+l exec /usr/bin/i3lock -n -p default --color=000000
-  bindsym $mod+Return exec x-terminal-emulator
   bindsym $mod+d exec $HOME/.config/dmenu/dmenu-bind.sh
 #  bindsym $mod+d exec dmenu_run
 #  bindsym $mod+d exec rofi -show run
@@ -101,15 +101,15 @@
 # Startup Programs
 #  exec --no-startup-id nitrogen --restore
 #  exec --no-startup-id hsetroot -solid "#000000"
-  exec --no-startup-id wicd-client -t
+#  exec --no-startup-id wicd-client -t
 #  exec --no-startup-id clipit
   exec --no-startup-id dunst
 #  exec --no-startup-id compton --config ~/.compton.conf
-  exec --no-startup-id xfce4-power-manager
+#  exec --no-startup-id xfce4-power-manager
 #  exec --no-startup-id xset r rate 250 25
 #  exec --no-startup-id xset b off
   exec --no-startup-id $HOME/.config/conky/start_conky_live_grey
-  exec --no-startup-id sleep 6; star-welcome --firstrun
+#   exec --no-startup-id sleep 6; star-welcome --firstrun
 #  exec_always --no-startup-id feh --bg-scale $HOME/images/wallpapers/shared/mt-cook-nz.jpg
 
 # Workspace-Related Bindings

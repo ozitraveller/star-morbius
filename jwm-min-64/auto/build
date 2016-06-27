@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+# This variable is required otherwise
+# /usr/share/live/build/scripts/build/binary_debian-installer fails because
+# the version is empty (nothing known in
+# /usr/share/live/build/functions/releases.sh)
+# export RELEASE_star="0.60"
+
+# export MKSQUASHFS_OPTIONS=" -no-recovery -always-use-fragments -b 1048576 -comp xz -Xbcj x86 -Xdict-size 75%"
+
+export MKSQUASHFS_OPTIONS=" -no-recovery -always-use-fragments -b 1048576"
+
+lb build noauto "${@}" 2>&1 | tee "Build - $(date "+%d.%m.%Y - %H:%M").log"
+# lb build noauto "${@}" 2>&1 | tee star-stable_013-`date +%Y%m%d-%H%M`.log

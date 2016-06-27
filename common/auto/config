@@ -5,7 +5,6 @@ set -e
 DISTRIBUTION="jessie"
 ARCHITECTURES="amd64"
 LINUX_FLAVOURS="amd64"
-# ARCHIVE_AREAS="main contrib non-free"
 ARCHIVE_AREAS="main"
 SOURCE="false"
 
@@ -21,6 +20,7 @@ MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 lb config noauto \
 	--mode devuan \
 	--chroot-filesystem squashfs \
+	--initramfs-compression lzma \
 	--distribution "${_DISTRIBUTION}" \
 	--debian-installer-distribution "${_DISTRIBUTION}" \
 	--debian-installer live \

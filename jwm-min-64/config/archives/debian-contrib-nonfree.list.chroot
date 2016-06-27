@@ -1,0 +1,2 @@
+#### Debian Contrib and Non-Free Repositories
+# deb http://ftp.us.debian.org/debian/ jessie contrib non-free

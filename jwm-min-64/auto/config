@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -e
+
+DISTRIBUTION="jessie"
+ARCHITECTURES="amd64"
+LINUX_FLAVOURS="amd64"
+ARCHIVE_AREAS="main"
+SOURCE="false"
+MIRROR_BINARY="http://packages.devuan.org/merged"
+
+# --debootstrap-options "--variant=minbase" \
+
+lb config noauto \
+	--mode devuan \
+	--chroot-filesystem squashfs \
+	--initramfs-compression lzma \
+	--debootstrap-options "--variant=minbase" \
+	--debian-installer-distribution "${_DISTRIBUTION}" \
+	--debian-installer live \
+	--architectures "${_ARCHITECTURES}" \
+	--linux-flavours "${_LINUX_FLAVOURS}" \
+	--apt-recommends false \
+	--apt-source-archives false \
+	--apt-indices false \
+	--archive-areas "${_ARCHIVE_AREAS}" \
+	--firmware-chroot false \
+	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
+	--parent-mirror-binary "${_MIRROR_BINARY}" \
+	--mirror-bootstrap "${_MIRROR_BINARY}" \
+	--mirror-binary "${_MIRROR_BINARY}" \
+	--backports false \
+	--security false \
+    --updates false \
+	--memtest none \
+	--win32-loader false \
+	--debug \
+	--verbose \
+	--bootappend-live "boot=live config components file=/preseed.cfg quiet splash noautologin nouveau.modeset=0 radeon.modeset=0" \
+"${@}"
+
+# lb config --apt-indices false --apt-recommends false --debootstrap-options "--variant=minbase" --firmware-chroot false --memtest none

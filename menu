@@ -106,8 +106,8 @@ update(){
 #	echo "-Parameter #1 is \"$1\".-"
 	cd $1
 	#echo $PWD
-	echo $1
-	echo $2
+	# echo $1
+	# echo $2
 	# pause
 	# return
 		
@@ -136,14 +136,15 @@ update(){
 
 #	echo "1"
 #	echo $2
-	if [ $2 == "min" ]; then
-#	echo "2"
+	if [ $2 ] && [ $2 == "min" ]; then
+#	echo "2a"
 		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/apt/* ./apt/
 		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/archives/* ./archives/
 		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/bootloaders/* ./bootloaders/
 		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.installer/* ./includes.installer/
 		cp -r /home/$SUDO_USER/${_SOURCE}/$1-64/config/includes.installer/preseed.cfg ./includes.binary/install/
 	else
+#		echo "2b"
 		cp -r /home/$SUDO_USER/${_SOURCE}/common/config/* ./
 	fi
 
@@ -182,18 +183,18 @@ update(){
 	#echo $1-"Updated"
 
 	# uncomment pause to see messages
-	pause
+	# pause
 }
 
 main(){
 	clear
 	echo -e "\t~~~~~~~~~~~~~~~~~~~~~"	
 	echo -e "\t M A I N - M E N U"
-	echo -e "\t~~~~~~~~~~~~~~~~~~~~~"
+	echo -e "\t~~~~~~~~~~~~~~~~~~~~~\t\t"$_SOURCE" ["$_VERSION"]"
 	echo " "
 	echo -e "\ts. Setup    x. Xfce       n. Netinst"
-	echo -e "\tr. Remove   f. Fluxbox"
-	echo -e "\tu. Update   o. Openbox"
+	echo -e "\tr. Remove   f. Fluxbox    jm. Jwm"
+	echo -e "\tu. Update   o. Openbox    im. i3"
 	echo -e "\tb. Build    j. Jwm"
 	echo -e "\tp. Purge    i. i3"
 	echo " "
@@ -214,7 +215,7 @@ main(){
 		sn) setup "netinst" ;;
 		sjm) setup "jwm-min" ;;
 		sim) setup "i3-min" ;;
-		rx) remove "xfce" ;;
+		rx) remove "xfce" "" ;;
 		rf) remove "fb" ;;
 		ro) remove "ob" ;;
 		rj) remove "jwm" ;;

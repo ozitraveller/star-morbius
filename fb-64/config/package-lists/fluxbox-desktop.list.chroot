@@ -17,16 +17,19 @@ geany
 atril
 # zathura
 
-spacefm
+# spacefm
 lsof
-udevil
+# udevil
 
-# thunar
-# thunar-data
-# thunar-volman
-# thunar-archive-plugin
-# thunar-media-tags-plugin
-# # thunar-actions-plugin
-# tumbler
+thunar
+thunar-data
+thunar-volman
+thunar-archive-plugin
+thunar-media-tags-plugin
+# thunar-actions-plugin
+tumbler
+
+# pcmanfm
+# libfm-modules
 
 

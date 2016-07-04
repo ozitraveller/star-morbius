@@ -139,6 +139,6 @@ wireless-tools
 
 lsb-release
 
-discover
-discover-data
-lshw
+# discover
+# discover-data
+# lshw

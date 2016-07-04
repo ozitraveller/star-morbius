@@ -14,7 +14,9 @@ gmrun
 leafpad
 atril
 
-# pcmanfm
-spacefm
+# spacefm
 lsof
 udevil
+
+pcmanfm
+libfm-modules

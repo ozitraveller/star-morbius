@@ -17,18 +17,22 @@ arandr
 geany
 atril
 
-# pcmanfm
-spacefm
+
+# spacefm
 lsof
 udevil
-# pcmanfm
+
 # mc
 # xfe
 # xfe-themes
+
 # thunar
 # thunar-data
 # thunar-volman
 # thunar-archive-plugin
 # thunar-media-tags-plugin
-
+# # thunar-actions-plugin
 # tumbler
+
+pcmanfm
+libfm-modules

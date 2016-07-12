@@ -8,14 +8,15 @@ LINUX_FLAVOURS="amd64"
 ARCHIVE_AREAS="main"
 SOURCE="false"
 
-# MIRROR_BINARY="http://packages.devuan.org/merged"
-MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
+MIRROR_BINARY="http://packages.devuan.org/merged"
+# MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
 # MIRROR_BINARY="http://au.mirror.devuan.org/devuan/dists/jessie/main/"
 # MIRROR_BINARY="http://188.165.204.61/repo/dists/jessie/main/"
 
 #	--build-with-chroot false \
 #	--debootstrap-options "--variant=minbase"
+#	--apt-source-archives true \
 
 lb config noauto \
 	--mode devuan \
@@ -29,7 +30,6 @@ lb config noauto \
 	--apt-recommends false \
 	--apt-secure true \
 	--apt-indices false \
-	--apt-source-archives true \
 	--archive-areas "${_ARCHIVE_AREAS}" \
 	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
 	--parent-mirror-binary "${_MIRROR_BINARY}" \

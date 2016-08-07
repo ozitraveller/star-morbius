@@ -1,33 +1,20 @@
 #!/bin/bash
-#
-# written for BunsenLabs by <damo> May 2015
-#
-# -nb    normal background colour
-# -nf    normal foreground colour
-# -sb    selected background colour
-# -sf    selected foreground colour
-#
-# -b    place menu at bottom (otherwise top)
-#
-# See 'man dmenu' for more information.
 
-#USAGE="\n  To start dmenu at the top or bottom of the screen,\n\
-  #add or remove -b in the dmenu_run command in dmenu-bind.sh.\n\
-  #-b     locate at bottom\n\n\
-  #To change colours, edit the options:\n\n\
-  #-nb    normal background colour\n\
-  #-nf    normal foreground colour\n\
-  #-sb    selected background colour\n\
-  #-sf    selected foreground colour\n\n\
-  #Get all configuration options with 'man dmenu'.\n"
+# Options
+# -------
+# -i   makes dmenu match menu entries case insensitively.
+# -b   defines that dmenu appears at the bottom.
+# -l   <lines> activates vertical list mode. The given number of lines will be displayed. Window height will get adjusted.
+# -fn  <font> defines the font.
+# -nb  <color> defines the normal background color (#RGB, #RRGGBB, and color names are supported).
+# -nf  <color> defines the normal foreground color (#RGB, #RRGGBB, and color names are supported).
+# -p   <prompt> defines a prompt to be displayed before the input area.
+# -sb  <color> defines the selected background color (#RGB, #RRGGBB, and color names are supported).
+# -sf  <color> defines the selected foreground color (#RGB, #RRGGBB, and color names are supported).
+# -v   prints version information to standard output, then exits.
 
-#if [[ $# = 1 ]]; then
-    #case $1 in
-        #-h|--help   ) echo -e "$USAGE"
-        #exit 0;;
-        #*           ) echo -e "\n  Invalid command argument\n"
-        #exit 1;;
-    #esac
-#fi
+# http://linux.die.net/man/1/dmenu
 
-dmenu_run -b -i -nb '#151617' -nf '#d8d8d8' -sb '#d8d8d8' -sf '#151617'
+# dmenu_run -b -i -nb '#151617' -nf '#d8d8d8' -sb '#d8d8d8' -sf '#151617'
+
+dmenu_run -fn 10x20 -nf '#398ee7' -nb black -sf black -sb white -l 20

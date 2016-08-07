@@ -9,12 +9,12 @@ fi
 
 if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
 
-    #cd /etc/skel
-    #tar cpzf skel.tar.gz .
-    #mv skel.tar.gz /home/$USER/skel.tar.gz
-    #cd /home/$USER
-    #tar xkpsf skel.tar.gz
-    #rm skel.tar.gz
+    cd /etc/skel
+    tar cpzf skel.tar.gz .
+    mv skel.tar.gz /home/$USER/skel.tar.gz
+    cd /home/$USER
+    tar xkpsf skel.tar.gz
+    rm skel.tar.gz
 
     if [ -f "/home/$USER/.gtkrc-2.0" ]; then
         rpl -q 'REPLACEME' $USER /home/$USER/.gtkrc-2.0 > /dev/null 2>&1

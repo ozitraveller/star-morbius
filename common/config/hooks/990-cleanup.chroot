@@ -24,10 +24,12 @@ echo ""
 
 # echo "WARNING: apt-mark manual google-chrome-stable"
 # apt-mark manual google-chrome-stable
+apt-mark manual xorg
 
 echo STAR-LIVE-Hook: "Removing unused packages - for"
 echo ""
 # Removing unused packages
+# for PACKAGE in apt-utils aptitude man-db manpages info dselect
 for PACKAGE in apt-utils aptitude man-db manpages info dselect
 do
 	if ! apt-get remove --purge --yes "${PACKAGE}"
@@ -38,7 +40,7 @@ done
 
 echo STAR-LIVE-Hook: "autoremove"
 echo ""
-apt-get autoremove --yes || true
+# apt-get autoremove --yes || true
 
 echo STAR-LIVE-Hook: "Removing unused files - find"
 echo ""

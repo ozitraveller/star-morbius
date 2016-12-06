@@ -1,0 +1,26 @@
+#!/bin/bash
+#Star User Set-up
+
+set -e
+
+USER="star"
+
+if [ ! -d "/home/star/.config/star" ]; then
+	mkdir /home/star/.config/star
+fi
+
+if [ ! -f "/home/star/.config/star/star-setup" ]; then
+
+    if [ -f "/home/star/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
+        rpl -q 'REPLACEME' star /home/star/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
+    fi
+
+    ln -s /usr/share/backgrounds /home/star/images/wallpapers/shared
+
+	touch /home/star/.config/star/star-setup
+    chown -R star:star /home/star
+fi
+
+xdg-user-dirs-update
+
+exit 0

@@ -3,6 +3,8 @@
 
 set -e
 
+USER=$1
+
 if [ ! -d "/home/$USER/.config/star" ]; then
 	mkdir /home/$USER/.config/star
 fi

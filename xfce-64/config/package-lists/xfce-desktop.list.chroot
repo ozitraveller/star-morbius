@@ -3,6 +3,10 @@ xfce4-session
 xfce4-settings 
 # xfce4-volumed
 
+wicd
+
+lightdm
+
 xfce4-terminal
 xfce4-screenshooter 
 

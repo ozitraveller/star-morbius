@@ -62,9 +62,9 @@
 #  mode "  " {
   mode "resize" {
     bindsym h resize shrink width 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
     bindsym j resize grow height 10 px or 10 ppt
     bindsym k resize shrink height 10 px or 10 ppt
-    bindsym l resize grow width 10 px or 10 ppt
     bindsym Escape mode "default"
   }
 
@@ -74,13 +74,14 @@
 
 # Program-Related Bindings
 # installer start
-# bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
+bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
 # installer end	
   bindsym $mod+Ctrl+w exec x-www-browser
   bindsym $mod+Ctrl+e exec editor
   bindsym $mod+Ctrl+f exec x-file-manager
   bindsym $mod+Return exec x-terminal-emulator
   bindsym $mod+Ctrl+m exec smplayer
+  bindsym $mod+Ctrl+n exec wicd-curses
   bindsym $mod+Ctrl+l exec /usr/bin/i3lock -n -p default --color=000000
   bindsym $mod+d exec $HOME/.config/dmenu/dmenu-bind.sh
 #  bindsym $mod+d exec dmenu_run
@@ -174,7 +175,7 @@
 # Floating
   for_window [class="Lxappearance"] floating enable
   for_window [class="Arandr"] floating enable
-  for_window [class="Wicd-client"] floating enable
+  for_window [class="Wicd-curses"] floating enable
   for_window [class="Star-exit"] floating enable
   for_window [title="alsamixer"] floating enable border pixel 2
   for_window [class="Galculator"] floating enable border pixel 2
@@ -193,10 +194,12 @@
 
 # Bar
   bar {
+	tray_output primary
 #    font pango: System San Francisco Display, FontAwesome 11
     font pango: Liberation Sans 10
+    status_command i3status
 #    status_command i3blocks
-    status_command $HOME/.config/conky/conky-i3bar
+#    status_command $HOME/.config/conky/conky-i3bar
     position bottom
 #    strip_workspace_numbers yes
 #    height 25

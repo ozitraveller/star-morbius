@@ -5,7 +5,7 @@ set -e
 echo STAR-LIVE-Hook: "$0"
 echo ""
 
-echo "I: Enable execute permissions oblogout"
+#echo "I: Enable execute permissions oblogout"
 
-chmod a+rx /etc/oblogout.conf
-chmod a+rx /usr/bin/oblogout
+#chmod a+rx /etc/oblogout.conf
+#chmod a+rx /usr/bin/oblogout

@@ -9,6 +9,13 @@ fi
 
 if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
 
+    #cd /etc/skel
+    #tar cpzf skel.tar.gz .
+    #mv skel.tar.gz /home/$USER/skel.tar.gz
+    #cd /home/$USER
+    #tar xkpsf skel.tar.gz
+    #rm skel.tar.gz
+    
     if [ -f "/home/$USER/.fluxbox/init" ]; then
         rpl -q 'REPLACEME' $USER /home/$USER/.fluxbox/init > /dev/null 2>&1
     fi

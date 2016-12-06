@@ -2,9 +2,13 @@ fluxbox
 fbpager
 fbpanel
 
+wicd
+
+lightdm
+
 hsetroot
 # nitrogen
-feh
+# feh
 
 xfce4-terminal
 # compton
@@ -29,7 +33,5 @@ thunar-media-tags-plugin
 # thunar-actions-plugin
 tumbler
 
-# pcmanfm
-# libfm-modules
 
 

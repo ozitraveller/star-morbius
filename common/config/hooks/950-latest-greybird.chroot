@@ -13,8 +13,9 @@ set -e
 echo STAR-LIVE-Hook: "$0"
 echo ""
 
-cd /usr/share/themes
-rm -rf Greybird
-wget -c https://github.com/shimmerproject/Greybird/archive/master.zip
-unzip -q master.zip
-mv Greybird-master Greybird
+#cd /usr/share/themes
+#rm -rf Greybird
+#wget -c https://github.com/shimmerproject/Greybird/archive/master.zip
+#unzip -q master.zip
+#mv Greybird-master Greybird
+#rm master.zip

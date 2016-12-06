@@ -1,15 +1,18 @@
 jwm
+slim
+
+wicd
 
 hsetroot
 # nitrogen
-feh
+# feh
 
 lxterminal
 # xfce4-mixer
 # compton
 lxrandr
 lxappearance
-lxtask
+# lxtask
 gmrun
 leafpad
 atril

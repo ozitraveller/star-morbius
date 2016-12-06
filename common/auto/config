@@ -6,9 +6,12 @@ DISTRIBUTION="jessie"
 ARCHITECTURES="amd64"
 LINUX_FLAVOURS="amd64"
 ARCHIVE_AREAS="main"
-SOURCE="false"
+DEBIAN_INSTALLER="live"
+# DEBIAN_INSTALLER="daily"
 
+SOURCE="false"
 MIRROR_BINARY="http://packages.devuan.org/merged"
+
 # MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
 # MIRROR_BINARY="http://au.mirror.devuan.org/devuan/dists/jessie/main/"
@@ -18,6 +21,7 @@ MIRROR_BINARY="http://packages.devuan.org/merged"
 #	--debootstrap-options "--variant=minbase"
 #	--apt-source-archives true \
 #	--initramfs-compression lzma \
+#	--apt-options "--force-yes --yes" \
 
 
 lb config noauto \
@@ -25,11 +29,12 @@ lb config noauto \
 	--chroot-filesystem squashfs \
 	--distribution "${_DISTRIBUTION}" \
 	--debian-installer-distribution "${_DISTRIBUTION}" \
-	--debian-installer live \
+	--debian-installer "${DEBIAN_INSTALLER}" \
 	--architectures "${_ARCHITECTURES}" \
 	--linux-flavours "${_LINUX_FLAVOURS}" \
 	--apt-recommends false \
 	--apt-secure true \
+	--apt-source-archives false \
 	--apt-indices false \
 	--archive-areas "${_ARCHIVE_AREAS}" \
 	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
@@ -48,4 +53,3 @@ lb config noauto \
 	--verbose \
 	--bootappend-live "boot=live config components file=/preseed.cfg quiet splash autologin nouveau.modeset=0 radeon.modeset=0" \
 "${@}"
-

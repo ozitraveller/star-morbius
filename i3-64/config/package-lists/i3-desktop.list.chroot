@@ -3,6 +3,10 @@ i3status
 # i3blocks
 dunst
 
+wicd-curses
+
+slim
+
 hsetroot
 feh
 

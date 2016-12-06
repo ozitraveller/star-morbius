@@ -18,7 +18,7 @@
 # Automatically generated file. Do not edit (see /usr/share/doc/menu/html/index.html)
 [separator]	
       [submenu] (Settings) {}
-         [exec] (ARandR Screen Layout Editor) {arandr}
+         [exec] (ARandR Screen Layout Editor) {/usr/bin/arandr}
          [exec] (Appearance) {/usr/bin/lxappearance} <>
          [exec] (Power Manager) {/usr/bin/xfce4-power-manager-settings} <>
       [end]
@@ -27,8 +27,7 @@
          [exec] (Archive Manager) {/usr/bin/file-roller} <>	
 		 [exec] (Calculator) {/usr/bin/gnome-calculator} <>
          [exec] (Geany Editor) {editor} <>
-         [exec] (SpaceFM) {x-file-manager} <>
-         [exec] (SpaceFM File Search) {spacefm --find-files %F} <>
+         [exec] (Thunar) {x-file-manager} <>
          [exec] (Terminal) {x-terminal-emulator} <>	
          [exec] (Xarchiver) {/usr/bin/xarchiver} <>		 		 		 
          [exec] (Xterm) {/usr/bin/xterm} <>		 		 		 
@@ -38,7 +37,7 @@
          [exec] (Screenshot) {/usr/bin/xfce4-screenshooter} <>
       [end]
       [submenu] (Internet) {}
-         [exec] (Iceweasel) {x-www-browser} <>
+         [exec] (Firefox) {x-www-browser} <>
          [exec] (Wicd Network Manager) {/usr/bin/wicd-gtk --no-tray} <>
       [end]
       [submenu] (Multimedia) {}
@@ -62,14 +61,14 @@
          [exec] (Synaptic Package Manager) {su-to-root -X -c /usr/sbin/synaptic} <>
       [end]
       [submenu] (Fluxbox) {Settings} <>
-        [config] (Fluxbox Menu)
-        [reconfig] (Reload Config)
-        [restart] (Restart Fluxbox)
-        [exec] (Fluxbox Menu Editor) {cd ~/fluxmenu && python fluxMenu.py} <>
-        [workspaces] (Workspaces)
-        [submenu] (Styles) {}
-        [stylesdir] (/usr/share/fluxbox/styles)
-        [stylesdir] (~/.fluxbox/styles)
+         [config] (Fluxbox Menu)
+         [reconfig] (Reload Config)
+		 [restart] (Restart Fluxbox)
+         [exec] (Fluxbox Menu Editor) {cd ~/fluxmenu && python fluxMenu.py} <>
+         [workspaces] (Workspaces)
+         [submenu] (Styles) {}
+         [stylesdir] (/usr/share/fluxbox/styles)
+         [stylesdir] (~/.fluxbox/styles)
       [end]
     [end]
   [separator]

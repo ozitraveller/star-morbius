@@ -32,7 +32,7 @@
       <property name="&lt;Super&gt;e" type="string" value="geany"/>
       <property name="&lt;Super&gt;t" type="string" value="xfce4-terminal"/>
       <property name="&lt;Super&gt;l" type="string" value="/usr/bin/i3lock -n -p default --color=000000"/>
-	  <property name="&lt;Super&gt;d" type="string" value="/home/$USER/.config/dmenu/dmenu-bind.sh"/>
+	  <property name="&lt;Super&gt;d" type="string" value="/home/REPLACEME/.config/dmenu/dmenu-bind.sh"/>
 
     </property>
   </property>

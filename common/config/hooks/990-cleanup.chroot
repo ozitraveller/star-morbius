@@ -17,30 +17,40 @@ echo ""
 # it may very well be possible that other packages are depending
 # on certain files that get removed here.
 # Therefore, this hooks is merely an inspiration for what could be
-# removed and not a generic nor recommendet solution to get the
+# removed and not a generic nor recommended solution to get the
 # image filesize down. In any event, using this hook can lead to
 # unforseen bugs and breakages in other packages and you should
 # be prepared to find and fix it for your own images.
 
 # echo "WARNING: apt-mark manual google-chrome-stable"
 # apt-mark manual google-chrome-stable
-apt-mark manual xorg
 
-echo STAR-LIVE-Hook: "Removing unused packages - for"
-echo ""
-# Removing unused packages
-# for PACKAGE in apt-utils aptitude man-db manpages info dselect
-for PACKAGE in apt-utils aptitude man-db manpages info dselect
-do
-	if ! apt-get remove --purge --yes "${PACKAGE}"
-	then
-		echo "WARNING: ${PACKAGE} isn't installed"
-	fi
-done
+#echo STAR-LIVE-Hook: "Removing unused packages - for"
+#echo ""
+## Removing unused packages
+#for PACKAGE in apt-utils aptitude man-db manpages info dselect
+#do
+	#if ! apt-get remove --purge --yes "${PACKAGE}"
+	#then
+		#echo "WARNING: ${PACKAGE} isn't installed"
+	#fi
+#done
+
+#echo STAR-LIVE-Hook: "Removing icons"
+#echo ""
+## Removing icons
+#for ICON in Adwaita
+#do
+	#if [ -d "/usr/share/icons/${ICON}" ]; then
+		#rm -rf "/usr/share/icons/${ICON}"
+		#echo "WARNING: ${ICON} removed"
+	#fi
+#done
+
 
 echo STAR-LIVE-Hook: "autoremove"
 echo ""
-# apt-get autoremove --yes || true
+apt-get autoremove --yes || true
 
 echo STAR-LIVE-Hook: "Removing unused files - find"
 echo ""

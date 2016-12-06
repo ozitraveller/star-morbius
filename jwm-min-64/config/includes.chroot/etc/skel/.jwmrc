@@ -15,8 +15,8 @@
 <!-- installer end -->	   
       <Separator/>
       <Menu icon="folder.png" label="Settings">
-          <Program label="lxrandr Screen Layout Editor" confirm="false">/usr/bin/lxrandr</Program>
-          <Program label="LXappearance" confirm="false">/usr/bin/lxappearance</Program>
+          <Program label="Display Settings" confirm="false">/usr/bin/lxrandr</Program>
+          <Program label="Appearance" confirm="false">/usr/bin/lxappearance</Program>
           <Program label="Power Manager" confirm="false">/usr/bin/xfce4-power-manager-settings</Program>
       </Menu>
       <Separator/>
@@ -32,7 +32,7 @@
           <Program label="Mirage" confirm="false">mirage</Program>
       </Menu>      
       <Menu icon="folder.png" label="Internet">
-           <Program icon="firefox.png" label="Iceweasel">x-www-browser</Program>
+           <Program icon="firefox.png" label="Firefox">x-www-browser</Program>
            <Program label="Wicd Network Manager">/usr/bin/wicd-gtk --no-tray</Program>
       </Menu>  
       <Menu icon="folder.png" label="Multimedia">

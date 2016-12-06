@@ -5,9 +5,13 @@ obmenu
 tint2
 # slim
 
+wicd
+
+lightdm
+
 hsetroot
 # nitrogen
-feh
+# feh
 
 xfce4-terminal
 # compton

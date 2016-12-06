@@ -1,0 +1,12 @@
+label live-@FLAVOUR@
+	menu label ^liveUSB (@FLAVOUR@)
+	menu default
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE@
+
+label live-@FLAVOUR@-failsafe
+	menu label ^liveUSB (@FLAVOUR@ reparation)
+	linux @LINUX@
+	initrd @INITRD@
+	append @APPEND_LIVE_FAILSAFE@

@@ -1,0 +1,50 @@
+#!/bin/sh
+
+set -e
+
+ARCHITECTURE="amd64"
+DISTRIBUTION="jessie"
+LINUXFLAVOUR="amd64"
+MIRROR_BINARY="http://packages.devuan.org/merged"
+# PACKAGE_LIST_FILE="config/package-lists/liveUSB.list.chroot"
+
+#   --archive-areas "main contrib non-free" \
+#	--bootappend-live "boot=live components vga=791 nottyautologin persistence-media=removable-usb persistence-encryption=luks persistence quiet silent" \
+# 	--bootappend-live "boot=live components vga=791 nottyautologin quiet silent" \
+# 	--apt-secure true \
+#	--backports false \
+
+lb config noauto \
+	--mode devuan \
+	--apt-secure true \
+	--apt-options "--force-yes --yes" \
+	--apt-recommends false \
+	--apt-source-archives false \
+	--apt-indices false \
+	--architectures ${ARCHITECTURE} \
+	--archive-areas "main" \
+	--binary-filesystem fat32 \
+	--binary-images hdd \
+	--distribution ${DISTRIBUTION} \
+	--linux-flavours ${LINUXFLAVOUR} \
+	--iso-application "Star Linux" \
+	--iso-publisher "Star" \
+	--iso-volume "Star Live" \	
+	--security false \
+    --updates false \
+	--memtest none \
+	--debug \
+	--verbose \
+	--system live \
+	--bootappend-live "boot=live components vga=791 nottyautologin persistence-media=removable-usb persistence-encryption=luks persistence quiet silent" \
+"${@}"
+
+#IMAGENAME=liveUSB
+#IMAGELABEL=STAR_LIVE
+
+#sed --in-place=.orig \
+    #-E "s/live-image/${IMAGENAME}/" \
+    #config/build
+#sed --in-place=.orig \
+    #-E "s/^(LB_HDD_LABEL=).*$/\1\"$(echo ${IMAGELABEL} | sed -e "s/-v/-/" -e "y/\./_/" | cut -c -11)\"/" \
+    #config/binary

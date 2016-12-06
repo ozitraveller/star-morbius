@@ -66,7 +66,7 @@
 			<item label="ARandR Screen Layout Editor">
 				<action name="Execute">
 					<command>
-						arandr
+						/usr/bin/arandr
 					</command>
 				</action>
 			</item>
@@ -115,13 +115,6 @@
 					</command>
 				</action>
 			</item>
-		    <!-- <item label="Catfish File Search">
-				<action name="Execute">
-					<command>
-						/usr/bin/catfish
-					</command>
-				</action>
-			</item> -->
 			<item label="Geany Editor">
 				<action name="Execute">
 					<command>
@@ -136,17 +129,10 @@
 					</command>
 				</action>
 			</item>
-			<item label="SpaceFM">
+			<item label="Thunar">
 				<action name="Execute">
 					<command>
 						x-file-manager
-					</command>
-				</action>
-			</item>
-			<item label="SpaceFM File Search">
-				<action name="Execute">
-					<command>
-						spacefm --find-files %F
 					</command>
 				</action>
 			</item>
@@ -182,7 +168,7 @@
 			</item>
 		</menu>
 		<menu id="internet" label="Internet">
-			<item label="Iceweasel">
+			<item label="Firefox">
 				<action name="Execute">
 					<command>
 						x-www-browser

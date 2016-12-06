@@ -11,7 +11,7 @@
 ## More information about this can be found at:
 ## http://openbox.org/wiki/Help:Autostart
 ##
-## Have fun & happy Star'! :)
+## Have fun & happy Star! :)
 
 # /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
 

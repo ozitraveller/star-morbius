@@ -1,0 +1,71 @@
+desktop-base
+
+xfce4-notifyd
+libnotify-bin
+bash-completion
+xfce4-mixer
+# pavucontrol
+# volumeicon-alsa
+
+ttf-dejavu 
+fonts-liberation 
+fontconfig-config 
+
+dmz-cursor-theme
+gnome-brave-icon-theme
+# gnome-colors
+# gnome-colors-common
+# gnome-icon-theme
+# tango-icon-theme
+gtk3-engines-xfce
+gtk2-engines-murrine 
+gtk2-engines 
+gtk2-engines-pixbuf
+
+
+bum 
+hdparm 
+disk-manager 
+ufw 
+gparted  
+htop
+gksu 
+gdebi 
+hardinfo 
+synaptic
+galternatives
+
+# yad
+# zenity
+
+i3lock
+suckless-tools
+
+smplayer
+iceweasel
+# firefox-esr
+# epiphany-browser
+# clipit
+mirage
+conky-all 
+file-roller
+xarchiver
+# engrampa
+gnome-calculator 
+# transmission-gtk
+
+# audacious
+# filezilla 
+# hexchat 
+# bleachbit
+# gsimplecal
+# catfish
+# mlocate
+# tree
+scrot
+# mutt
+xfce4-appfinder
+xfburn
+xfce4-screenshooter
+
+xterm

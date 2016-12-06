@@ -17,18 +17,18 @@
 <!-- installer end -->	   
       <Separator/>
       <Menu icon="folder.png" label="Settings">
-          <Program label="lxrandr Screen Layout Editor" confirm="false">/usr/bin/lxrandr</Program>
-          <Program label="LXappearance" confirm="false">/usr/bin/lxappearance</Program>
+          <Program label="ARandR Screen Layout Editor" confirm="false">/usr/bin/arandr</Program>
+          <Program label="Appearance" confirm="false">/usr/bin/lxappearance</Program>
           <Program label="Power Manager" confirm="false">/usr/bin/xfce4-power-manager-settings</Program>
       </Menu>
       <Separator/>
       <Menu icon="folder.png" label="Accessories">
 		  <Program label="Archive Manager">/usr/bin/file-roller</Program>
 		  <Program label="Calculator" confirm="false">/usr/bin/gnome-calculator</Program>
-		  <Program label="Leafpad" confirm="false">editor</Program>
+		  <!--<Program label="Catfish File Search" confirm="false">/usr/bin/catfish</Program>-->
+          <Program label="Leafpad" confirm="false">editor</Program>
 		  <Program label="Terminal">x-terminal-emulator</Program>
-		  <Program label="SpaceFM">x-file-manager</Program>
-		  <Program label="SpaceFM File Search">spacefm --find-files %F</Program>
+		  <Program label="PcmanFM">x-file-manager</Program>
 		  <Program label="Xarchiver">/usr/bin/xarchiver</Program>
 		  <Program label="Xterm">/usr/bin/xterm</Program>
       </Menu>
@@ -37,7 +37,7 @@
           <Program label="Screenshot" confirm="false">/usr/bin/xfce4-screenshooter</Program>
       </Menu>      
       <Menu icon="folder.png" label="Internet">
-          <Program icon="firefox.png" label="Iceweasel">x-www-browser</Program>
+          <Program icon="firefox.png" label="Firefox">x-www-browser</Program>
           <!-- <Program label="Transmission">/usr/bin/transmission-gtk</Program> -->
           <Program label="Wicd Network Manager">/usr/bin/wicd-gtk --no-tray</Program>
       </Menu>  
@@ -49,7 +49,7 @@
 		  <Program label="Xfburn" confirm="false">/usr/bin/xfburn</Program>
       </Menu>      
       <Menu icon="folder.png" label="Office">
-          <Program label="Pdf Viewer" confirm="false">/usr/bin/xpdf</Program>
+          <Program label="Pdf Viewer" confirm="false">/usr/bin/atril</Program>
       </Menu>      
       <Menu icon="folder.png" label="System">
 		  <Program label="Alternatives Configurator" confirm="false">su-to-root -X -c /usr/bin/galternatives</Program>
@@ -61,7 +61,7 @@
           <Program label="Root Terminal" confirm="false">su-to-root -X -c x-terminal-emulator</Program>
           <Program label="Root File Manager" confirm="false">su-to-root -X -c x-file-manager</Program>
           <Program label="System Information" confirm="false">/usr/bin/hardinfo</Program>
-          <Program label="Synaptic Package Manager" confirm="false">gksu /usr/sbin/synaptic</Program>
+          <Program label="Synaptic Package Manager" confirm="false">su-to-root -X -c /usr/sbin/synaptic</Program>
       </Menu>
       <Separator/>
       <Restart label="Restart" icon="restart.png"/>
@@ -92,7 +92,8 @@
    <Tray  x="0" y="+1" height="34" autohide="false">
 
       <!-- Additional TrayButton attribute: label -->
-      <TrayButton label="star">root:1</TrayButton>
+      <!--<TrayButton label="star">root:1</TrayButton>-->
+      <TrayButton icon="/usr/share/jwm/star-white.svg">root:1</TrayButton>
       <!-- <TrayButton label="_">showdesktop</TrayButton>
       <TrayButton label="t">exec:x-terminal-emulator</TrayButton>
       <TrayButton label="f">exec:x-file-manager</TrayButton>
@@ -140,29 +141,38 @@
       <Font>liberation.sans-11</Font>
       <Width>2</Width>
       <Height>20</Height>
-
+	  <Corner>3</Corner>
+	  <Foreground>#AEAEAE</Foreground>
+	  <Background>#262626</Background>
+	  <Outline>#000000</Background>
+	  <Opacity>0.5</Opacity>
+	  
       <Active>
-         <Text>#ffffff</Text>
-         <Title>#398EE7</Title>
-         <Outline>#404040</Outline>
+         <!--<Text>#ffffff</Text>
+         <Title>#262626</Title>
+         <Outline>#404040</Outline>-->
+         <Foreground>#ffffff</Foreground>
+		 <Background>#404040</Background>
+		 <Outline>#000000</Background>
+		 <Opacity>1.0</Opacity>
       </Active>
-      <Corner>#404040</Corner>
+      <!--<Corner>#404040</Corner>-->
 
-      <Inactive>
+      <!--<Inactive>
          <Text>#c0c0c0</Text>
          <Title>#202020</Title>
          <Outline>#202020</Outline>
-      </Inactive>
+      </Inactive>-->
 
    </WindowStyle>
 
 	<!-- MENU PROPERTIES -->
 	
 	<MenuStyle>
-      		<Font>liberation.sans-11</Font>
-		<Foreground>#000000</Foreground>
-		<Background>#ffffff</Background>
-		<ActiveForeground>#ffffff</ActiveForeground>
+      	<Font>liberation.sans-11</Font>
+		<Foreground>#FFFFFF</Foreground>
+		<Background>#262626</Background>
+		<ActiveForeground>#FFFFFF</ActiveForeground>
 		<ActiveBackground>#398EE7</ActiveBackground>
 	</MenuStyle>
 
@@ -171,9 +181,9 @@
    <TaskListStyle>
       <Font>liberation.sans-11</Font>
       <ActiveForeground>#000000</ActiveForeground>
-      <ActiveBackground>#398EE7</ActiveBackground>
+      <ActiveBackground>#262626</ActiveBackground>
       <Foreground>#FFFFFF</Foreground>
-      <Background>#262626</Background>
+      <Background>#272727</Background>
    </TaskListStyle>
 
 	<!-- TRAY PROPERTIES -->
@@ -181,17 +191,19 @@
    <TrayStyle>
       <Font>liberation.sans-11</Font>
       <Background>#262626</Background>
-      <Foreground>#ffffff</Foreground>
+      <Foreground>#FFFFFF</Foreground>
    </TrayStyle>
 
 	<!-- PAGER PROPERTIES -->
 
    <PagerStyle>
-      <Outline>#1a1a1a</Outline>
-      <Foreground>#2b2b2b</Foreground>
-      <Background>#0d0d0d</Background>
-      <ActiveForeground>#d9d9d9</ActiveForeground>
-      <ActiveBackground>#3c3c3c</ActiveBackground>
+      <Outline>#000000</Outline>
+      <Foreground>#555555</Foreground>
+      <Background>#333333</Background>
+      <Active>
+         <Foreground>#0077CC</Foreground>
+		 <Background>#FFFFFF</Background>
+      </Active>
    </PagerStyle>
 
 	<PopupStyle>

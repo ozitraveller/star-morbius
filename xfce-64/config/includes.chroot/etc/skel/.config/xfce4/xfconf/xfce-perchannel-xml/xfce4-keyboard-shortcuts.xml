@@ -26,11 +26,11 @@
       <property name="&lt;Alt&gt;F2" type="string" value="xfrun4"/>
       <property name="override" type="bool" value="true"/>
       <property name="&lt;Super&gt;x" type="string" value="xfce4-session-logout"/>
-      <property name="&lt;Super&gt;w" type="string" value="iceweasel"/>
-      <property name="&lt;Super&gt;f" type="string" value="thunar"/>
-      <property name="&lt;Super&gt;m" type="string" value="smplayer"/>
-      <property name="&lt;Super&gt;e" type="string" value="geany"/>
-      <property name="&lt;Super&gt;t" type="string" value="xfce4-terminal"/>
+      <property name="&lt;Super&gt;w" type="string" value="x-web-browser"/>
+      <property name="&lt;Super&gt;f" type="string" value="x-file-manager"/>
+      <property name="&lt;Super&gt;m" type="string" value="x-media-player"/>
+      <property name="&lt;Super&gt;e" type="string" value="editor"/>
+      <property name="&lt;Super&gt;t" type="string" value="x-terminal-emulator"/>
       <property name="&lt;Super&gt;l" type="string" value="/usr/bin/i3lock -n -p default --color=000000"/>
 	  <property name="&lt;Super&gt;d" type="string" value="/home/REPLACEME/.config/dmenu/dmenu-bind.sh"/>
 

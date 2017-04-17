@@ -1,25 +1,21 @@
 jwm
-slim
 
-wicd
+connman
+connman-ui
+# wicd
 
 hsetroot
-# nitrogen
-# feh
 
 lxterminal
-# xfce4-mixer
-# compton
 lxrandr
 lxappearance
-# lxtask
 gmrun
 leafpad
-atril
-
-# spacefm
-lsof
-udevil
 
 pcmanfm
 libfm-modules
+udevil
+# gvfs-backends
+# gvfs-fuse
+
+yad

@@ -8,6 +8,7 @@ devuan-keyring
 isc-dhcp-common
 # policykit-1
 # policykit-1-gnome
+# consolekit
 logrotate 
 localepurge
 xdg-user-dirs
@@ -18,16 +19,39 @@ rsync
 uuid-runtime
 user-setup
 sudo
+# dbus
+# dbus-x11
 
+# jwm
+dwm
+hsetroot
+
+# xfe
 mc
-iceweasel
-leafpad
-lxterminal
-apvlv
-dmenu
+netsurf
+# tabbed 
+# surf
+# leafpad
+# lxterminal
+# apvlv
+# dmenu
+stterm
+# tmux
+nano
+# 9menu
 
-jwm
-# dwm
+setnet
+# net-tools
+# iputils-ping
+# bind9-host
+# traceroute
+wpasupplicant
+# rfkill
+
+suckless-tools
+
+apt-listchanges
+# ncdu
 
 
 #  adwaita-icon-theme busybox ca-certificates consolekit dbus

@@ -5,17 +5,18 @@ set -e
 DISTRIBUTION="jessie"
 ARCHITECTURES="amd64"
 LINUX_FLAVOURS="amd64"
-ARCHIVE_AREAS="main"
+ARCHIVE_AREAS="main contrib non-free"
 SOURCE="false"
 MIRROR_BINARY="http://packages.devuan.org/merged"
 
 # --debootstrap-options "--variant=minbase" \
+# 	--initramfs-compression lzma \
 
 lb config noauto \
 	--mode devuan \
 	--chroot-filesystem squashfs \
-	--initramfs-compression lzma \
 	--debootstrap-options "--variant=minbase" \
+	--distribution "${_DISTRIBUTION}" \
 	--debian-installer-distribution "${_DISTRIBUTION}" \
 	--debian-installer live \
 	--architectures "${_ARCHITECTURES}" \
@@ -32,6 +33,7 @@ lb config noauto \
 	--backports false \
 	--security false \
     --updates false \
+    --firmware-chroot false \
 	--memtest none \
 	--win32-loader false \
 	--debug \

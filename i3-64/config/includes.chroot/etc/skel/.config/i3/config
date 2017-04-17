@@ -80,7 +80,7 @@ bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
   bindsym $mod+Ctrl+e exec editor
   bindsym $mod+Ctrl+f exec x-file-manager
   bindsym $mod+Return exec x-terminal-emulator
-  bindsym $mod+Ctrl+m exec smplayer
+  # bindsym $mod+Ctrl+m exec x-media-player
   bindsym $mod+Ctrl+n exec wicd-curses
   bindsym $mod+Ctrl+l exec /usr/bin/i3lock -n -p default --color=000000
   bindsym $mod+d exec $HOME/.config/dmenu/dmenu-bind.sh
@@ -88,7 +88,7 @@ bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
 #  bindsym $mod+d exec rofi -show run
 #  bindsym --release Print exec imgur-screenshot
 #  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-  bindsym $mod+Shift+e exec /usr/bin/star-exit
+  bindsym $mod+Shift+e exec /usr/bin/star-logout
   
 # Volume & Media Bindings
 #  bindsym XF86AudioLowerVolume exec --no-startup-id pulseaudio-ctl down
@@ -100,11 +100,13 @@ bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
 #  bindsym XF86AudioPrev exec playerctl previous
 
 # Startup Programs
+# policykit-1-gnome
 #  exec --no-startup-id nitrogen --restore
 #  exec --no-startup-id hsetroot -solid "#000000"
 #  exec --no-startup-id wicd-client -t
 #  exec --no-startup-id clipit
   exec --no-startup-id dunst
+  exec xrdb -merge ~/.Xresources
 #  exec --no-startup-id compton --config ~/.compton.conf
 #  exec --no-startup-id xfce4-power-manager
 #  exec --no-startup-id xset r rate 250 25
@@ -175,15 +177,14 @@ bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
 # Floating
   for_window [class="Lxappearance"] floating enable
   for_window [class="Arandr"] floating enable
-  for_window [class="Wicd-curses"] floating enable
-  for_window [class="Star-exit"] floating enable
+  # for_window [class="Wicd-curses"] floating enable
+  for_window [title="star-logout"] floating enable border normal
   for_window [title="alsamixer"] floating enable border pixel 2
-  for_window [class="Galculator"] floating enable border pixel 2
+  for_window [class="qalculate-gtk"] floating enable border pixel 2
   for_window [class="GParted"] floating enable border normal
   
   # for_window [class="Nitrogen"] floating enable border normal
-  for_window [class="Oblogout"] fullscreen enable
-  for_window [class="Star-welcome"] floating enable
+  for_window [title="star-welcome"] floating enable
 
 # Widow Colours
 #                         border  background text    indicator
@@ -197,9 +198,9 @@ bindsym $mod+i exec su-to-root -X -c /usr/sbin/debian-installer-launcher
 	tray_output primary
 #    font pango: System San Francisco Display, FontAwesome 11
     font pango: Liberation Sans 10
-    status_command i3status
+#    status_command i3status
 #    status_command i3blocks
-#    status_command $HOME/.config/conky/conky-i3bar
+    status_command $HOME/.config/conky/conky-i3bar
     position bottom
 #    strip_workspace_numbers yes
 #    height 25

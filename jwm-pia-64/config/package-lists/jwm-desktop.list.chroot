@@ -1,0 +1,25 @@
+jwm
+
+hsetroot
+
+lxterminal
+arandr
+lxappearance
+gmrun
+leafpad
+
+pcmanfm
+libfm-modules
+udevil
+# udisks2
+# gvfs-backends
+# gvfs-fuse
+
+# thunar
+# thunar-data
+# thunar-volman
+# thunar-archive-plugin
+# thunar-media-tags-plugin
+# tumbler
+
+gadmin-openvpn-client

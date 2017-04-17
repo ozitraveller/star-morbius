@@ -1,0 +1,19 @@
+[settings]
+default-encoding=ISO-8859-1
+default-font-size=11
+enable-developer-extras=true
+enable-site-specific-quirks=true
+enable-javascript=true
+default-charset=ISO-8859-1
+last-window-width=1035
+last-window-height=630
+last-panel-position=799
+search-width=169
+location-entry-search=https://duckduckgo.com/?q=%s
+right-align-sidepanel=true
+toolbar-items=TabNew,Back,NextForward,ReloadStop,BookmarkAdd,Location,Search,Trash,CompactMenu
+homepage=file:///home/REPLACEME/.local/share/star/star-info.html
+tabhome=about:dial
+download-folder=/home/REPLACEME/Downloads
+toolbar-style=MIDORI_TOOLBAR_SMALL_ICONS
+user-agent=Mozilla/5.0 (X11; Linux) AppleWebKit/538.15 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/538.15 Midori/0.5

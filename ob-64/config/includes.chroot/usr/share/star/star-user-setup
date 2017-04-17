@@ -3,6 +3,8 @@
 
 set -e
 
+USER=$1
+
 if [ ! -d "/home/$USER/.config/star" ]; then
 	mkdir /home/$USER/.config/star
 fi
@@ -22,6 +24,12 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
     if [ -f "/home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
         rpl -q 'REPLACEME' $USER /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
     fi
+    #~ if [ -f "/home/$USER/.config/midori/config" ]; then
+        #~ rpl -q 'REPLACEME' $USER /home/$USER/.config/midori/config > /dev/null 2>&1
+    #~ fi
+    #~ if [ -f "/home/$USER/.config/netsurf/Choices" ]; then
+        #~ rpl -q 'REPLACEME' $USER /home/$USER/.config/netsurf/Choices > /dev/null 2>&1
+    #~ fi
     
     ln -s /usr/share/backgrounds /home/$USER/images/wallpapers/shared
     
@@ -32,6 +40,9 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
 			rm /home/$USER/.config/openbox/menu.xml
 		fi
 		cp /etc/skel/.config/openbox/menu.xml /home/$USER/.config/openbox/menu.xml
+		
+		rpl -q '# policykit-1-gnome' '/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &' /etc/skel/.config/openbox/autostart > /dev/null 2>&1
+		cp /etc/skel/.config/openbox/autostart /home/$USER/.config/openbox/autostart
 	fi
 	
 	touch /home/$USER/.config/star/star-setup

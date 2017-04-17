@@ -24,6 +24,9 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
     if [ -f "/home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
         rpl -q 'REPLACEME' $USER /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
     fi
+    #~ if [ -f "/home/$USER/.config/midori/config" ]; then
+        #~ rpl -q 'REPLACEME' $USER /home/$USER/.config/midori/config > /dev/null 2>&1
+    #~ fi
     
     ln -s /usr/share/backgrounds /home/$USER/images/wallpapers/shared
 
@@ -36,13 +39,18 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
 		if [ -f "/home/$USER/.config/conky/conky_shortcuts_live_grey" ]; then
 			rm /home/$USER/.config/conky/conky_shortcuts_live_grey
 		fi
+		
 		cp /etc/skel/.config/i3/config /home/$USER/.config/i3/config
 		cp /etc/skel/.config/conky/conky_shortcuts_live_grey2 /home/$USER/.config/conky/conky_shortcuts_live_grey
+		
+		rpl -q '# policykit-1-gnome' 'exec --no-startup-id /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1' /etc/skel/.config/i3/config > /dev/null 2>&1
+		cp /etc/skel/.config/i3/config /home/$USER/.config/i3/config
+
 	fi
 	
 	touch /home/$USER/.config/star/star-setup
     chown -R $USER:$USER /home/$USER
-
+    
 fi
 
 xdg-user-dirs-update

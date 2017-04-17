@@ -1,0 +1,236 @@
+! urxvt ----------------------------------------------------------------------
+URxvt*iconFile: /usr/share/icons/gnome/16x16/apps/utilities-terminal.png
+URxvt*background: Black
+URxvt*foreground: White
+URxvt*geometry: 80x30
+URxvt*scrollBar: false
+
+"URxvt.font: 9x15"
+
+!-- Xft settings -- !
+Xft.dpi:        96
+Xft.antialias:  true
+Xft.rgba:       rgb
+Xft.hinting:    true
+Xft.hintstyle:  hintfull
+
+! -- Fonts -- !
+URxvt.font:xft:Monospace:pixelsize=15
+URxvt.boldfont:xft:Monospace-Bold:pixelsize=15
+
+
+! xterm ----------------------------------------------------------------------
+
+xterm*VT100.geometry:     80x25
+xterm*faceName:           Terminus:style=Regular:size=10
+!xterm*font:              -*-dina-medium-r-*-*-16-*-*-*-*-*-*-*
+xterm*dynamicColors:      true
+xterm*utf8:               2
+xterm*eightBitInput:      true
+xterm*saveLines:          512
+xterm*scrollKey:          true
+xterm*scrollTtyOutput:    false
+xterm*scrollBar:          true
+xterm*rightScrollBar:     true
+xterm*jumpScroll:         true
+xterm*multiScroll:        true
+xterm*toolBar:            false
+xterm*background:   	  black
+xterm*foreground:         white
+
+!aterm settings-------------------------------------------------------------     
+
+aterm*background:               black
+aterm*foreground:               white
+aterm*transparent:              true
+aterm*shading:                  30
+aterm*cursorColor:              gray
+aterm*saveLines:                2000
+!aterm*tinting:                 gray
+aterm*scrollBar:                false
+!aterm*scrollBar_right:          true
+aterm*transpscrollbar:          true
+aterm*borderwidth:              0
+aterm*font:                     -*-terminus-*-*-*-*-*-*-*-*-*-*-*-*
+aterm*geometry:                 80x25
+!aterm*fading:                  70  
+
+! xpdf -----------------------------------------------------------------------
+
+xpdf*enableFreetype:    yes
+xpdf*antialias:         yes
+xpdf*foreground:        black
+xpdf*background:        white
+xpdf*urlCommand:        /usr/bin/iceweasel %s
+
+! @(#)$Mu:Xpdf.ad.in 1.77 1998/08/29 00:07:50 $
+!#
+!# Xpdf.ad - application defaults for Xpdf
+!#
+
+Xpdf*schemeFileList:        SgiSpec
+Xpdf*useSchemes:            all
+Xpdf*useEnhancedFSB:        True
+Xpdf*sgiMode:               true
+
+
+!#
+!# Force sanity for dialogs.
+!#
+!MGV*XmDialogShell.deleteResponse:      unmap
+
+Xpdf*aboutDialog.textSW.text*fontList:  SGI_DYNAMIC PlainLabelFont
+Xpdf*bldoptsDialog.textSW.text*fontList:        SGI_DYNAMIC PlainLabelFont
+
+!##
+!## Various appearance resources.  Sorry but the Motif defaults suck
+!## undead guinea pigs through a fire hose.
+!##
+
+!#
+!# Dialog space sanity.
+!#
+Xpdf*XmDialogShell.XmForm.horizontalSpacing: 10
+Xpdf*XmDialogShell.XmForm.verticalSpacing:   10
+
+!#
+!# Button margins.
+!#
+Xpdf*XmPushButton.marginHeight:       4
+Xpdf*XmPushButton.marginWidth:        4
+Xpdf*XmPushButtonGadget.marginHeight: 4
+Xpdf*XmPushButtonGadget.marginWidth:  4
+
+!#
+!# Margins for the menus.
+!#
+Xpdf*XmRowColumn*XmCascadeButton*XmToggleButton.marginWidth:             8
+Xpdf*XmRowColumn*XmCascadeButton*XmToggleButtonGadget.marginWidth:       8
+Xpdf*XmRowColumn*XmCascadeButtonGadget*XmToggleButton.marginWidth:       8
+Xpdf*XmRowColumn*XmCascadeButtonGadget*XmToggleButtonGadget.marginWidth: 8
+
+Xpdf*XmRowColumn*XmCascadeButton*XmPushButton.marginWidth:             8
+Xpdf*XmRowColumn*XmCascadeButton*XmPushButtonGadget.marginWidth:       8
+Xpdf*XmRowColumn*XmCascadeButtonGadget*XmPushButton.marginWidth:       8
+Xpdf*XmRowColumn*XmCascadeButtonGadget*XmPushButtonGadget.marginWidth: 8
+
+Xpdf*XmRowColumn*XmCascadeButton*XmCascadeButton.marginWidth:             8
+Xpdf*XmRowColumn*XmCascadeButton*XmCascadeButtonGadget.marginWidth:       8
+Xpdf*XmRowColumn*XmCascadeButtonGadget*XmCascadeButton.marginWidth:       8
+Xpdf*XmRowColumn*XmCascadeButtonGadget*XmCascadeButtonGadget.marginWidth: 8
+
+!#
+!# Fonts that appear on menus.
+!#
+Xpdf*XmCascadeButton.fontList:       SGI_DYNAMIC ObliqueLabelFont
+Xpdf*XmCascadeButtonGadget.fontList: SGI_DYNAMIC ObliqueLabelFont
+Xpdf*XmMenuShell*fontList:           SGI_DYNAMIC ObliqueLabelFont
+
+Xpdf*XmToggleButton*background: SGI_DYNAMIC ButtonBackground
+
+Xpdf*XmToggleButton.fontList:SGI_DYNAMIC PlainLabelFont
+Xpdf*XmToggleButtonGadget.fontList:SGI_DYNAMIC PlainLabelFont
+Xpdf*XmLabel.fontList:SGI_DYNAMIC BoldLabelFont
+Xpdf*XmLabelGadget.fontList:SGI_DYNAMIC BoldLabelFont
+Xpdf*XmPushButton.fontList:SGI_DYNAMIC PlainLabelFont
+Xpdf*XmPushButtonGadget.fontList:SGI_DYNAMIC PlainLabelFont
+Xpdf*XmText.fontList:SGI_DYNAMIC FixedWidthFont
+Xpdf*XmTextField.fontList:SGI_DYNAMIC FixedWidthFont
+Xpdf*XmList.fontList:SGI_DYNAMIC PlainLabelFont
+Xpdf*XmScale.fontList:SGI_DYNAMIC BoldLabelFont
+
+Xpdf*XmSelectionBox*fontList:SGI_DYNAMIC PlainLabelFont
+Xpdf*XmMessageBox*fontList: SGI_DYNAMIC PlainLabelFont
+Xpdf*XmMessageBox*Message*fontList:SGI_DYNAMIC PlainLabelFont
+
+Xpdf*visibleWhenOff: True
+Xpdf*fillOnSelect: True
+
+Xpdf*XmList.background: SGI_DYNAMIC ScrolledListBackground
+Xpdf*SgList*background: SGI_DYNAMIC ScrolledListBackground
+Xpdf*XmPushButton.background: SGI_DYNAMIC ButtonBackground
+Xpdf*XmPushButtonGadget.background: SGI_DYNAMIC ButtonBackground
+Xpdf*XmDrawnButton.background: SGI_DYNAMIC ButtonBackground
+Xpdf*XmRowColumn*OptionButton.background: SGI_DYNAMIC ButtonBackground
+Xpdf*XmArrowButton.background: SGI_DYNAMIC BasicBackground
+Xpdf*XmArrowButtonGadget.background: SGI_DYNAMIC BasicBackground
+Xpdf*XmText.background: SGI_DYNAMIC TextFieldBackground
+Xpdf*XmScrolledWindow.XmText.background: SGI_DYNAMIC TextBackground
+Xpdf*XmTextField.background: SGI_DYNAMIC TextFieldBackground
+Xpdf*troughColor: SGI_DYNAMIC ScrollBarTroughColor
+Xpdf*XmScrollBar.background: SGI_DYNAMIC ScrollBarTroughColor
+Xpdf*XmScrollBar.foreground: SGI_DYNAMIC ScrollBarControlBackground
+Xpdf*XmScrolledWindow.searchButton.background: SGI_DYNAMIC ScrollBarControlBackground
+Xpdf*XmMainWindow.searchButton.background: SGI_DYNAMIC ScrollBarControlBackground
+Xpdf*XmScale.XmScrollBar.foreground: SGI_DYNAMIC ScrollBarControlBackground
+Xpdf*XmScale*foreground: SGI_DYNAMIC TextForeground
+Xpdf*XmMenuShell*background: SGI_DYNAMIC BasicBackground
+Xpdf*XmMenuShell*XmToggleButton.selectColor: SGI_DYNAMIC TextForeground
+Xpdf*highlightColor: SGI_DYNAMIC TextForeground
+Xpdf*XmDrawingArea.background: SGI_DYNAMIC DrawingAreaBackground
+Xpdf*SgGraph*background: SGI_DYNAMIC DrawingAreaBackground
+Xpdf*graphSW*ScrolledWindowClipWindow.background: SGI_DYNAMIC DrawingAreaBackground
+Xpdf*SgGraph*highlightColor: SGI_DYNAMIC HighlightColor1
+Xpdf*SgGraph*overviewColor: SGI_DYNAMIC TextForeground
+Xpdf*overview.background: SGI_DYNAMIC DrawingAreaBackground
+Xpdf*VkQuickHelpPopup*background: SGI_DYNAMIC QuickHelpBackground
+Xpdf*VkQuickHelpPopup*foreground: SGI_DYNAMIC QuickHelpForeground
+Xpdf*Command*background: SGI_DYNAMIC ButtonBackground
+Xpdf*Toggle*background: SGI_DYNAMIC ButtonBackground
+Xpdf*Text*background: SGI_DYNAMIC TextFieldBackground
+Xpdf*Scrollbar*background: SGI_DYNAMIC ScrollBarTroughColor
+Xpdf*List*background: SGI_DYNAMIC ScrolledListBackground
+Xpdf*StripChart.background: SGI_DYNAMIC DrawingAreaBackground
+Xpdf*StripChart.foreground: SGI_DYNAMIC SessionColor1
+Xpdf*StripChart.highlight: SGI_DYNAMIC DrawingAreaNodeColor1
+Xpdf*MenuButton*background: SGI_DYNAMIC ButtonBackground
+Xpdf*SimpleMenu*background: SGI_DYNAMIC ButtonBackground
+Xpdf*Panner.foreground: SGI_DYNAMIC SessionColor2
+Xpdf*Tree.background: SGI_DYNAMIC DrawingAreaBackground
+
+!xcalc-----------------------------------------------------------------------
+
+xcalc*geometry:                        200x275
+xcalc.ti.bevel.background:             #111111
+xcalc.ti.bevel.screen.background:      #000000
+xcalc.ti.bevel.screen.DEG.background:  #000000
+xcalc.ti.bevel.screen.DEG.foreground:  LightSeaGreen
+xcalc.ti.bevel.screen.GRAD.background: #000000
+xcalc.ti.bevel.screen.GRAD.foreground: LightSeaGreen
+xcalc.ti.bevel.screen.RAD.background:  #000000
+xcalc.ti.bevel.screen.RAD.foreground:  LightSeaGreen
+xcalc.ti.bevel.screen.INV.background:  #000000
+xcalc.ti.bevel.screen.INV.foreground:  Red
+xcalc.ti.bevel.screen.LCD.background:  #000000
+xcalc.ti.bevel.screen.LCD.foreground:  LightSeaGreen
+xcalc.ti.bevel.screen.LCD.shadowWidth: 0
+xcalc.ti.bevel.screen.M.background:    #000000
+xcalc.ti.bevel.screen.M.foreground:    LightSeaGreen
+xcalc.ti.bevel.screen.P.background:    #000000
+xcalc.ti.bevel.screen.P.foreground:    Yellow
+xcalc.ti.Command.foreground:  White
+xcalc.ti.Command.background:  #777777
+xcalc.ti.button5.background:  Orange3
+xcalc.ti.button19.background: #611161
+xcalc.ti.button18.background: #611161
+xcalc.ti.button20.background: #611111
+!uncomment to change label on division button
+!xcalc.ti.button20.label:      /
+xcalc.ti.button25.background: #722222
+xcalc.ti.button30.background: #833333
+xcalc.ti.button35.background: #944444
+xcalc.ti.button40.background: #a55555
+xcalc.ti.button22.background: #222262
+xcalc.ti.button23.background: #222262
+xcalc.ti.button24.background: #222272
+xcalc.ti.button27.background: #333373
+xcalc.ti.button28.background: #333373
+xcalc.ti.button29.background: #333373
+xcalc.ti.button32.background: #444484
+xcalc.ti.button33.background: #444484
+xcalc.ti.button34.background: #444484
+xcalc.ti.button37.background: #555595
+xcalc.ti.button38.background: #555595
+xcalc.ti.button39.background: #555595
+XCalc*Cursor:                 hand2
+XCalc*ShapeStyle:             rectangle

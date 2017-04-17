@@ -1,0 +1,4 @@
+# To install by clicking a Desktop icon, the debian-installer-launcher package needs to be included.
+# Also, please note that for the "Desktop" installer to work, the kernel of the live system must match the kernel d-i uses for the specified architecture.
+debian-installer-launcher
+sudo

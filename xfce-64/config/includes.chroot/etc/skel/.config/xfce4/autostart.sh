@@ -62,4 +62,7 @@
 ## an Xfce session by applying some gconf settings. Safe to delete.
 # cb-bad-nautilus &
 
+## read xpdf, xterm, uxrvt etc.. config
+xrdb -merge ~/.Xresources
+
 exit 0

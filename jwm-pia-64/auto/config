@@ -1,0 +1,53 @@
+#!/bin/sh
+
+set -e
+
+_DISTRIBUTION="jessie"
+_ARCHITECTURES="amd64"
+_LINUX_FLAVOURS="amd64"
+_ARCHIVE_AREAS="main contrib non-free"
+_SOURCE="false"
+# _MIRROR_BINARY="http://packages.devuan.org/merged"
+
+# sudo apt-get install apt-cacher-ng
+_MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
+
+# 	--apt-options "--yes --no-install-recommends" \
+
+#  jessie verion of squash-tools is 4.2!
+#	--chroot-filesystem squashfs \
+
+# this causes kernel panic
+#	--initramfs-compression lzma \ 
+
+# sudo cp /usr/lib/live/build/binary_rootfs /usr/lib/live/build/binary_rootfs.bak
+
+lb config noauto \
+	--mode devuan \
+	--chroot-filesystem squashfs \
+	--distribution "${_DISTRIBUTION}" \
+	--debian-installer-distribution jessie \
+	--debian-installer live \
+	--architectures "${_ARCHITECTURES}" \
+	--linux-flavours "${_LINUX_FLAVOURS}" \
+	--apt-recommends false \
+	--apt-secure true \
+	--apt-indices false \
+	--apt-source-archives false \
+	--archive-areas "${_ARCHIVE_AREAS}" \
+	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
+	--parent-mirror-binary "${_MIRROR_BINARY}" \
+	--mirror-bootstrap "${_MIRROR_BINARY}" \
+	--mirror-binary "${_MIRROR_BINARY}" \
+	--iso-application "Star Linux" \
+	--iso-publisher "Star" \
+	--iso-volume "Star Live" \
+	--backports false \
+	--security false \
+    --updates false \
+	--memtest none \
+	--win32-loader false \
+	--debug \
+	--verbose \
+	--bootappend-live "boot=live config components file=/preseed.cfg quiet splash autologin nouveau.modeset=0 radeon.modeset=0" \
+"${@}"

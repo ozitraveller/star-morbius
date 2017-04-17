@@ -14,11 +14,12 @@ MIRROR_BINARY="http://packages.devuan.org/merged"
 #	--firmware-chroot false \
 #	--debian-installer-distribution "${_DISTRIBUTION}" \
 #	--debian-installer live \
+# 	--initramfs-compression lzma \
 
 lb config noauto \
 	--mode devuan \
 	--chroot-filesystem squashfs \
-	--initramfs-compression lzma \
+	--distribution "${_DISTRIBUTION}" \
 	--debian-installer-distribution "${_DISTRIBUTION}" \
 	--debian-installer live \
 	--architectures "${_ARCHITECTURES}" \

@@ -13,7 +13,7 @@
 ##
 ## Have fun & happy Star! :)
 
-# /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+# policykit-1-gnome
 
 ## Set root window colour
 hsetroot -solid "#000000" & 
@@ -28,7 +28,9 @@ sleep 1
 {
 	# compton --config ~/.compton.conf &
 	(sleep 3 && tint2) &
-	(sleep 3 && wicd-gtk --tray) &
+	(sleep 3 && connman-ui-gtk --tray) &
+	# (sleep 2 && cmst -m) &
+	# (sleep 3 && wicd-gtk --tray) &
  	# (sleep 3 && volumeicon --tray) &
 	# (sleep 3 && clipit) &
 	(sleep 3 && conky -c ~/.conkyrc) &
@@ -49,3 +51,6 @@ xset r rate 250 25 &
 
 ## Turn on/off system beep
 xset b off &
+
+## read xpdf, xterm, uxrvt etc.. config
+xrdb -merge ~/.Xresources

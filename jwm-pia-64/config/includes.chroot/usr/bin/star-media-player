@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# wrapper for mpv to enable use as alternative for bl-media-player
+
+hash mpv || {
+    echo "$0: Install mpv to use this script" >&2
+    exit 1
+}
+
+if [ -n "$1" ]
+then
+    if [ "$#" -gt 1 ]
+    then
+        title='mpv' # $title is only needed for terminal
+    else
+        title="mpv - ${1##*/}"
+    fi
+# uncomment the next line to run mpv in a terminal
+#   x-terminal-emulator -T "$title" -e mpv "$@"
+# comment out the next line if you use x-terminal-emulator
+    mpv --no-terminal --force-window "$@"
+else
+    mpv --no-terminal --force-window --idle --title='mpv - ${filename:Drop media files here}'
+fi
+
+exit

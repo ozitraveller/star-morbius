@@ -12,11 +12,12 @@ fonts-liberation
 fontconfig-config 
 
 dmz-cursor-theme
-gnome-brave-icon-theme
+# gnome-brave-icon-theme
 # gnome-colors
 # gnome-colors-common
 # gnome-icon-theme
 # tango-icon-theme
+# gnome-themes-standard
 gtk3-engines-xfce
 gtk2-engines-murrine 
 gtk2-engines 
@@ -39,19 +40,21 @@ galternatives
 # zenity
 
 i3lock
-suckless-tools
+suckless-tools 
+# dmenu
 
-smplayer
+# smplayer
+mpv
 iceweasel
-# firefox-esr
-# epiphany-browser
-# clipit
+# midori
+# netsurf
+# qupzilla
+# palemoon
 mirage
 conky-all 
 file-roller
 xarchiver
-# engrampa
-gnome-calculator 
+qalculate-gtk
 # transmission-gtk
 
 # audacious
@@ -67,8 +70,14 @@ scrot
 xfce4-appfinder
 xfburn
 xfce4-screenshooter
+xpdf
+# zathura
 
 xterm
+ncdu
+
+# tmux
+# xterm
 # screen
 
 ## hplip + systemd

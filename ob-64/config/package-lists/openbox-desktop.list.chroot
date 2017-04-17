@@ -1,32 +1,25 @@
 openbox
-# lxappearance-obconf
 obconf
 obmenu
 tint2
-# slim
 
-wicd
+connman
+connman-ui
 
-lightdm
+# wicd
 
 hsetroot
-# nitrogen
-# feh
 
 xfce4-terminal
+# rxvt-unicode
 # compton
 arandr
 lxappearance
 lxtask
 gmrun
 geany
-# evince
-atril
-# zathura
 
-# spacefm
 lsof
-# udevil
 
 thunar
 thunar-data
@@ -36,3 +29,4 @@ thunar-media-tags-plugin
 # thunar-actions-plugin
 tumbler
 
+yad

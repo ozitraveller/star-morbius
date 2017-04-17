@@ -5,12 +5,15 @@ set -e
 DISTRIBUTION="jessie"
 ARCHITECTURES="amd64"
 LINUX_FLAVOURS="amd64"
-ARCHIVE_AREAS="main"
-DEBIAN_INSTALLER="live"
-# DEBIAN_INSTALLER="daily"
+ARCHIVE_AREAS="main contrib non-free"
+DEVUAN_INSTALLER="live"
+# DEVUAN_INSTALLER="daily"
 
 SOURCE="false"
-MIRROR_BINARY="http://packages.devuan.org/merged"
+# _MIRROR_BINARY="http://packages.devuan.org/merged"
+
+# sudo apt-get install apt-cacher-ng
+_MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
 
 # MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
@@ -22,6 +25,7 @@ MIRROR_BINARY="http://packages.devuan.org/merged"
 #	--apt-source-archives true \
 #	--initramfs-compression lzma \
 #	--apt-options "--force-yes --yes" \
+#	--chroot-filesystem squashfs \
 
 
 lb config noauto \
@@ -29,7 +33,7 @@ lb config noauto \
 	--chroot-filesystem squashfs \
 	--distribution "${_DISTRIBUTION}" \
 	--debian-installer-distribution "${_DISTRIBUTION}" \
-	--debian-installer "${DEBIAN_INSTALLER}" \
+	--debian-installer "${DEVUAN_INSTALLER}" \
 	--architectures "${_ARCHITECTURES}" \
 	--linux-flavours "${_LINUX_FLAVOURS}" \
 	--apt-recommends false \

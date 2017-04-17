@@ -1,0 +1,22 @@
+# xserver-xorg-video-all
+
+# intel-microcode
+# amd64-microcode
+# iucode-tool
+
+zd1211-firmware
+firmware-linux
+firmware-linux-nonfree
+firmware-netxen
+firmware-ralink
+firmware-iwlwifi
+firmware-intelwimax
+# firmware-ipw2x00
+firmware-brcm80211
+firmware-realtek
+firmware-atheros
+firmware-libertas
+firmware-bnx2
+firmware-b43-installer
+firmware-b43legacy-installer
+b43-fwcutter

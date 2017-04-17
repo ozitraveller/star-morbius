@@ -1,0 +1,22 @@
+dwm
+
+# wicd
+setnet
+
+hsetroot
+
+xfce4-terminal
+lxrandr
+lxappearance
+# gmrun
+leafpad
+
+pcmanfm
+libfm-modules
+gvfs-backends
+gvfs-fuse
+
+# yad
+
+
+# xsetroot

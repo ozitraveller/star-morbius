@@ -1,0 +1,50 @@
+#!/bin/bash
+#diy User Set-up
+
+set -e
+
+echo "Start user setup"
+
+if [ ! -d "/home/$USER/.config/star" ]; then
+	mkdir /home/$USER/.config/star
+fi
+
+if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
+
+    if [ -f "/home/$USER/.config/netsurf/Choices" ]; then
+        rpl -q 'REPLACEME' $USER /home/$USER/.config/netsurf/Choices > /dev/null 2>&1
+    fi
+    
+# echo "#1"
+
+    # if [ -f "/home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
+    #     rpl -q 'REPLACEME' $USER /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
+    # fi
+
+    # ln -s /usr/share/backgrounds /home/$USER/images/wallpapers/shared
+
+    #if [ "$USER" != "diylive" ]; then
+# echo "#12"
+
+	#	sed -i".bak" '/<!-- installer start -->/,/<!-- installer end -->/d' /etc/skel/.jwmrc
+#		rm /etc/skel/.jwmrc.bak
+	#	if [ -f "/home/$USER/.jwmrc" ]; then
+# echo "#123"
+	#		rm /home/$USER/.jwmrc
+	#	fi
+	#	cp /etc/skel/.jwmrc /home/$USER/.jwmrc
+	#fi
+
+# echo "#2"
+
+	touch /home/$USER/.config/star/star-setup
+    chown -R $USER:$USER /home/$USER
+fi
+
+# echo "#3"
+
+xdg-user-dirs-update
+
+# echo "#99"
+
+exit 0

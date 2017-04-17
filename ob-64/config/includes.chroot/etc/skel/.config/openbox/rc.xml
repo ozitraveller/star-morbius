@@ -46,7 +46,7 @@
   </placement>
 
   <theme>
-    <name>Adwaita-Dark-3.14-rev.2</name>
+    <name>Adwaita-Dark</name>
     <!-- <name>DarkTeal</name> -->
     <titleLayout>DSLIMC</titleLayout>
     <!--
@@ -382,7 +382,7 @@
           <enabled>true</enabled>
           <name>Mediaplayer</name>
         </startupnotify>
-        <command>smplayer</command>
+        <command>x-media-player</command>
       </action>
     </keybind>
     <keybind key="W-x">
@@ -391,7 +391,7 @@
           <enabled>true</enabled>
           <name>Logout</name>
         </startupnotify>
-        <command>/usr/bin/oblogout</command>
+        <command>/usr/bin/star-logout</command>
       </action>
     </keybind>
 

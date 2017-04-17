@@ -1,28 +1,22 @@
 xfce4-panel 
 xfce4-session 
 xfce4-settings 
-# xfce4-volumed
 
-wicd
-
-lightdm
+connman
+connman-ui
+# wicd
 
 xfce4-terminal
 xfce4-screenshooter 
 
 libxfce4ui-utils
 xfce4-taskmanager
-# xfce4-mixer
 xfwm4 
 xfwm4-themes 
 xfdesktop4
 
 menu
 
-# evince
-atril
-# zathura
-ncdu
 geany
 
 thunar

@@ -7,6 +7,9 @@
 
 # sudo lb clean --purge
 # lb clean noauto --all
+if [ ! -f "./*.iso" ]; then
+	rm *.iso
+fi
 sudo lb clean
 sudo lb init --distribution jessie
 sudo lb config

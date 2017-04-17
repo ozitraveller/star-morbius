@@ -1,14 +1,7 @@
 <?xml encoding="UTF-8" version="1.0"?>
 <actions>
-  <action>
-    <icon>catfish</icon>
-    <name>Find files</name>
-    <command>catfish --hidden --path=%f</command>
-    <description>Search for files with Catfish</description>
-    <patterns>*</patterns>
-    <directories />
-  </action>
-  <action>
+
+   <action>
     <icon>utilities-terminal</icon>
     <name>Open terminal here</name>
     <command>sh -c 'cd %f;x-terminal-emulator'</command>
@@ -41,6 +34,14 @@
     <other-files />
     <text-files />
   </action>
+    <action>
+    <icon>accessories-text-editor</icon>
+    <name>Pdf viewer</name>
+    <command>xpdf %f</command>
+    <description />
+    <patterns>*.pdf</patterns>
+    <other-files />
+  </action>
   <action>
     <icon>applications-system</icon>
     <name>Check md5 sum</name>
@@ -52,6 +53,14 @@
 </actions>
 <!--
 <actions>
+  <action>
+    <icon>catfish</icon>
+    <name>Find files</name>
+    <command>catfish --hidden --path=%f</command>
+    <description>Search for files with Catfish</description>
+    <patterns>*</patterns>
+    <directories />
+  </action>
 	<action>
 		<icon>Terminal</icon>
 		<name>Open Terminal Here</name>

@@ -5,8 +5,8 @@ iotop
 ncdu
 parted
 wavemon
-wireless-tools
-wpasupplicant
+iw
+# wireless-tools
 localepurge
 openssh-server
 openssh-sftp-server
@@ -16,3 +16,11 @@ mc-data
 debfoster
 rsync
 ufw
+
+
+setnet
+wpasupplicant
+net-tools
+iputils-ping
+bind9-host
+traceroute

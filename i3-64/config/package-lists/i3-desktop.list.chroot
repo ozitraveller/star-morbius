@@ -4,11 +4,9 @@ i3status
 dunst
 
 wicd-curses
-
-slim
+wicd-daemon
 
 hsetroot
-feh
 
 # rxvt-unicode
 # xfce4-terminal
@@ -19,24 +17,11 @@ lxtask
 arandr
 # leafpad
 geany
-atril
-
-
-# spacefm
-lsof
-udevil
-
-# mc
-# xfe
-# xfe-themes
-
-# thunar
-# thunar-data
-# thunar-volman
-# thunar-archive-plugin
-# thunar-media-tags-plugin
-# # thunar-actions-plugin
-# tumbler
+# atril
 
 pcmanfm
 libfm-modules
+lsof
+udevil
+
+yad

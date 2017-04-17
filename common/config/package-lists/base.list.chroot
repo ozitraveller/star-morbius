@@ -8,7 +8,11 @@ sysvinit-core
 accountsservice
 upower
 
-# lightdm
+slim
+# connman
+# connman-ui
+# connman-gtk
+# connman-vpn
 # wicd
 # network-manager-gnome
 # network-manager-openvpn-gnome
@@ -27,9 +31,12 @@ xdg-user-dirs
 xdg-utils
 alsa-utils
 alsa-base
+apulse
 # pulseaudio
 # pulseaudio-module-x11
 # rtkit
+
+apt-listchanges
 
 tasksel
 
@@ -37,7 +44,6 @@ gamin
 cpufrequtils
 tzdata
 ntp
-xterm
 
 # unrar
 unace
@@ -116,6 +122,7 @@ intel-microcode
 amd64-microcode
 iucode-tool
 
+# firmware-misc-nonfree stretch
 zd1211-firmware
 firmware-linux 
 firmware-linux-nonfree 
@@ -133,10 +140,15 @@ firmware-b43-installer
 firmware-b43legacy-installer 
 b43-fwcutter 
 mobile-broadband-provider-info 
-wireless-tools
+# tool for configuring Linux wireless devices
+iw
+# wireless-tools
 
 lsb-release
 
 # discover
 # discover-data
 # lshw
+
+
+wmctrl

@@ -25,7 +25,7 @@
 [separator]	
       [submenu] (Accessories) {}
          [exec] (Archive Manager) {/usr/bin/file-roller} <>	
-		 [exec] (Calculator) {/usr/bin/gnome-calculator} <>
+		 [exec] (Calculator) {/usr/bin/qalculate-gtk} <>
          [exec] (Geany Editor) {editor} <>
          [exec] (Thunar) {x-file-manager} <>
          [exec] (Terminal) {x-terminal-emulator} <>	
@@ -34,19 +34,25 @@
       [end]
       [submenu] (Graphics) {}
          [exec] (Mirage) {mirage} <>
-         [exec] (Screenshot) {/usr/bin/xfce4-screenshooter} <>
+         [submenu] (Take Screenshot) {}
+			[exec] (Screenshooter) {/usr/bin/xfce4-screenshooter} <>
+			[separator]	
+			[exec] (Now) {scrot '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'} <>
+			[exec] (In 5 Seconds...) {scrot -d 5 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'} <>
+			[exec] (In 10 Seconds...) {scrot -d 10 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'} <>
+			[exec] (Selected Area... (click &amp; drag mouse)) {scrot -s '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'} <>
+		[end]
       [end]
       [submenu] (Internet) {}
          [exec] (Firefox) {x-www-browser} <>
-         [exec] (Wicd Network Manager) {/usr/bin/wicd-gtk --no-tray} <>
       [end]
       [submenu] (Multimedia) {}
-         [exec] (SMPlayer) {/usr/bin/smplayer}
+         [exec] (Mpv) {x-media-player}
          [exec] (Audio Mixer) {/usr/bin/xfce4-mixer}
          [exec] (Xfburn) {/usr/bin/xfburn}
       [end]
       [submenu] (Office) {}
-         [exec] (Pdf Viewer) {/usr/bin/atril}
+         [exec] (Pdf Viewer) {/usr/bin/xpdf}
       [end]
       [submenu] (System) {}
       	 [exec] (Alternatives Configurator) {su-to-root -X -c /usr/bin/galternatives} <>
@@ -73,5 +79,5 @@
     [end]
   [separator]
     [exec] (Lock) {/usr/bin/i3lock -n -p default --color=000000} <>  
-	[exec] (Exit) {/usr/bin/oblogout} <>   
+	[exec] (Exit) {/usr/bin/star-logout} <>   
 [end]

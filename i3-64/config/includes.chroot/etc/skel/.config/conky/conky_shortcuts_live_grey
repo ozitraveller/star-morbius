@@ -101,6 +101,10 @@ use_spacer none
 # ${color 101218}
 short_units yes
 
+# ${color ffffff}wicd$alignr ${color ffffff}mod+Ctrl+n
+# ${color ffffff}media player$alignr ${color ffffff}mod+Ctrl+m
+
+
 TEXT
 ${color ffffff}install star-i3$alignr ${color ffffff}mod+i
 
@@ -112,8 +116,8 @@ ${color ffffff}terminal$alignr ${color ffffff}mod+Enter
 ${color ffffff}web browser$alignr ${color ffffff}mod+Ctrl+w
 ${color ffffff}editor$alignr ${color ffffff}mod+Ctrl+e
 ${color ffffff}file manager$alignr ${color ffffff}mod+Ctrl+f
-${color ffffff}media player$alignr ${color ffffff}mod+Ctrl+m
-${color ffffff}wicd$alignr ${color ffffff}mod+Ctrl+n
+
+${color ffffff}restart$alignr ${color ffffff}mod+Shift+r
 
 ${color ffffff}kill focused$alignr ${color ffffff}mod+Shift+q
 

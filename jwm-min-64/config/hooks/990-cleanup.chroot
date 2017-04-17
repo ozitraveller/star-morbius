@@ -24,24 +24,31 @@ echo ""
 
 # echo "WARNING: apt-mark manual google-chrome-stable"
 # apt-mark manual google-chrome-stable
-apt-mark manual xorg
-apt-mark manual xinit
-apt-mark auto adwaita-icon-theme
+# apt-mark manual xorg
+# apt-mark manual xinit
+# apt-mark auto adwaita-icon-theme
 
-echo STAR-LIVE-Hook: "Removing unused packages - for"
-echo ""
-# Removing unused packages
-for PACKAGE in apt-utils aptitude man-db manpages info dselect
-do
-	if ! apt-get remove --purge --yes "${PACKAGE}"
-	then
-		echo "WARNING: ${PACKAGE} isn't installed"
-	fi
-done
+#~ echo STAR-LIVE-Hook: "Removing unused packages - for"
+#~ echo ""
+#~ # Removing unused packages
+#~ for PACKAGE in apt-utils aptitude man-db manpages info dselect
+#~ do
+	#~ if ! apt-get remove --purge --yes "${PACKAGE}"
+	#~ then
+		#~ echo "WARNING: ${PACKAGE} isn't installed"
+	#~ fi
+#~ done
 
-echo STAR-LIVE-Hook: "autoremove"
+# dpkg --purge debconf-i18n
+dpkg --purge gcc-4.8-base
+
+echo STAR-LIVE-Hook: "autoremove --purge"
 echo ""
-apt-get autoremove --yes || true
+apt-get autoremove --purge --yes || true
+
+echo STAR-LIVE-Hook: "autoclean"
+echo ""
+apt-get autoclean --yes || true
 
 echo STAR-LIVE-Hook: "Removing unused files - find"
 echo ""

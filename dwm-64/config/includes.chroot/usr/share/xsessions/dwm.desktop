@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Jwm
+Comment=Highly configurable and low resource X11 Window manager
+Exec=/usr/bin/dwm
+Terminal=false
+TryExec=/usr/bin/dwm
+Type=Application
+
+[X-Window Manager]
+SessionManaged=true

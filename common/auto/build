@@ -11,6 +11,5 @@ set -e
 #  jessie verion of squash-tools is 4.2!
 export MKSQUASHFS_OPTIONS=" -no-recovery -always-use-fragments -b 1048576"
 
-
 lb build noauto "${@}" 2>&1 | tee "Build - $(date "+%d.%m.%Y - %H:%M").log"
 

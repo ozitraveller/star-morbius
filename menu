@@ -4,11 +4,11 @@ set -e
 
 RED='\033[0;41;30m'
 STD='\033[0;0;39m'
-_VERSION='0.8'
+_VERSION='1.0'
 _SOURCE='star-morbius'
 
 _FLAVOURS=""
-_NAME="star-morbius"
+_NAME="star-morbius-"${_VERSION}"-beta2"
 _SETS="official"
 _SUFFIX="$(date "+%Y%^b%d")"
 
@@ -131,9 +131,9 @@ update(){
 	rm -rf ./auto/*
 #	cp -rf /home/$SUDO_USER/${_SOURCE}/common/auto/* ./auto/
 	if [ $2 ] && [ $2 == "min" ]; then
-		cp -rf ${SOURCEROOT}/$1-64/auto//* ./auto/
+		cp -rf ${SOURCEROOT}/$1-64/auto/* ./auto/
 	else
-		cp -rf ${SOURCEROOT}/common/auto//* ./auto/
+		cp -rf ${SOURCEROOT}/common/auto/* ./auto/
 	fi
 
 	cd config
@@ -190,8 +190,8 @@ update(){
 	cp -r ${SOURCEROOT}/$1-64/config/includes.chroot/* ./includes.chroot/
 	cp ${SOURCEROOT}/$1-64/config/package-lists/* ./package-lists/
 	
-	cp -r ${SOURCEROOT}/$1-64/config/includes.chroot/* ./includes.chroot/
-	cp ${SOURCEROOT}/$1-64/config/package-lists/* ./package-lists/
+# 	cp -r ${SOURCEROOT}/$1-64/config/includes.chroot/* ./includes.chroot/
+#	cp ${SOURCEROOT}/$1-64/config/package-lists/* ./package-lists/
 
 	DIRECTORY="${SOURCEROOT}/$1-64/config/packages.chroot/"
 	if [ -d $DIRECTORY ]; then

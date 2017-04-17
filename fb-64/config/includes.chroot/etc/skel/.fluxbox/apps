@@ -18,3 +18,23 @@
   [Layer]	{8}
   [Alpha]	{255}
 [end]
+[app] (name=thunar) (class=Thunar)
+  [Dimensions]	{80% 89%}
+  [Position]	(CENTER)	{0 0}
+  [Deco]	{0x66f}
+  [Minimized]	{no}
+  [Maximized]	{no}
+  [Fullscreen]	{no}
+  [Layer]	{8}
+  [Alpha]	{255}
+[end]
+[app] (name=xpdf) (class=Xpdf)
+  [Dimensions]	{80% 89%}
+  [Position]	(CENTER)	{0 0}
+  [Deco]	{0x66f}
+  [Minimized]	{no}
+  [Maximized]	{no}
+  [Fullscreen]	{no}
+  [Layer]	{8}
+  [Alpha]	{255}
+[end]

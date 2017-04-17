@@ -64,7 +64,7 @@ Control Mod1 slash :RootMenu
 Mod4 d :Exec ~/.config/dmenu/dmenu-bind.sh
 
 # media player
-Mod4 m :Exec smplayer
+Mod4 m :Exec x-media-player
 
 # terminal
 Mod4 t :Exec x-terminal-emulator
@@ -85,7 +85,7 @@ Mod1 F2 :Exec gmrun
 Mod4 l :Exec /usr/bin/i3lock -n -p default --color=000000
 
 # open a dialog to exit
-Mod4 x :Exec /usr/bin/oblogout
+Mod4 x :Exec /usr/bin/star-logout
 
 
 # volume settings, using common keycodes

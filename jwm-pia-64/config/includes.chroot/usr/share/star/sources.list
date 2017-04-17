@@ -1,0 +1,34 @@
+
+#############################################################
+###################
+################### OFFICIAL DEBIAN REPOS ###################
+#############################################################
+
+
+###### Debian Main Repos
+deb http://ftp.us.debian.org/debian/ jessie main contrib non-free
+# deb-src http://ftp.us.debian.org/debian/ jessie main
+
+deb http://security.debian.org/ jessie/updates main
+# deb-src http://security.debian.org/ jessie/updates main contrib non-free
+
+# jessie-updates, previously known as 'volatile'
+deb http://ftp.us.debian.org/debian/ jessie-updates main
+# deb-src http://ftp.us.debian.org/debian/ jessie-updates main
+
+# Backports repository
+deb http://ftp.us.debian.org/debian/ jessie-backports main contrib non-free
+# deb http://httpredir.debian.org/debian jessie-backports main contrib non-free
+
+
+##############################################################
+######################
+##################### UNOFFICIAL  REPOS ######################
+##############################################################
+
+
+#### Google Linux Software Repositories
+# deb http://dl.google.com/linux/chrome/deb/ stable main 
+
+#### VirtualBox
+# deb http://download.virtualbox.org/virtualbox/debian/ jessie contrib 

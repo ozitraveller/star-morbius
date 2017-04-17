@@ -74,4 +74,4 @@ session.slitlistFile:	/home/REPLACEME/.fluxbox/slitlist
 session.keyFile:	    /home/REPLACEME/.fluxbox/keys
 session.styleOverlay:	/home/REPLACEME/.fluxbox/overlay
 session.menuFile:	    /home/REPLACEME/.fluxbox/menu
-session.styleFile:	    /usr/share/fluxbox/styles/sakura_fog_blue
+session.styleFile:	    /usr/share/fluxbox/styles/Adwaita-Dark

@@ -84,23 +84,9 @@
 					</command>
 				</action>
 			</item>
-			<!-- <item label="Choose Wallpaper">
-				<action name="Execute">
-					<command>
-						/usr/bin/nitrogen ~/images/wallpapers/
-					</command>
-				</action>
-			</item> -->
 		</menu>		
 		<separator/>
 		<menu id="accessories" label="Accessories">
-			<!-- <item label="Bleachbit">
-				<action name="Execute">
-					<command>
-						/usr/bin/bleachbit
-					</command>
-				</action>
-			</item> -->
 			<item label="Archive Manager">
 				<action name="Execute">
 					<command>
@@ -111,7 +97,7 @@
 		    <item label="Calculator">
 				<action name="Execute">
 					<command>
-						/usr/bin/gnome-calculator
+						/usr/bin/qalculate-gtk
 					</command>
 				</action>
 			</item>
@@ -159,13 +145,44 @@
 					</command>
 				</action>
 			</item>
-		    <item label="Screenshot">
-				<action name="Execute">
-					<command>
-						/usr/bin/xfce4-screenshooter
-					</command>
-				</action>
-			</item>
+			<menu id="graphicsScreenshots" label="Take Screenshot">
+				<item label="Screenshooter">
+					<action name="Execute">
+						<command>
+							/usr/bin/xfce4-screenshooter
+						</command>
+					</action>
+				</item>
+				<separator/>
+				<item label="Now">
+					<action name="Execute">
+						<command>
+							scrot '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'
+						</command>
+					</action>
+				</item>
+				<item label="In 5 Seconds...">
+					<action name="Execute">
+						<command>
+							scrot -d 5 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'
+						</command>
+					</action>
+				</item>
+				<item label="In 10 Seconds...">
+					<action name="Execute">
+						<command>
+							scrot -d 10 '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'
+						</command>
+					</action>
+				</item>
+				<item label="Selected Area... (click &amp; drag mouse)">
+					<action name="Execute">
+						<command>
+							scrot -s '%Y-%m-%d--%s_$wx$h_scrot.png' -e 'mv $f ~/images/ &amp; mirage ~/images/$f'
+						</command>
+					</action>
+				</item>
+			</menu>
 		</menu>
 		<menu id="internet" label="Internet">
 			<item label="Firefox">
@@ -175,36 +192,15 @@
 					</command>
 				</action>
 			</item>
-			<!-- <item label="Transmission">
-				<action name="Execute">
-					<command>
-						/usr/bin/transmission-gtk
-					</command>
-				</action>
-			</item> -->
-			<item label="Wicd Network Manager">
-				<action name="Execute">
-					<command>
-						/usr/bin/wicd-gtk --no-tray
-					</command>
-				</action>
-			</item>
 		</menu>
 		<menu id="multimedia" label="Multimedia">
-			<item label="SMPlayer">
+			<item label="Mpv">
 				<action name="Execute">
 					<command>
-						/usr/bin/smplayer
+						x-media-player
 					</command>
 				</action>
 			</item>
-			<!--<item label="Audio Player">
-				<action name="Execute">
-					<command>
-						/usr/bin/audacious
-					</command>
-				</action>
-			</item> -->
 			<item label="Audio Mixer">
 				<action name="Execute">
 					<command>
@@ -212,13 +208,6 @@
 					</command>
 				</action>
 			</item>
-		    <!-- <item label="Pulseaudio Control">
-				<action name="Execute">
-					<command>
-						/usr/bin/pavucontrol
-					</command>
-				</action>
-			</item> -->
 			<item label="Xfburn">
 				<action name="Execute">
 					<command>
@@ -231,7 +220,7 @@
 		   	<item label="Pdf Viewer">
 				<action name="Execute">
 					<command>
-						/usr/bin/atril
+						/usr/bin/xpdf
 					</command>
 				</action>
 			</item>
@@ -244,13 +233,6 @@
 					</command>
 				</action>
 			</item>
-			<!--<item label="Htop Task manager">
-				<action name="Execute">
-					<command>
-						x-terminal-emulator -T 'htop task manager' -e htop
-					</command>
-				</action>
-			</item> -->
 			<item label="LxTask Manager">
 				<action name="Execute">
 					<command>
@@ -279,13 +261,6 @@
 					</command>
 				</action>
 			</item>
-			<!--<item label="Gigolo">
-				<action name="Execute">
-					<command>
-						/usr/bin/gigolo
-					</command>
-				</action>
-			</item> -->
 		    <item label="Gparted">
 				<action name="Execute">
 					<command>
@@ -293,13 +268,6 @@
 					</command>
 				</action>
 			</item>
-			<!-- <item label="Root Bleachbit">
-				<action name="Execute">
-					<command>
-						su-to-root -X -c /usr/bin/bleachbit
-					</command>
-				</action>
-			</item> -->
 			<item label="Root Terminal">
 				<action name="Execute">
 					<command>
@@ -340,7 +308,7 @@
 		<item label="Exit">
 			<action name="Execute">
 				<command>
-					/usr/bin/oblogout
+					/usr/bin/star-logout
 				</command>
 			</action>
 		</item>

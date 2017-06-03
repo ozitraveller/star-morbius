@@ -32,3 +32,8 @@ tumbler
 
 yad
 
+# pmount
+# gvfs-backends
+# gvfs-fuse
+
+mpv

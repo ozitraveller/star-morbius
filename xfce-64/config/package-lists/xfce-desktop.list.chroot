@@ -26,3 +26,9 @@ thunar-archive-plugin
 thunar-media-tags-plugin
 # thunar-actions-plugin
 tumbler
+
+# pmount
+# gvfs-backends
+# gvfs-fuse
+
+mpv

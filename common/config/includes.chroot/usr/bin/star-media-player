@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # wrapper for mpv to enable use as alternative for bl-media-player
 
 audio_size='35%x25%' # window for playing audio

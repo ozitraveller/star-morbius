@@ -7,5 +7,5 @@ set -e
 echo STAR-LIVE-Hook: "$0"
 echo ""
 
-update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/iceweasel 10
+update-alternatives --install /usr/bin/x-www-browser x-www-browser /usr/bin/firefox-esr 10
 

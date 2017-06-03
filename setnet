@@ -1,0 +1,38 @@
+setnet
+wpasupplicant
+net-tools
+iputils-ping
+bind9-host
+traceroute
+
+Make sure wpasupplicant was running before starting setnet.sh
+
+run these in separate terminals:
+sudo ifup wlan0 &
+sudo setnet.sh
+
+
+Some suggestions for mount/unmount:
+pmount
+udevil
+gvfs-backends gvfs-fuse
+thunar-volman
+
+Network connection and discovery
+gigolo
+avahi-utils
+
+
+pcmanfm requires libfm-modules for mounting
+
+
+
+Automounting of large external drives
+If Thunar refuses to mount large removable media (size > 1TB) although thunar-volman and gvfs has been installed, 
+then try installing a different automounter such as udevil or udiskie. The latter should be preferred as it uses 
+udisks2 and thus is compatible with gvfs.
+
+ 
+ 
+Trash
+Some programs use ~/.local/share/Trash as a dumping ground, so don't forget to clean it out!

@@ -6,14 +6,15 @@ DISTRIBUTION="jessie"
 ARCHITECTURES="amd64"
 LINUX_FLAVOURS="amd64"
 ARCHIVE_AREAS="main contrib non-free"
+SOURCE="false"
 DEVUAN_INSTALLER="live"
 # DEVUAN_INSTALLER="daily"
 
 SOURCE="false"
-# _MIRROR_BINARY="http://packages.devuan.org/merged"
+_MIRROR_BINARY="http://packages.devuan.org/merged"
 
 # sudo apt-get install apt-cacher-ng
-_MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
+# _MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
 
 # MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
@@ -38,8 +39,8 @@ lb config noauto \
 	--linux-flavours "${_LINUX_FLAVOURS}" \
 	--apt-recommends false \
 	--apt-secure true \
-	--apt-source-archives false \
 	--apt-indices false \
+	--apt-source-archives false \
 	--archive-areas "${_ARCHIVE_AREAS}" \
 	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
 	--parent-mirror-binary "${_MIRROR_BINARY}" \

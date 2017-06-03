@@ -23,6 +23,9 @@ slim
 ## vpnc 
 ## vpnc-scripts
 
+# fast reboots
+kexec-tools
+
 
 xfce4-power-manager
 
@@ -44,6 +47,7 @@ gamin
 cpufrequtils
 tzdata
 ntp
+# fslint
 
 # unrar
 unace
@@ -118,12 +122,34 @@ localepurge
 
 xserver-xorg-video-all
 
+# intel-microcode
+# amd64-microcode
+# iucode-tool
+
+# firmware-misc-nonfree stretch
+# zd1211-firmware
+# firmware-linux 
+# firmware-linux-nonfree 
+# firmware-netxen
+# firmware-ralink 
+# firmware-iwlwifi
+# firmware-intelwimax 
+# firmware-brcm80211
+# firmware-realtek
+# firmware-atheros
+# firmware-libertas
+# firmware-bnx2
+# firmware-b43-installer 
+# firmware-b43legacy-installer 
+# b43-fwcutter 
+
+
 intel-microcode
 amd64-microcode
 iucode-tool
 
-# firmware-misc-nonfree stretch
-zd1211-firmware
+# zd1211-firmware
+firmware-zd1211
 firmware-linux 
 firmware-linux-nonfree 
 firmware-netxen
@@ -140,6 +166,8 @@ firmware-b43-installer
 firmware-b43legacy-installer 
 b43-fwcutter 
 mobile-broadband-provider-info 
+# wireless-tools
+
 # tool for configuring Linux wireless devices
 iw
 # wireless-tools
@@ -152,3 +180,11 @@ lsb-release
 
 
 wmctrl
+
+
+setnet
+wpasupplicant
+net-tools
+iputils-ping
+bind9-host
+traceroute

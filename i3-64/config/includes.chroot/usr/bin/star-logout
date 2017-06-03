@@ -17,7 +17,7 @@ star_wico="/usr/share/images/star-blank.png"
 star_wico_big="$star_wico"
 
 action=$(yad --class="$star_ttle"  --title="$star_ttle" --window-icon="$star_wico" \
-	--skip-taskbar --fixed --on-top --center --width=150 --buttons-layout=center \
+	--skip-taskbar --fixed --on-top --center --width=430 --buttons-layout=center \
     --button="Cancel:1"  \
     --button="Logout:2"  \
     --button="Suspend:3"  \

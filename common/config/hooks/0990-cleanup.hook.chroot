@@ -58,6 +58,7 @@ do
 	fi
 done
 
+dpkg --purge debconf-i18n
 dpkg --purge gcc-4.8-base
 
 echo STAR-LIVE-Hook: "autoremove --purge"

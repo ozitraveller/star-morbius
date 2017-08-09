@@ -1,0 +1,62 @@
+# xorg
+
+xserver-xorg 
+xauth 
+
+xserver-xorg-video-dummy
+xserver-xorg-input-evdev 
+# xserver-xorg-input-void
+# xserver-xorg-core
+x11-xserver-utils
+
+xserver-xorg-video-vesa
+xserver-xorg-input-mouse
+xserver-xorg-input-kbd
+xfonts-100dpi
+xfonts-75dpi
+xfonts-base
+xfonts-scalable
+# xinit
+
+devuan-keyring 
+
+netbase
+net-tools
+ifupdown
+isc-dhcp-client
+inetutils-ping
+os-prober
+# grub2
+grub-pc
+psmisc
+pciutils
+rsyslog
+less
+# man
+# manpages
+# lynx
+# irssi
+# openssh-server
+# openssh-client
+# openssh-blacklist
+# xdg-user-dirs
+# xdg-utils
+logrotate 
+localepurge
+eject
+file
+rsync
+uuid-runtime
+user-setup
+sudo
+
+jwm
+# dwm
+xfe
+desktop-base
+hsetroot
+# dmenu
+# slim
+# leafpad
+xterm
+nano

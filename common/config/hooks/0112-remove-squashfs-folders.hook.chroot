@@ -2,6 +2,8 @@
 
 set -e
 
+exit 0
+
 echo STAR-LIVE-Hook: "$0"
 echo ""
 

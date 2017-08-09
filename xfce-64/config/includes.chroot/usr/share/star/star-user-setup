@@ -19,20 +19,14 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
     #rm skel.tar.gz
     
     if [ -f "/home/$USER/.config/autostart/xfce4-autostart.desktop" ]; then
-        rpl -q 'REPLACEME' $USER /home/$USER/.config/autostart/xfce4-autostart.desktop > /dev/null 2>&1
+        sed -i "s/REPLACEME/${USER}/g" /home/$USER/.config/autostart/xfce4-autostart.desktop > /dev/null 2>&1     
     fi
     if [ -f "/home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml" ]; then
-        rpl -q 'REPLACEME' $USER /home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml > /dev/null 2>&1
+        sed -i "s/REPLACEME/${USER}/g" /home/$USER/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml > /dev/null 2>&1
     fi
     if [ -f "/home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js" ]; then
-        rpl -q 'REPLACEME' $USER /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
+        sed -i "s/REPLACEME/${USER}/g" /home/$USER/.mozilla/firefox/cpffssvb.default/prefs.js > /dev/null 2>&1
     fi
-    #~ if [ -f "/home/$USER/.config/midori/config" ]; then
-        #~ rpl -q 'REPLACEME' $USER /home/$USER/.config/midori/config > /dev/null 2>&1
-    #~ fi
-    #~ if [ -f "/home/$USER/.config/netsurf/Choices" ]; then
-        #~ rpl -q 'REPLACEME' $USER /home/$USER/.config/netsurf/Choices > /dev/null 2>&1
-    #~ fi
 
     ln -s /usr/share/backgrounds /home/$USER/images/wallpapers/shared
 

@@ -27,7 +27,14 @@ _MIRROR_BINARY="http://packages.devuan.org/merged"
 #	--initramfs-compression lzma \
 #	--apt-options "--force-yes --yes" \
 #	--chroot-filesystem squashfs \
+# 	--bootappend-install "" \
+	#~ --binary-images "iso-hybrid" \	
+	#~ --bootloader "syslinux,grub2" \
+    #~ --bootloader "grub2" \
 
+# sudo geany /usr/lib/live/build/binary_grub2 /usr/lib/live/build/binary_syslinux /usr/lib/live/build/binary
+# sudo geany /usr/lib/live/build/binary_syslinux
+# sudo geany /usr/lib/live/build/binary
 
 lb config noauto \
 	--mode devuan \
@@ -56,5 +63,6 @@ lb config noauto \
 	--win32-loader false \
 	--debug \
 	--verbose \
+	--source "false" \
 	--bootappend-live "boot=live config components file=/preseed.cfg quiet splash autologin nouveau.modeset=0 radeon.modeset=0" \
 "${@}"

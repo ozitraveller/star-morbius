@@ -12,7 +12,7 @@
           <value type="uint" value="65535"/>
         </property>
         <property name="color2" type="empty"/>
-        <property name="color-style" type="int" value="0"/>
+        <property name="color-style" type="empty"/>
         <property name="image-path" type="empty"/>
         <property name="image-show" type="bool" value="false"/>
         <property name="last-image" type="empty"/>

@@ -1,6 +1,6 @@
-# xorg
+xorg
 
-xserver-xorg 
+# xserver-xorg 
 xauth 
 
 xserver-xorg-video-dummy
@@ -16,8 +16,9 @@ xfonts-100dpi
 xfonts-75dpi
 xfonts-base
 xfonts-scalable
-# xinit
+xinit
 
+# debian-keyring 
 devuan-keyring 
 
 netbase
@@ -27,7 +28,7 @@ isc-dhcp-client
 inetutils-ping
 os-prober
 # grub2
-grub-pc
+# grub-pc
 psmisc
 pciutils
 rsyslog

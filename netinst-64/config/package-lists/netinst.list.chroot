@@ -61,7 +61,7 @@ fontconfig
 fontconfig-config                       
 fonts-dejavu-core                       
 ftp                                     
-gcc-4.8-base                            
+# gcc-4.8-base                            
 gcc-4.9-base                            
 geoip-database                          
 gettext-base                            
@@ -71,10 +71,10 @@ gnupg2
 gpgv                                    
 grep                                    
 groff-base                              
-grub-common                             
-grub-pc                                 
-grub-pc-bin                             
-grub2-common                            
+# grub-common                             
+# grub-pc                                 
+# grub-pc-bin                             
+# grub2-common                            
 gzip                                    
 # hicolor-icon-theme                      
 host                                    

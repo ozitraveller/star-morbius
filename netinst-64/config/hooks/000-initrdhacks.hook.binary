@@ -13,29 +13,17 @@
 
 set -e
 
-echo STAR-LIVE-Hook: "$0"
+echo DIY-LIVE-Hook: "$0"
 echo ""
 
-# echo "Delete superfluous non gtk debian installer components, in order to save some space"
-# rm -f binary/install/initrd.gz binary/install/vmlinuz
-
-echo "Delete gtk debian installer components, in order to save some space"
+# echo "Delete superfluous gtk debian installer components, in order to save some space"
 rm -rf binary/install/gtk
 
-mkdir binary/install.amd
-ln binary/install/vmlinuz binary/install.amd/vmlinuz 
-ln binary/install/initrd.gz binary/install.amd/initrd.gz
-ln binary/install/install.bat binary/install.amd/install.bat
-
-# cp -r ../config/includes.binary/boot binary/
-# cp -r ../config/includes.binary/efi binary/
-
-
-# echo "Replace debian installer kernel with hard link to live kernel if they do not differ"
-# if [ "$(cmp -s binary/install/gtk/vmlinuz binary/live/vmlinuz ; echo $?)" = "0" ]
-# then
-#	echo "  Replacing..."
-#	rm -f binary/install/gtk/vmlinuz
-#	ln binary/live/vmlinuz binary/install/gtk/vmlinuz
-#fi
-#echo ""
+echo "Replace debian installer kernel with hard link to live kernel if they do not differ"
+if [ "$(cmp -s binary/install/vmlinuz binary/live/vmlinuz ; echo $?)" = "0" ]
+then
+	echo "  Replacing..."
+	rm -f binary/install/vmlinuz
+	ln binary/live/vmlinuz binary/install/vmlinuz
+fi
+echo ""

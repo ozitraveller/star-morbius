@@ -8,13 +8,12 @@ LINUX_FLAVOURS="amd64"
 ARCHIVE_AREAS="main contrib non-free"
 SOURCE="false"
 DEVUAN_INSTALLER="live"
-# DEVUAN_INSTALLER="daily"
+#DEVUAN_INSTALLER="daily"
 
-SOURCE="false"
-_MIRROR_BINARY="http://packages.devuan.org/merged"
+MIRROR_BINARY="http://packages.devuan.org/merged"
 
 # sudo apt-get install apt-cacher-ng
-# _MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
+#MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
 
 # MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"
@@ -23,6 +22,7 @@ _MIRROR_BINARY="http://packages.devuan.org/merged"
 
 #	--build-with-chroot false \
 #	--debootstrap-options "--variant=minbase"
+#	--debootstrap-options "--variant=minbase" \
 #	--apt-source-archives true \
 #	--initramfs-compression lzma \
 #	--apt-options "--force-yes --yes" \
@@ -37,30 +37,30 @@ _MIRROR_BINARY="http://packages.devuan.org/merged"
 # sudo geany /usr/lib/live/build/binary
 
 lb config noauto \
-	--mode devuan \
-	--chroot-filesystem squashfs \
-	--distribution "${_DISTRIBUTION}" \
-	--debian-installer-distribution "${_DISTRIBUTION}" \
+	--mode "devuan" \
+	--chroot-filesystem "squashfs" \
+	--distribution "${DISTRIBUTION}" \
+	--debian-installer-distribution "${DISTRIBUTION}" \
 	--debian-installer "${DEVUAN_INSTALLER}" \
-	--architectures "${_ARCHITECTURES}" \
-	--linux-flavours "${_LINUX_FLAVOURS}" \
-	--apt-recommends false \
-	--apt-secure true \
-	--apt-indices false \
-	--apt-source-archives false \
-	--archive-areas "${_ARCHIVE_AREAS}" \
-	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
-	--parent-mirror-binary "${_MIRROR_BINARY}" \
-	--mirror-bootstrap "${_MIRROR_BINARY}" \
-	--mirror-binary "${_MIRROR_BINARY}" \
+	--architectures "${ARCHITECTURES}" \
+	--linux-flavours "${LINUX_FLAVOURS}" \
+	--apt-recommends "false" \
+	--apt-secure "true" \
+	--apt-indices "false" \
+	--apt-source-archives "false" \
+	--archive-areas "${ARCHIVE_AREAS}" \
+	--parent-mirror-bootstrap "${MIRROR_BINARY}" \
+	--parent-mirror-binary "${MIRROR_BINARY}" \
+	--mirror-bootstrap "${MIRROR_BINARY}" \
+	--mirror-binary "${MIRROR_BINARY}" \
 	--iso-application "Star Linux" \
 	--iso-publisher "Star" \
 	--iso-volume "Star Live" \
-	--backports false \
-	--security false \
-    --updates false \
-	--memtest none \
-	--win32-loader false \
+	--backports "false" \
+	--security "false" \
+    --updates "false" \
+	--memtest "none" \
+	--win32-loader "false" \
 	--debug \
 	--verbose \
 	--source "false" \

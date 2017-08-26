@@ -141,4 +141,4 @@ done
 ##rm -rf  /usr/share/tmpThemes/*
 # rm -rf  /usr/share/icons/mate
 # rm -rf  /usr/share/icons/menta
-
+rm -rf /usr/share/slim/themes/{default,default-OLD,desktop-slim-theme,devuan-curve-purpy}

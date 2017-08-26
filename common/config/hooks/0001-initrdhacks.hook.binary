@@ -11,7 +11,7 @@
 # Any other components should be inside a compressed tar archive
 # named additions.tar.gz with full file paths
 
-set -e
+set -x
 
 echo STAR-LIVE-Hook: "$0"
 echo ""
@@ -20,10 +20,10 @@ echo "Delete superfluous non gtk debian installer components, in order to save s
 rm -f binary/install/initrd.gz binary/install/vmlinuz
 
 echo "Replace debian installer kernel with hard link to live kernel if they do not differ"
-if [ "$(cmp -s binary/install/gtk/vmlinuz binary/live/vmlinuz ; echo $?)" = "0" ]
+if [ "$(cmp -s binary/install/gtk/vmlinuz binary/live/vmlinuz-3.16.0-4-amd64 ; echo $?)" = "0" ]
 then
 	echo "  Replacing..."
 	rm -f binary/install/gtk/vmlinuz
-	ln binary/live/vmlinuz binary/install/gtk/vmlinuz
+	ln binary/live/vmlinuz-3.16.0-4-amd64 binary/install/gtk/vmlinuz
 fi
 echo ""

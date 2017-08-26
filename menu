@@ -4,7 +4,7 @@ set -e
 
 RED='\033[0;41;30m'
 STD='\033[0;0;39m'
-_VERSION='1.0.0'
+_VERSION='1.0.1'
 _SOURCE='star-morbius'
 
 _FLAVOURS=""
@@ -456,7 +456,7 @@ main(){
 	echo -e "\tu. Update   o. Openbox    im. i3 minimal"
 	echo -e "\tb. Build    j. Jwm        ju. Jwm USB"
 	echo -e "\tp. Purge    i. i3         c1. Jwm PIA"
-	echo -e "\t            d. dwm"
+	echo -e "\t            d. dwm        t. Test"
 	echo " "
 	echo -e "\tExample - sx (Setup Xfce)"
 	echo " "
@@ -474,6 +474,7 @@ main(){
 		si) setup "i3" ;;
 		sd) setup "dwm" ;;
 		sn) setup "netinst" ;;
+		st) setup "test";;
 		sjm) setup "jwm-min" ;;
 		sim) setup "i3-min" ;;
 		sju) setup "jwm-usb" ;;
@@ -484,7 +485,8 @@ main(){
 		rj) remove "jwm" ;;
 		ri) remove "i3" ;;
 		rd) remove "dwm" ;;
-		rn) remove "netinst" ;;
+		rn) remove  "netinst" ;;
+		rt) remove "test";;
 		rjm) remove "jwm-min" ;;
 		rim) remove "i3-min" ;;
 		rju) remove "jwm-usb" ;;
@@ -496,6 +498,7 @@ main(){
 		ui) update "i3" ;;
 		ud) update "dwm" ;;
 		un) update "netinst" "min";;
+		ut) update "test" "min";;		
 		ujm) update "jwm-min" "custom";;
 		uim) update "i3-min" "min";;
 		uju) update "jwm-usb" "min";;
@@ -507,6 +510,7 @@ main(){
 		bi) build "i3" ;;
 		bd) build "dwm" ;;
 		bn) build "netinst" ;;
+		bt) build "test" ;;
 		bjm) build "jwm-min" ;;
 		bim) build "i3-min" ;;
 		bju) build "jwm-usb" ;;
@@ -518,6 +522,7 @@ main(){
 		pi) purge "i3" ;;
 		pd) purge "dwm" ;;
 		pn) purge "netinst" ;;
+		pt) purge "test" ;;
 		pjm) purge "jwm-min" ;;
 		pim) purge "i3-min" ;;
 		pju) purge "jwm-usb" ;;

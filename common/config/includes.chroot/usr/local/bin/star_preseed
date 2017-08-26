@@ -18,7 +18,7 @@ dpkg --purge live-tools
 sed -i "s/echo Debian/echo Star/g" /etc/default/grub
 sed -i "s/quiet//g" /etc/default/grub
 sed -i "s/GRUB_THEME=/#GRUB_THEME=/g" /etc/default/grub
-echo "GRUB_BACKGROUND=\"/usr/share/images/desktop-base/star-grub.png\"" >> /etc/default/grub
+echo "GRUB_BACKGROUND=\"/usr/share/images/desktop-base/star-grub-plain.png\"" >> /etc/default/grub
 update-grub
 
 # there is a hook for this

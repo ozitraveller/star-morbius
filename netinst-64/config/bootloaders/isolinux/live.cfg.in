@@ -1,12 +1,18 @@
-label live-@FLAVOUR@
-	menu label ^Live (@FLAVOUR@)
+label live
+	menu label ^Live
 	menu default
 	linux @LINUX@
 	initrd @INITRD@
 	append @APPEND_LIVE@
-
-label live-@FLAVOUR@-failsafe
-	menu label ^Live (@FLAVOUR@ failsafe)
+	
+label live-toram
+	menu label ^Live (toram)
 	linux @LINUX@
 	initrd @INITRD@
-	append @APPEND_LIVE_FAILSAFE@
+	append @APPEND_LIVE@ toram	
+
+label live-failsafe
+	menu label ^Live (failsafe)
+	linux @LINUX@
+	initrd @INITRD@
+	append boot=live components memtest noapic noapm nodma nomce nolapic nomodeset nosmp nosplash vga=normal

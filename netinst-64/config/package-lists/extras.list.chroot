@@ -10,7 +10,7 @@ iw
 localepurge
 openssh-server
 openssh-sftp-server
-openssl	
+# openssl	
 mc	
 mc-data	
 debfoster

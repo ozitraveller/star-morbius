@@ -208,13 +208,6 @@
 					</command>
 				</action>
 			</item>
-			<item label="Xfburn">
-				<action name="Execute">
-					<command>
-						/usr/bin/xfburn
-					</command>
-				</action>
-			</item>
 		</menu>
 		<menu id="office" label="Office">
 		   	<item label="Pdf Viewer">

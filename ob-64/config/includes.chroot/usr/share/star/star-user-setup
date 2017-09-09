@@ -1,7 +1,7 @@
 #!/bin/bash
 #Star User Set-up
 
-set -e
+set -x
 
 USER=$1
 
@@ -18,6 +18,10 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
     #tar xkpsf skel.tar.gz
     #rm skel.tar.gz
 
+
+    if [ -f "/etc/apt/sources.list.d/zz-sources.list" ]; then
+        rm -f /etc/apt/sources.list.d/zz-sources.list
+    fi
     if [ -f "/home/$USER/.gtkrc-2.0" ]; then
         sed -i "s/REPLACEME/${USER}/g" /home/$USER/.gtkrc-2.0 > /dev/null 2>&1
     fi
@@ -37,6 +41,8 @@ if [ ! -f "/home/$USER/.config/star/star-setup" ]; then
 		
 		rpl -q '# policykit-1-gnome' '/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &' /etc/skel/.config/openbox/autostart > /dev/null 2>&1
 		cp /etc/skel/.config/openbox/autostart /home/$USER/.config/openbox/autostart
+	else
+		echo "deb http://packages.devuan.org/merged jessie main contrib non-free" > /etc/apt/sources.list
 	fi
 	
 	touch /home/$USER/.config/star/star-setup

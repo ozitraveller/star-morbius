@@ -4,8 +4,6 @@ xfce4-notifyd
 libnotify-bin
 bash-completion
 xfce4-mixer
-# pavucontrol
-# volumeicon-alsa
 
 ttf-dejavu 
 fonts-liberation 
@@ -46,10 +44,6 @@ suckless-tools
 # smplayer
 # mpv
 iceweasel
-# midori
-# netsurf
-# qupzilla
-# palemoon
 mirage
 conky-all 
 file-roller
@@ -69,7 +63,7 @@ qalculate-gtk
 scrot
 # mutt
 xfce4-appfinder
-xfburn
+# xfburn
 xfce4-screenshooter
 xpdf
 # zathura

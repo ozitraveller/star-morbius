@@ -11,9 +11,10 @@ DEVUAN_INSTALLER="live"
 #DEVUAN_INSTALLER="daily"
 
 MIRROR_BINARY="http://packages.devuan.org/merged"
+# MIRROR_BINARY="http://pkgmaster.devuan.org/merged/"
 
 # sudo apt-get install apt-cacher-ng
-#MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
+# MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
 
 # MIRROR_BINARY="http://au.mirror.devuan.org/merged/"
 # MIRROR_BINARY="http://packages.devuan.org/devuan/dists/jessie/main/"

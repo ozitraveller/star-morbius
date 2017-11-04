@@ -1,3 +1,0 @@
-
-# Desktop-base Grub2 theme: Default - uses alternatives desktop-grub-theme.
-GRUB_THEME=/usr/share/desktop-base/grub-themes/desktop-grub-theme/theme.txt

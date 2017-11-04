@@ -15,8 +15,10 @@ background_style        stretch
 background_color        #eedddd
 
 # Input controls
-input_panel_x           0%
-input_panel_y           40%
+input_panel_x           40%
+input_panel_y           50%
+# input_panel_x           0%
+# input_panel_y           40%
 input_name_x            394
 input_name_y            181
 input_font          	Liberation Sans:size=12:dpi=90

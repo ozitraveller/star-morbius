@@ -49,7 +49,6 @@
       [submenu] (Multimedia) {}
          [exec] (Mpv) {x-media-player}
          [exec] (Audio Mixer) {/usr/bin/xfce4-mixer}
-         [exec] (Xfburn) {/usr/bin/xfburn}
       [end]
       [submenu] (Office) {}
          [exec] (Pdf Viewer) {/usr/bin/xpdf}

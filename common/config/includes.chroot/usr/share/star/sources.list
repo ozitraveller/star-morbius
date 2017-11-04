@@ -4,30 +4,30 @@
 ################### OFFICIAL DEVUAN REPO  ###################
 #############################################################
 
-# deb http://packages.devuan.org/merged/ jessie main
-# deb http://us.mirror.devuan.org/merged/ jessie main
-deb http://auto.mirror.devuan.org/merged/ jessie main contrib non-free
-# deb-src http://auto.mirror.devuan.org/merged/ jessie main
-
 # Devuan only packages free software. The non-free archive comes from
 # Debian.  Activate the non-free component, as you would in Debian, and
 # you should be set.
-# deb http://ftp.us.debian.org/debian/ stable contrib non-free
+deb http://auto.mirror.devuan.org/merged/ jessie main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ jessie main contrib non-free
+# deb-src http://auto.mirror.devuan.org/merged/ jessie main
 
 # Security
 # deb http://packages.devuan.org/merged jessie-security main
 # deb-src http://packages.devuan.org/merged/ jessie-security main
 deb http://auto.mirror.devuan.org/merged jessie-security main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ jessie-security main contrib non-free
 # or with https if you use apt-transport-https.
 
 # Updates
 # deb http://packages.devuan.org/merged/ jessie-updates main
 # deb-src http://packages.devuan.org/merged/ jessie-updates main
 deb http://auto.mirror.devuan.org/merged/ jessie-updates main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ jessie-updates main contrib non-free
 # deb-src http://auto.mirror.devuan.org/merged/ jessie-updates main
 
 # Backports
 deb http://auto.mirror.devuan.org/merged/ jessie-backports main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ jessie-backports main contrib non-free
 # deb http://auto.mirror.devuan.org/merged/ jessie-backports main
 
 ##############################################################
@@ -41,3 +41,18 @@ deb http://auto.mirror.devuan.org/merged/ jessie-backports main contrib non-free
 
 #### VirtualBox
 # deb http://download.virtualbox.org/virtualbox/debian/ jessie contrib 
+
+#### Docker
+# deb [arch=amd64] https://download.docker.com/linux/debian jessie stable
+# deb-src [arch=amd64] https://download.docker.com/linux/debian jessie stable
+
+##############################################################
+# for ascii or later
+# https://dev1galaxy.org/viewtopic.php?pid=5621#p5621
+# apt-get update
+# apt-get install devuan-keyring
+
+# deb http://pkgmaster.devuan.org/merged/ ascii main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ ascii-updates main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ ascii-proposed-updates main contrib non-free
+# deb http://pkgmaster.devuan.org/merged/ ascii-security main contrib non-free

@@ -4,7 +4,7 @@ set -e
 
 RED='\033[0;41;30m'
 STD='\033[0;0;39m'
-_VERSION='1.0.1'
+_VERSION='1.0.2'
 _SOURCE='star-morbius'
 
 _FLAVOURS=""

@@ -2,15 +2,19 @@
 
 set -e
 
-DISTRIBUTION="jessie"
-ARCHITECTURES="amd64"
-LINUX_FLAVOURS="amd64"
-ARCHIVE_AREAS="main contrib non-free"
-SOURCE="false"
-DEVUAN_INSTALLER="live"
-#DEVUAN_INSTALLER="daily"
+_DISTRIBUTION="jessie"
+_ARCHITECTURES="amd64"
+_LINUX_FLAVOURS="amd64"
+_ARCHIVE_AREAS="main contrib non-free"
+_SOURCE="false"
+# _DEVUAN_INSTALLER="live"
+_DEVUAN_INSTALLER="live"
 
-MIRROR_BINARY="http://packages.devuan.org/merged"
+# sudo apt-get install apt-cacher-ng
+# _MIRROR_BINARY="http://localhost:3142/packages.devuan.org/merged"
+
+# _MIRROR_BINARY="http://packages.devuan.org/merged"
+_MIRROR_BINARY="http://pkgmaster.devuan.org/merged/"
 # MIRROR_BINARY="http://pkgmaster.devuan.org/merged/"
 
 # sudo apt-get install apt-cacher-ng
@@ -36,24 +40,29 @@ MIRROR_BINARY="http://packages.devuan.org/merged"
 # sudo geany /usr/lib/live/build/binary_grub2 /usr/lib/live/build/binary_syslinux /usr/lib/live/build/binary
 # sudo geany /usr/lib/live/build/binary_syslinux
 # sudo geany /usr/lib/live/build/binary
+# 	--clean \
+# 	--debian-installer-gui "true" \	
 
 lb config noauto \
 	--mode "devuan" \
 	--chroot-filesystem "squashfs" \
-	--distribution "${DISTRIBUTION}" \
-	--debian-installer-distribution "${DISTRIBUTION}" \
-	--debian-installer "${DEVUAN_INSTALLER}" \
-	--architectures "${ARCHITECTURES}" \
-	--linux-flavours "${LINUX_FLAVOURS}" \
+	--initsystem "sysvinit" \
+	--bootloaders "syslinux,grub-efi" \	
+	--distribution "${_DISTRIBUTION}" \
+	--debian-installer-distribution "${_DISTRIBUTION}" \
+	--debian-installer "${_DEVUAN_INSTALLER}" \
+	--debian-installer-gui "true" \
+	--architectures "${_ARCHITECTURES}" \
+	--linux-flavours "${_LINUX_FLAVOURS}" \
 	--apt-recommends "false" \
 	--apt-secure "true" \
 	--apt-indices "false" \
 	--apt-source-archives "false" \
-	--archive-areas "${ARCHIVE_AREAS}" \
-	--parent-mirror-bootstrap "${MIRROR_BINARY}" \
-	--parent-mirror-binary "${MIRROR_BINARY}" \
-	--mirror-bootstrap "${MIRROR_BINARY}" \
-	--mirror-binary "${MIRROR_BINARY}" \
+	--archive-areas "${_ARCHIVE_AREAS}" \
+	--parent-mirror-bootstrap "${_MIRROR_BINARY}" \
+	--parent-mirror-binary "${_MIRROR_BINARY}" \
+	--mirror-bootstrap "${_MIRROR_BINARY}" \
+	--mirror-binary "${_MIRROR_BINARY}" \
 	--iso-application "Star Linux" \
 	--iso-publisher "Star" \
 	--iso-volume "Star Live" \

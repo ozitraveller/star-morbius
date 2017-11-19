@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+echo STAR-LIVE-Hook: "$0"
+echo ""
+
+echo "remove binary/boot/grub/i386-efi"
+if [ -d "binary/boot/grub/i386-efi" ]; then
+	rm -rf binary/boot/grub/i386-efi
+fi
+
+
+#~ echo "remove binary/boot/grub/live-theme"
+#~ if [ -d "binary/boot/grub/live-theme" ]; then
+	#~ rm -rf binary/boot/grub/live-theme
+#~ fi
+
+#~ rm -f binary/boot/grub/dejavu-bold-14.pf2
+#~ rm -f binary/boot/grub/dejavu-bold-16.pf2
+#~ rm -f binary/boot/grub/unicode.pf2
+#~ rm -f binary/boot/grub/font.pf2
+
+rm -f binary/boot/grub/live-theme/theme.txt

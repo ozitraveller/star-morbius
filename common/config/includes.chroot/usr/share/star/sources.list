@@ -7,27 +7,30 @@
 # Devuan only packages free software. The non-free archive comes from
 # Debian.  Activate the non-free component, as you would in Debian, and
 # you should be set.
-deb http://auto.mirror.devuan.org/merged/ jessie main contrib non-free
-# deb http://pkgmaster.devuan.org/merged/ jessie main contrib non-free
+# deb http://auto.mirror.devuan.org/merged/ jessie main contrib non-free
+deb https://pkgmaster.devuan.org/merged/ jessie main contrib non-free
 # deb-src http://auto.mirror.devuan.org/merged/ jessie main
 
 # Security
 # deb http://packages.devuan.org/merged jessie-security main
 # deb-src http://packages.devuan.org/merged/ jessie-security main
-deb http://auto.mirror.devuan.org/merged jessie-security main contrib non-free
-# deb http://pkgmaster.devuan.org/merged/ jessie-security main contrib non-free
+# deb http://auto.mirror.devuan.org/merged jessie-security main contrib non-free
+deb https://pkgmaster.devuan.org/merged/ jessie-security main contrib non-free
 # or with https if you use apt-transport-https.
 
 # Updates
 # deb http://packages.devuan.org/merged/ jessie-updates main
 # deb-src http://packages.devuan.org/merged/ jessie-updates main
-deb http://auto.mirror.devuan.org/merged/ jessie-updates main contrib non-free
-# deb http://pkgmaster.devuan.org/merged/ jessie-updates main contrib non-free
+# deb http://auto.mirror.devuan.org/merged/ jessie-updates main contrib non-free
+deb https://pkgmaster.devuan.org/merged/ jessie-updates main contrib non-free
 # deb-src http://auto.mirror.devuan.org/merged/ jessie-updates main
 
+# Proposed Updates
+# deb https://pkgmaster.devuan.org/merged/ jessie-proposed-updates main contrib non-free
+
 # Backports
-deb http://auto.mirror.devuan.org/merged/ jessie-backports main contrib non-free
-# deb http://pkgmaster.devuan.org/merged/ jessie-backports main contrib non-free
+# deb http://auto.mirror.devuan.org/merged/ jessie-backports main contrib non-free
+deb https://pkgmaster.devuan.org/merged/ jessie-backports main contrib non-free
 # deb http://auto.mirror.devuan.org/merged/ jessie-backports main
 
 ##############################################################

@@ -44,9 +44,10 @@ suckless-tools
 # smplayer
 # mpv
 iceweasel
-mirage
+# mirage
+geeqie
 conky-all 
-file-roller
+# file-roller
 xarchiver
 qalculate-gtk
 # transmission-gtk

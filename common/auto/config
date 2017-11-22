@@ -44,7 +44,7 @@ _MIRROR_BINARY="http://pkgmaster.devuan.org/merged/"
 # 	--debian-installer-gui "true" \	
 
 lb config noauto \
-	--mode "devuan" \
+	--mode devuan \
 	--chroot-filesystem "squashfs" \
 	--initsystem "sysvinit" \
 	--bootloaders "syslinux,grub-efi" \	

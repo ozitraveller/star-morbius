@@ -188,3 +188,5 @@ net-tools
 iputils-ping
 bind9-host
 traceroute
+
+apt-transport-https

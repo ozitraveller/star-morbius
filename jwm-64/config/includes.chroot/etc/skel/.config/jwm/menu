@@ -45,7 +45,7 @@
 		  <Program label="Xterm">/usr/bin/xterm</Program>
       </Menu>
       <Menu icon="folder.png" label="Graphics">
-          <Program label="Mirage" confirm="false">mirage</Program>
+          <Program label="Geeqie" confirm="false">geeqie</Program>
 		  <Menu icon="folder.png" label="Take Screenshot">
 			  <Program label="Screenshooter" confirm="false">/usr/bin/xfce4-screenshooter</Program>
 			  <Separator/>

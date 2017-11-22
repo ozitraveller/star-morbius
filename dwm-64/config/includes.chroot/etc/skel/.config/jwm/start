@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<JWM>
+
+    <!-- Startup for program. -->
+    <StartupCommand>~/bin/run.sh</StartupCommand>
+	<RestartCommand>~/bin/run.sh</RestartCommand>
+	
+</JWM>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<JWM>
+
+    <!-- Tray of the environment. -->
+   <!-- Additional tray attributes: autohide, width, border, layer, layout -->
+   <Tray  x="0" y="+1" height="30" autohide="off" valign="top">
+
+      <TrayButton icon="/usr/share/jwm/star-white.svg">root:1</TrayButton>
+      <TrayButton icon="/usr/share/icons/gnome-brave/22x22/places/user-desktop.png">showdesktop</TrayButton>
+      <TrayButton icon="/usr/share/icons/gnome/22x22/apps/utilities-terminal.png">exec:x-terminal-emulator</TrayButton>
+      <TrayButton icon="/usr/share/icons/gnome/22x22/apps/system-file-manager.png">exec:x-file-manager</TrayButton>
+      <TrayButton icon="/usr/share/icons/gnome-colors-common/22x22/apps/smplayer.png">exec:smplayer</TrayButton>
+      <TrayButton icon="/usr/share/icons/gnome/22x22/apps/web-browser.png">exec:x-www-browser</TrayButton>
+
+      <TaskList maxwidth="130" border="false"/>
+
+      <Pager labeled="true"/>
+
+      <Dock/>
+    
+      <Clock format="%l:%m %p"><Button mask="123">exec:xclock</Button></Clock>
+
+   </Tray>
+
+</JWM>

@@ -8,3 +8,4 @@
     <Include>$HOME/.config/jwm/tray</Include>
     <Include>$HOME/.config/jwm/groups</Include>
 </JWM>
+

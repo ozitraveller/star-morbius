@@ -3,8 +3,8 @@ stable-jwm-noDM-64-orig.tar.gz
 release-notes
 archive/
 custom/
-fb/
-ob/
-xfce/
+# fb/
+# ob/
+# xfce/
 # jwm/
 build/
